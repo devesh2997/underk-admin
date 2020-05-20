@@ -5,10 +5,10 @@ import {
     Container,
 } from "reactstrap";
 
-export default class HR extends React.Component<{}, {}> {
+export default class Catalogue extends React.Component<{}, {}> {
 
     render() {
-        return (<Container>HR</Container>)
+        return (<Container>Catalogue</Container>)
     }
 
 }

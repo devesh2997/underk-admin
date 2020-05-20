@@ -22,7 +22,9 @@ import Register from "views/examples/Register.js";
 import Login from "views/examples/Login.js";
 import Tables from "views/examples/Tables.js";
 import Icons from "views/examples/Icons.js";
-import Admin from "views/hr/Index.tsx"
+import HR from "views/hr/Index.tsx"
+import Users from "views/users/Index.tsx"
+import Catalogue from "views/catalogue/Index.tsx"
 
 var routes = [
   {
@@ -34,9 +36,23 @@ var routes = [
   },
   {
     path: "/admin",
-    name: "Admin",
-    icon: "ni ni-tv-2 text-primary",
-    component: Admin,
+    name: "HR",
+    icon: "ni ni-air-baloon text-blue",
+    component: HR,
+    layout: "/admin"
+  },
+  {
+    path: "/users",
+    name: "Users",
+    icon: "ni ni-single-02 text-yellow",
+    component: Users,
+    layout: "/admin"
+  },
+  {
+    path: "/catalogue",
+    name: "Catalogue",
+    icon: "ni ni-box-2 text-orange",
+    component: Catalogue,
     layout: "/admin"
   },
   {
