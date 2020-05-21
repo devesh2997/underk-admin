@@ -244,14 +244,6 @@ const Sidebar: React.FC<SidebarProps> = ({ routes, logo }) => {
               </NavLink>
             </NavItem>
           </Nav>
-          <Nav className="mb-md-3" navbar>
-            <NavItem className="active-pro active">
-              <NavLink href="https://www.creative-tim.com/product/argon-dashboard-pro-react?ref=adr-admin-sidebar">
-                <i className="ni ni-spaceship" />
-                Upgrade to PRO
-              </NavLink>
-            </NavItem>
-          </Nav>
         </Collapse>
       </Container>
     </Navbar>

@@ -9,14 +9,14 @@ const Footer:React.FC = () => {
       <Row className="align-items-center justify-content-xl-between">
         <Col xl="6">
           <div className="copyright text-center text-xl-left text-muted">
-            © 2018{" "}
+            © 2019{" "}
             <a
               className="font-weight-bold ml-1"
-              href="https://www.creative-tim.com?ref=adr-admin-footer"
+              href="https://www.underk.in"
               rel="noopener noreferrer"
               target="_blank"
             >
-              Creative Tim
+              underK LLP
             </a>
           </div>
         </Col>
@@ -25,17 +25,17 @@ const Footer:React.FC = () => {
           <Nav className="nav-footer justify-content-center justify-content-xl-end">
             <NavItem>
               <NavLink
-                href="https://www.creative-tim.com?ref=adr-admin-footer"
+                href="https://www.underk.in"
                 rel="noopener noreferrer"
                 target="_blank"
               >
-                Creative Tim
+                underk.in
               </NavLink>
             </NavItem>
 
             <NavItem>
               <NavLink
-                href="https://www.creative-tim.com/presentation?ref=adr-admin-footer"
+                href="https://www.underk.in./about-us"
                 rel="noopener noreferrer"
                 target="_blank"
               >
@@ -45,21 +45,11 @@ const Footer:React.FC = () => {
 
             <NavItem>
               <NavLink
-                href="http://blog.creative-tim.com?ref=adr-admin-footer"
+                href="http://www.underk.in/blogs"
                 rel="noopener noreferrer"
                 target="_blank"
               >
                 Blog
-              </NavLink>
-            </NavItem>
-
-            <NavItem>
-              <NavLink
-                href="https://github.com/creativetimofficial/argon-dashboard/blob/master/LICENSE.md?ref=adr-admin-footer"
-                rel="noopener noreferrer"
-                target="_blank"
-              >
-                MIT License
               </NavLink>
             </NavItem>
           </Nav>

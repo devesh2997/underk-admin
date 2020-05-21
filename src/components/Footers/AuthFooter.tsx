@@ -11,55 +11,48 @@ const AuthFooter: React.FC = () => {
           <Row className="align-items-center justify-content-xl-between">
             <Col xl="6">
               <div className="copyright text-center text-xl-left text-muted">
-                © 2018{" "}
+                © 2019{" "}
                 <a
                   className="font-weight-bold ml-1"
                   href="https://www.creative-tim.com?ref=adr-auth-footer"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  Creative Tim
+                  underK LLP
                 </a>
               </div>
             </Col>
             <Col xl="6">
               <Nav className="nav-footer justify-content-center justify-content-xl-end">
-                <NavItem>
-                  <NavLink
-                    href="https://www.creative-tim.com?ref=adr-auth-footer"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    Creative Tim
-                  </NavLink>
-                </NavItem>
-                <NavItem>
-                  <NavLink
-                    href="https://www.creative-tim.com/presentation?ref=adr-auth-footer"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    About Us
-                  </NavLink>
-                </NavItem>
-                <NavItem>
-                  <NavLink
-                    href="http://blog.creative-tim.com?ref=adr-auth-footer"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    Blog
-                  </NavLink>
-                </NavItem>
-                <NavItem>
-                  <NavLink
-                    href="https://github.com/creativetimofficial/argon-dashboard/blob/master/LICENSE.md?ref=adr-auth-footer"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    MIT License
-                  </NavLink>
-                </NavItem>
+              <NavItem>
+              <NavLink
+                href="https://www.underk.in"
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                underk.in
+              </NavLink>
+            </NavItem>
+
+            <NavItem>
+              <NavLink
+                href="https://www.underk.in./about-us"
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                About Us
+              </NavLink>
+            </NavItem>
+
+            <NavItem>
+              <NavLink
+                href="http://www.underk.in/blogs"
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                Blog
+              </NavLink>
+            </NavItem>
               </Nav>
             </Col>
           </Row>
