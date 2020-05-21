@@ -7,7 +7,7 @@ import Register from "views/examples/Register";
 import Login from "views/Login";
 import Tables from "views/examples/Tables";
 import Icons from "views/examples/Icons";
-import HR from "views/hr/Index";
+import Personnel from "views/personnel/Index";
 import Users from "views/users/Index";
 import Catalogue from "views/catalogue/Index";
 
@@ -28,10 +28,10 @@ const routes: RouteType[] = [
     layout: "/admin",
   },
   {
-    path: "/admin",
-    name: "HR",
+    path: "/personnel",
+    name: "Personnel",
     icon: "ni ni-air-baloon text-blue",
-    component: HR,
+    component: Personnel,
     layout: "/admin",
   },
   {

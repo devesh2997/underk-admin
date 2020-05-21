@@ -45,8 +45,7 @@ const Auth: React.FC = () => {
                 <Col lg="5" md="6">
                   <h1 className="text-white">Welcome!</h1>
                   <p className="text-lead text-light">
-                    Use these awesome forms to login or create new account in
-                    your project for free.
+                  None who enter will leave unchanged. Trespassers will be turned to stone.
                   </p>
                 </Col>
               </Row>
