@@ -13,105 +13,90 @@ import {
   TabContent,
 } from "reactstrap";
 import CategoriesView from "./sections/view";
+import { useTabSelect } from "hooks/Index";
 
-type CategoriesState = {
-  activeTab: number;
+const CategoriesTab = () => {
+  const { activeTab, toggleActiveTab } = useTabSelect(1);
+  return (
+    <>
+      <Container fluid>
+        <Row>
+          <Col>
+            <div className="nav-wrapper">
+              <Nav
+                className="nav-fill flex-column flex-md-row"
+                id="tabs-icons-text"
+                pills
+                role="tablist"
+              >
+                <NavItem>
+                  <NavLink
+                    aria-selected={activeTab === 1}
+                    className={classnames("mb-sm-3 mb-md-0", {
+                      active: activeTab === 1,
+                    })}
+                    onClick={(e) => toggleActiveTab(e, 1)}
+                    href="#products"
+                    role="tab"
+                  >
+                    <i className="far fa-eye mr-2" />
+                    View
+                  </NavLink>
+                </NavItem>
+                <NavItem>
+                  <NavLink
+                    aria-selected={activeTab === 2}
+                    className={classnames("mb-sm-3 mb-md-0", {
+                      active: activeTab === 2,
+                    })}
+                    onClick={(e) => toggleActiveTab(e, 2)}
+                    href="#categories"
+                    role="tab"
+                  >
+                    <i className="ni ni-fat-add mr-2"></i>
+                    Add Single Category
+                  </NavLink>
+                </NavItem>
+                <NavItem>
+                  <NavLink
+                    aria-selected={activeTab === 3}
+                    className={classnames("mb-sm-3 mb-md-0", {
+                      active: activeTab === 3,
+                    })}
+                    onClick={(e) => toggleActiveTab(e, 3)}
+                    href="#collections"
+                    role="tab"
+                  >
+                    <i className="fas fa-table mr-2"></i>
+                    Bulk upload categories
+                  </NavLink>
+                </NavItem>
+              </Nav>
+            </div>
+          </Col>
+        </Row>
+        <Row>
+          <Container fluid>
+            <TabContent activeTab={"tabs" + activeTab}>
+              <TabPane tabId="tabs1">
+                <CategoriesView />
+              </TabPane>
+              <TabPane tabId="tabs2">Test</TabPane>
+              <TabPane tabId="tabs3">
+                <p className="description">
+                  Raw denim you probably haven't heard of them jean shorts
+                  Austin. Nesciunt tofu stumptown aliqua, retro synth master
+                  cleanse. Mustache cliche tempor, williamsburg carles vegan
+                  helvetica. Reprehenderit butcher retro keffiyeh dreamcatcher
+                  synth.
+                </p>
+              </TabPane>
+            </TabContent>
+          </Container>
+        </Row>
+      </Container>
+    </>
+  );
 };
 
-export default class CategoriesTab extends React.Component<
-  {},
-  CategoriesState
-> {
-  state: CategoriesState = {
-    activeTab: 1,
-  };
-
-  toggleActiveTab = (e: React.MouseEvent<HTMLElement>, index: number) => {
-    e.preventDefault();
-    this.setState({
-      activeTab: index,
-    });
-  };
-  render() {
-    return (
-      <>
-        <Container fluid>
-          <Row>
-            <Col>
-              <div className="nav-wrapper">
-                <Nav
-                  className="nav-fill flex-column flex-md-row"
-                  id="tabs-icons-text"
-                  pills
-                  role="tablist"
-                >
-                  <NavItem>
-                    <NavLink
-                      aria-selected={this.state.activeTab === 1}
-                      className={classnames("mb-sm-3 mb-md-0", {
-                        active: this.state.activeTab === 1,
-                      })}
-                      onClick={(e) => this.toggleActiveTab(e, 1)}
-                      href="#products"
-                      role="tab"
-                    >
-                      <i className="far fa-eye mr-2" />
-                      View
-                    </NavLink>
-                  </NavItem>
-                  <NavItem>
-                    <NavLink
-                      aria-selected={this.state.activeTab === 2}
-                      className={classnames("mb-sm-3 mb-md-0", {
-                        active: this.state.activeTab === 2,
-                      })}
-                      onClick={(e) => this.toggleActiveTab(e, 2)}
-                      href="#categories"
-                      role="tab"
-                    >
-                      <i className="ni ni-fat-add mr-2"></i>
-                      Add Single Category
-                    </NavLink>
-                  </NavItem>
-                  <NavItem>
-                    <NavLink
-                      aria-selected={this.state.activeTab === 3}
-                      className={classnames("mb-sm-3 mb-md-0", {
-                        active: this.state.activeTab === 3,
-                      })}
-                      onClick={(e) => this.toggleActiveTab(e, 3)}
-                      href="#collections"
-                      role="tab"
-                    >
-                      <i className="fas fa-table mr-2"></i>
-                      Bulk upload categories
-                    </NavLink>
-                  </NavItem>
-                </Nav>
-              </div>
-            </Col>
-          </Row>
-          <Row>
-            <Container fluid>
-              <TabContent activeTab={"tabs" + this.state.activeTab}>
-                <TabPane tabId="tabs1">
-                  <CategoriesView />
-                </TabPane>
-                <TabPane tabId="tabs2">Test</TabPane>
-                <TabPane tabId="tabs3">
-                  <p className="description">
-                    Raw denim you probably haven't heard of them jean shorts
-                    Austin. Nesciunt tofu stumptown aliqua, retro synth master
-                    cleanse. Mustache cliche tempor, williamsburg carles vegan
-                    helvetica. Reprehenderit butcher retro keffiyeh dreamcatcher
-                    synth.
-                  </p>
-                </TabPane>
-              </TabContent>
-            </Container>
-          </Row>
-        </Container>
-      </>
-    );
-  }
-}
+export default CategoriesTab
