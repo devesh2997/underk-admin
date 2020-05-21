@@ -10,6 +10,15 @@ import Axios, { AxiosRequestConfig, AxiosResponse, AxiosError } from "axios";
 import POLICIES from "underk-policies";
 
 import { MONTHS } from "../constants";
+import { isUndefined } from "util";
+
+export const isEmpty = (value: any) => {
+  return isNull(value) || isUndefined(value)
+}
+
+export const isNotEmpty = (value: any) => {
+  return !isNull(value) && !isUndefined(value)
+}
 
 export const isPlainObjectWithKeys = (value: any) => {
   return isPlainObject(value) && !isNull(value);

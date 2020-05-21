@@ -12,17 +12,18 @@ import {
   TabPane,
   TabContent,
 } from "reactstrap";
-import CategoriesView from "./sections/view";
+import TypesAttributesView from "./sections/view";
+import TypesAttributesAdd from "./sections/add";
 
-type CategoriesState = {
+type TypesAttributesState = {
   activeTab: number;
 };
 
-export default class CategoriesTab extends React.Component<
+export default class TypesAttributesTab extends React.Component<
   {},
-  CategoriesState
+  TypesAttributesState
 > {
-  state: CategoriesState = {
+  state: TypesAttributesState = {
     activeTab: 1,
   };
 
@@ -66,11 +67,11 @@ export default class CategoriesTab extends React.Component<
                         active: this.state.activeTab === 2,
                       })}
                       onClick={(e) => this.toggleActiveTab(e, 2)}
-                      href="#categories"
+                      href="#TypesAttributes"
                       role="tab"
                     >
                       <i className="ni ni-fat-add mr-2"></i>
-                      Add Single Category
+                      Add Types, Subtypes or Attributes
                     </NavLink>
                   </NavItem>
                   <NavItem>
@@ -84,7 +85,7 @@ export default class CategoriesTab extends React.Component<
                       role="tab"
                     >
                       <i className="fas fa-table mr-2"></i>
-                      Bulk upload categories
+                      Bulk upload AttributeValues
                     </NavLink>
                   </NavItem>
                 </Nav>
@@ -92,12 +93,14 @@ export default class CategoriesTab extends React.Component<
             </Col>
           </Row>
           <Row>
-            <Container fluid>
+            <Col>
               <TabContent activeTab={"tabs" + this.state.activeTab}>
                 <TabPane tabId="tabs1">
-                  <CategoriesView />
+                  <TypesAttributesView />
                 </TabPane>
-                <TabPane tabId="tabs2">Test</TabPane>
+                <TabPane tabId="tabs2">
+                  <TypesAttributesAdd />
+                </TabPane>
                 <TabPane tabId="tabs3">
                   <p className="description">
                     Raw denim you probably haven't heard of them jean shorts
@@ -108,7 +111,7 @@ export default class CategoriesTab extends React.Component<
                   </p>
                 </TabPane>
               </TabContent>
-            </Container>
+            </Col>
           </Row>
         </Container>
       </>
