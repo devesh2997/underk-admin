@@ -6,23 +6,22 @@ import {
   axios,
   isPlainObjectWithKeys,
   getResponseStatus,
-  objectify,
   stringify,
 } from "../utils";
 
-export interface AuthUser {
+type AuthUser = {
   auid: string;
   alias: string;
   token: string;
   policies: string[];
-}
+};
 
-export interface AuthUserContextValue {
+type AuthUserContextValue = {
   data: AuthUser | null;
   login: (alias: string, password: string) => Promise<void>;
   logout: () => void;
   doRequest: (config: AxiosRequestConfig) => Promise<Object>;
-}
+};
 
 export const AuthUserContext = React.createContext<AuthUserContextValue | null>(
   null
@@ -100,7 +99,7 @@ const AuthUserProvider: React.FC = (props) => {
       });
       const responseStatus = getResponseStatus(response.status);
       if (responseStatus.isSuccessful) {
-        return objectify(response.data);
+        return response.data;
       } else {
         if (responseStatus.isUnauthorized) {
           logout();
