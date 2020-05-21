@@ -1,19 +1,13 @@
 import React, { useState } from "react";
-import { NavLink as NavLinkRRD, Link, useLocation } from "react-router-dom";
+import { NavLink as NavLinkRRD, Link } from "react-router-dom";
 
 // reactstrap components
 import {
-  Button,
-  Card,
-  CardHeader,
-  CardBody,
-  CardTitle,
   Collapse,
   DropdownMenu,
   DropdownItem,
   UncontrolledDropdown,
   DropdownToggle,
-  FormGroup,
   Form,
   Input,
   InputGroupAddon,
@@ -25,8 +19,6 @@ import {
   NavItem,
   NavLink,
   Nav,
-  Progress,
-  Table,
   Container,
   Row,
   Col,
@@ -51,12 +43,12 @@ type SidebarProps = {
 
 const Sidebar: React.FC<SidebarProps> = ({ routes, logo }) => {
   const [collapseOpen, toggleCollapse] = useState(false);
-  const location = useLocation();
+  // const location = useLocation();
 
   // verifies if routeName is the one active (in browser input)
-  function activeRoute(routeName: string) {
-    return location.pathname.indexOf(routeName) > -1 ? "active" : "";
-  }
+  // function activeRoute(routeName: string) {
+  //   return location.pathname.indexOf(routeName) > -1 ? "active" : "";
+  // }
 
   // creates the links that appear in the left menu / Sidebar
   function createLinks(routes: RouteType[]) {

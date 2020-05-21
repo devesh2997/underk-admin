@@ -16,7 +16,7 @@ const withAuthorization = (locWhenAuth?: string, locWhenUnauth?: string) => (
       } else {
         if (locWhenUnauth) history.replace(locWhenUnauth);
       }
-    }, [authUser]);
+    }, [authUser,history]);
 
     return <Component {...props} />;
   };

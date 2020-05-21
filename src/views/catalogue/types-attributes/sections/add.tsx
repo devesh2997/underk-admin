@@ -1,18 +1,14 @@
 import React from "react";
-import classnames from "classnames";
 import {
   Form,
   Row,
   Col,
   FormGroup,
   Input,
-  InputGroup,
-  InputGroupAddon,
-  InputGroupText,
   Container,
   Button,
 } from "reactstrap";
-import { isNotEmpty } from "utils";
+import { useFormInput } from "hooks/Index";
 
 type TypesAttributesAddState = {
   selectedEntity: string;
@@ -84,71 +80,40 @@ type TypeAddState = {
   name: string;
 };
 
-class TypeAdd extends React.Component<{}, TypeAddState> {
-  state: TypeAddState = {
-    sku: "",
-    name: "",
-  };
+const TypeAdd = () => {
+  let sku = useFormInput("");
+  let name = useFormInput("");
 
-  onChange = (e: React.FormEvent<HTMLInputElement>) => {
-    const key = e.currentTarget.name;
-    const value = e.currentTarget.value;
-    this.setState({ [key]: value } as Pick<TypeAddState, keyof TypeAddState>);
-  };
-
-  validateInput = (): boolean => {
-    return (
-      isNotEmpty(this.state.name) &&
-      isNotEmpty(this.state.sku) &&
-      this.state.sku.length > 0 &&
-      this.state.name.length > 0
-    );
-  };
-
-  render() {
-    return (
-      <>
-        <h3 className="mb-3">Type Form :</h3>
-        <Row>
-          <Col sm="2">SKU:</Col>
-          <Col>
-            <FormGroup>
-              <Input
-                id="skuInput"
-                name="sku"
-                type="text"
-                onChange={this.onChange}
-                value={this.state.sku}
-              />
-            </FormGroup>
-          </Col>
-        </Row>
-        <Row>
-          <Col sm="2">Name:</Col>
-          <Col>
-            <FormGroup>
-              <Input
-                id="nameInput"
-                name="name"
-                type="text"
-                onChange={this.onChange}
-                value={this.state.name}
-              />
-            </FormGroup>
-          </Col>
-        </Row>
-        <Row className="justify-content-md-center">
-          <Col lg="2">
-            <Button
-              color="primary"
-              type="button"
-              disabled={!this.validateInput()}
-            >
-              Submit
-            </Button>
-          </Col>
-        </Row>
-      </>
-    );
+  function validateInput(): boolean {
+    return sku.value.length > 0 && name.value.length > 0;
   }
-}
+
+  return (
+    <>
+      <h3 className="mb-3">Type Form :</h3>
+      <Row>
+        <Col sm="2">SKU:</Col>
+        <Col>
+          <FormGroup>
+            <Input id="skuInput" name="sku" type="text" {...sku} />
+          </FormGroup>
+        </Col>
+      </Row>
+      <Row>
+        <Col sm="2">Name:</Col>
+        <Col>
+          <FormGroup>
+            <Input id="nameInput" name="name" type="text" {...name} />
+          </FormGroup>
+        </Col>
+      </Row>
+      <Row className="justify-content-md-center">
+        <Col lg="2">
+          <Button color="primary" type="button" disabled={!validateInput()}>
+            Submit
+          </Button>
+        </Col>
+      </Row>
+    </>
+  );
+};

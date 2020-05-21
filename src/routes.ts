@@ -1,9 +1,7 @@
 import React from "react";
 
 import Index from "views/Index";
-import Profile from "views/examples/Profile";
 import Maps from "views/examples/Maps";
-import Register from "views/examples/Register";
 import Login from "views/Login";
 import Tables from "views/examples/Tables";
 import Icons from "views/examples/Icons";
