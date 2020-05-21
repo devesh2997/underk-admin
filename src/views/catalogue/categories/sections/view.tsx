@@ -3,17 +3,15 @@ import classnames from "classnames";
 
 // reactstrap components
 import {
-    Container, Nav, NavItem, NavLink, Row, Col, TabPane, TabContent, CardBody, Card,
+    Container, Nav, NavItem, NavLink, Row, Col, TabPane, TabContent, 
 } from "reactstrap";
-import CatalogueHeader from "components/Headers/CatalogueHeader";
-import CategoriesTab from "./categories/Index";
 
-type CatalogueViewState = {
+type CategoriesViewState = {
     activeTab: number
 }
 
-export default class Catalogue extends React.Component<{}, CatalogueViewState> {
-    state: CatalogueViewState = {
+export default class CategoriesView extends React.Component<{},CategoriesViewState>{
+    state: CategoriesViewState = {
         activeTab: 1
     }
 
@@ -24,13 +22,14 @@ export default class Catalogue extends React.Component<{}, CatalogueViewState> {
         });
       }
 
-    render() {
-        return (
-            <><CatalogueHeader /> 
-            <Container className="mt--7" fluid>
-                <Row><Col><div className="nav-wrapper">
+      render (){
+        return (<>
+        <Container fluid>
+            <Row>
+                <Col>
+                <div className="nav-wrapper">
           <Nav
-            className="nav-fill flex-column flex-md-row"
+            className="nav-pills-circle flex-column flex-md-row"
             id="tabs-icons-text"
             pills
             role="tablist"
@@ -42,11 +41,12 @@ export default class Catalogue extends React.Component<{}, CatalogueViewState> {
                   active: this.state.activeTab === 1
                 })}
                 onClick={e => this.toggleActiveTab(e, 1)}
-                href="#products"
+                href="#listview"
                 role="tab"
               >
-                <i className="fas fa-cubes mr-2"></i>
-                Products
+                <span className="nav-link-icon d-block">
+                <i className="fas fa-list-ul"/>
+              </span>
               </NavLink>
             </NavItem>
             <NavItem>
@@ -56,32 +56,19 @@ export default class Catalogue extends React.Component<{}, CatalogueViewState> {
                   active: this.state.activeTab === 2
                 })}
                 onClick={e => this.toggleActiveTab(e, 2)}
-                href="#categories"
+                href="#treeview"
                 role="tab"
               >
-                <i className="fas fa-stream mr-2"></i>
-                Categories
-              </NavLink>
-            </NavItem>
-            <NavItem>
-              <NavLink
-                aria-selected={this.state.activeTab === 3}
-                className={classnames("mb-sm-3 mb-md-0", {
-                  active: this.state.activeTab === 3
-                })}
-                onClick={e => this.toggleActiveTab(e, 3)}
-                href="#collections"
-                role="tab"
-              >
-                <i className="fas fa-layer-group mr-2"></i>
-                Collections
+                <span className="nav-link-icon d-block">
+                <i className="fas fa-tree"/>
+              </span>
               </NavLink>
             </NavItem>
           </Nav>
-        </div></Col></Row>
-        <Row>
-        <Card className="shadow">
-          <CardBody>
+        </div>
+                </Col>
+            </Row>
+            <Row>
             <TabContent activeTab={"tabs" + this.state.activeTab}>
               <TabPane tabId="tabs1">
                 <p className="description">
@@ -98,24 +85,11 @@ export default class Catalogue extends React.Component<{}, CatalogueViewState> {
                 </p>
               </TabPane>
               <TabPane tabId="tabs2">
-                <CategoriesTab/>
-              </TabPane>
-              <TabPane tabId="tabs3">
-                <p className="description">
-                  Raw denim you probably haven't heard of them jean shorts
-                  Austin. Nesciunt tofu stumptown aliqua, retro synth master
-                  cleanse. Mustache cliche tempor, williamsburg carles vegan
-                  helvetica. Reprehenderit butcher retro keffiyeh dreamcatcher
-                  synth.
-                </p>
+                Test
               </TabPane>
             </TabContent>
-          </CardBody>
-        </Card>
         </Row>
-            
-            </Container>
+        </Container>
         </>)
     }
-
 }

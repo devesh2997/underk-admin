@@ -3,17 +3,16 @@ import classnames from "classnames";
 
 // reactstrap components
 import {
-    Container, Nav, NavItem, NavLink, Row, Col, TabPane, TabContent, CardBody, Card,
+    Container, Nav, NavItem, NavLink, Row, Col, TabPane, TabContent, 
 } from "reactstrap";
-import CatalogueHeader from "components/Headers/CatalogueHeader";
-import CategoriesTab from "./categories/Index";
+import CategoriesView from "./sections/view";
 
-type CatalogueViewState = {
+type CategoriesState = {
     activeTab: number
 }
 
-export default class Catalogue extends React.Component<{}, CatalogueViewState> {
-    state: CatalogueViewState = {
+export default class CategoriesTab extends React.Component<{},CategoriesState> {
+    state: CategoriesState = {
         activeTab: 1
     }
 
@@ -23,12 +22,12 @@ export default class Catalogue extends React.Component<{}, CatalogueViewState> {
           activeTab: index
         });
       }
-
-    render() {
-        return (
-            <><CatalogueHeader /> 
-            <Container className="mt--7" fluid>
-                <Row><Col><div className="nav-wrapper">
+    render (){
+        return (<>
+        <Container fluid>
+            <Row>
+                <Col>
+                <div className="nav-wrapper">
           <Nav
             className="nav-fill flex-column flex-md-row"
             id="tabs-icons-text"
@@ -46,7 +45,7 @@ export default class Catalogue extends React.Component<{}, CatalogueViewState> {
                 role="tab"
               >
                 <i className="fas fa-cubes mr-2"></i>
-                Products
+                View
               </NavLink>
             </NavItem>
             <NavItem>
@@ -60,7 +59,7 @@ export default class Catalogue extends React.Component<{}, CatalogueViewState> {
                 role="tab"
               >
                 <i className="fas fa-stream mr-2"></i>
-                Categories
+                Add Single Category
               </NavLink>
             </NavItem>
             <NavItem>
@@ -74,31 +73,21 @@ export default class Catalogue extends React.Component<{}, CatalogueViewState> {
                 role="tab"
               >
                 <i className="fas fa-layer-group mr-2"></i>
-                Collections
+                Bulk upload categories
               </NavLink>
             </NavItem>
           </Nav>
-        </div></Col></Row>
-        <Row>
-        <Card className="shadow">
-          <CardBody>
+        </div>
+                </Col>
+            </Row>
+            <Row>
+        <Container fluid>
             <TabContent activeTab={"tabs" + this.state.activeTab}>
               <TabPane tabId="tabs1">
-                <p className="description">
-                  Raw denim you probably haven't heard of them jean shorts
-                  Austin. Nesciunt tofu stumptown aliqua, retro synth master
-                  cleanse. Mustache cliche tempor, williamsburg carles vegan
-                  helvetica. Reprehenderit butcher retro keffiyeh dreamcatcher
-                  synth.
-                </p>
-                <p className="description">
-                  Raw denim you probably haven't heard of them jean shorts
-                  Austin. Nesciunt tofu stumptown aliqua, retro synth master
-                  cleanse.
-                </p>
+                <CategoriesView/>
               </TabPane>
               <TabPane tabId="tabs2">
-                <CategoriesTab/>
+                Test
               </TabPane>
               <TabPane tabId="tabs3">
                 <p className="description">
@@ -110,12 +99,9 @@ export default class Catalogue extends React.Component<{}, CatalogueViewState> {
                 </p>
               </TabPane>
             </TabContent>
-          </CardBody>
-        </Card>
-        </Row>
-            
             </Container>
+        </Row>
+        </Container>
         </>)
     }
-
 }
