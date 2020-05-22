@@ -4,21 +4,21 @@ import classnames from "classnames";
 // reactstrap components
 import { Container, Row, Col, Button } from "reactstrap";
 import useTypeRepository from "data/catalogue/TypeAndAttributes.repository";
+import Type from "models/catalogue/Type";
 
-const TypesAttributesView = () => {
-  const { loading, error, types, getAllTypes } = useTypeRepository();
+type Props = {
+  types: Type[];
+  getAllTypes: () => Promise<void>;
+};
+
+const TypesAttributesView = (props: Props) => {
+  const { types, getAllTypes } = props;
   return (
     <>
       <Container fluid>
         <Button color="primary" onClick={getAllTypes}>
           Refresh
         </Button>
-        <Row>
-          <Col>{loading && "Loading..."}</Col>
-        </Row>
-        <Row>
-          <Col>{error && error}</Col>
-        </Row>
         <Row>
           <Col>{types && JSON.stringify(types)}</Col>
         </Row>

@@ -3,7 +3,7 @@ import { AuthUserContext } from "session";
 import { ApiResponse } from "../../session/AuthUserProvider";
 import Type from "models/catalogue/Type";
 import { TO, TE } from "utils";
-import { TYPE_GET_ALL_ENDPOINT } from "constants/api-endpoints/catalogue";
+import { TYPE_GET_ALL_ENDPOINT, TYPE_CREATE_ENDPOINT } from "constants/api-endpoints/catalogue";
 import { doApiRequestForHooks } from "data/utils";
 
 const useTypeAndAttributesRepository = () => {
@@ -18,22 +18,14 @@ const useTypeAndAttributesRepository = () => {
 
     async function getAllTypes() {
         if (loading || !isMounted.current) return
-        doApiRequestForHooks<Type[]>(_request, TYPE_GET_ALL_ENDPOINT, isMounted, setTypes, setLoading, setError)
-        // setLoading(true)
-        // let err: any, res: ApiResponse<Type[]>
+        doApiRequestForHooks<Type[]>(_request, TYPE_GET_ALL_ENDPOINT, isMounted, setTypes, setLoading, setError, null)
+    }
 
-        // [err, res] = await TO(_request(TYPE_GET_ALL_ENDPOINT))
-        // if (err) TE(err)
-        // if (isMounted.current) setLoading(false)
-        // if (res.success) {
-        //     if (typeof res.data !== 'undefined') {
-        //         if (isMounted.current) setTypes(res.data)
-        //     }
-        //     else
-        //         if (isMounted.current) setError("Some error occurred")
-        // } else {
-        //     if (isMounted.current) setError(res.error as string)
-        // }
+    async function createType(sku: string, name: string) {
+        if (loading || !isMounted.current) return
+        const config = { ...TYPE_CREATE_ENDPOINT, data: { sku, name } }
+        doApiRequestForHooks<null>(_request, config, isMounted, null, setLoading, setError, getAllTypes)
+
     }
 
     useEffect(() => {
@@ -50,7 +42,8 @@ const useTypeAndAttributesRepository = () => {
         types,
         error,
         loading,
-        getAllTypes
+        getAllTypes,
+        createType
     }
 }
 

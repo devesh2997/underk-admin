@@ -10,13 +10,17 @@ import {
 } from "reactstrap";
 import { useFormInput } from "hooks/Index";
 
-export const TypesAttributesAdd = () => {
+type Props = {
+  createType: (sku: string, name: string) => Promise<void>;
+};
+
+export const TypesAttributesAdd = (props: Props) => {
   const selectedEntity = useFormInput("-");
 
   function getEntityForm() {
     switch (selectedEntity.value) {
       case "Type":
-        return <TypeAdd />;
+        return <TypeAdd createType={props.createType} />;
       default:
         return <></>;
     }
@@ -59,7 +63,9 @@ export const TypesAttributesAdd = () => {
   );
 };
 
-const TypeAdd = () => {
+const TypeAdd = (props: {
+  createType: (sku: string, name: string) => Promise<void>;
+}) => {
   const sku = useFormInput("");
   const name = useFormInput("");
 
@@ -88,7 +94,14 @@ const TypeAdd = () => {
       </Row>
       <Row className="justify-content-md-center">
         <Col lg="2">
-          <Button color="primary" type="button" disabled={!validateInput()}>
+          <Button
+            color="primary"
+            type="button"
+            disabled={!validateInput()}
+            onClick={() => {
+              props.createType(sku.value, name.value);
+            }}
+          >
             Submit
           </Button>
         </Col>
@@ -97,4 +110,4 @@ const TypeAdd = () => {
   );
 };
 
-export default TypesAttributesAdd
+export default TypesAttributesAdd;
