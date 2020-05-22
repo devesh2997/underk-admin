@@ -3,14 +3,14 @@ import classnames from "classnames";
 
 // reactstrap components
 import { Container, Row, Col, Button } from "reactstrap";
-import useTypeRepository from "data/catalogue/Type.respository";
+import useTypeRepository from "data/catalogue/TypeAndAttributes.repository";
 
 const TypesAttributesView = () => {
-  const { loading, error, types, getAll } = useTypeRepository();
+  const { loading, error, types, getAllTypes } = useTypeRepository();
   return (
     <>
       <Container fluid>
-        <Button color="primary" onClick={getAll}>
+        <Button color="primary" onClick={getAllTypes}>
           Refresh
         </Button>
         <Row>

@@ -1,3 +1,5 @@
+import { HTTP_METHODS } from "../constants";
+
 const baseURL = "http://localhost:400/v1";
 const adminApp = "/admin";
 
@@ -22,5 +24,3 @@ export const EMPLOYEE_GET_ALL_URL = baseURL + adminApp + "/emp/all";
 export const EMPLOYEE_DELETE_URL = baseURL + adminApp + "/emp";
 export const EMPLOYEE_CREATE_URL = baseURL + adminApp + "/emp";
 export const EMPLOYEE_UPDATE_URL = baseURL + adminApp + "/emp";
-
-export const TYPE_GET_ALL_URL = baseURL + adminApp + "/types";

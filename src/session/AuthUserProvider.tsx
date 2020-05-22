@@ -54,7 +54,11 @@ const AuthUserProvider: React.FC = (props) => {
   function getSessionFromStorage(): AuthUser | null {
     let authUser = localStorage.getItem("authUser");
     if (authUser) {
-      return JSON.parse(authUser);
+      try {
+        return JSON.parse(authUser);
+      } catch (e) {
+        return null;
+      }
     }
     return null;
   }
@@ -77,10 +81,11 @@ const AuthUserProvider: React.FC = (props) => {
           password,
         },
       });
+      console.log(response);
       const responseStatus = getResponseStatus(response.status);
       if (responseStatus.isSuccessful) {
-        isMounted.current && setAuthUser(response.data.admin);
-        putSessionToStorage(response.data.admin);
+        isMounted.current && setAuthUser(response.data.result);
+        putSessionToStorage(response.data.result);
       } else {
         throw new Error(
           (isPlainObjectWithKeys(response.data) &&
@@ -113,13 +118,17 @@ const AuthUserProvider: React.FC = (props) => {
         },
       })
     );
-    console.log(response.data);
 
     if (err) TE(err);
 
     const responseStatus = getResponseStatus(response.status);
     if (responseStatus.isUnauthorized) {
       logout();
+      return {
+        success: false,
+        data: undefined,
+        error: undefined
+      };
     }
     if (!responseStatus.isSuccessful) {
       if (isMounted.current)
