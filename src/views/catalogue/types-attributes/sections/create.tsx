@@ -16,6 +16,7 @@ type Props = {
   createType: (sku: string, name: string) => Promise<void>;
   createSubtype(sku: string, name: string, typeSku: string): Promise<void>;
   createAttribute: (name: string, subtypeSku: string) => Promise<void>;
+  createAttributeValue: (sku: string, name: string, attributeId: string, valueType: string, value: string) => Promise<void>
 };
 
 export const TypesAttributesCreate = (props: Props) => {

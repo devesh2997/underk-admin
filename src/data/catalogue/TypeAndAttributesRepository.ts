@@ -1,7 +1,7 @@
 import { useContext, useState, useEffect, useRef } from "react";
 import { AuthUserContext } from "session";
 import Type from "models/catalogue/Type";
-import { TYPE_GET_ALL_ENDPOINT, TYPE_CREATE_ENDPOINT, SUBTYPE_CREATE_ENDPOINT, ATTRIBUTE_CREATE_ENDPOINT } from "constants/api-endpoints/catalogue";
+import { TYPE_GET_ALL_ENDPOINT, TYPE_CREATE_ENDPOINT, SUBTYPE_CREATE_ENDPOINT, ATTRIBUTE_CREATE_ENDPOINT, ATTRIBUTE_VALUE_CREATE_ENDPOINT } from "constants/api-endpoints/catalogue";
 import { doApiRequestForHooks } from "data/utils";
 
 const useTypeAndAttributesRepository = () => {
@@ -43,6 +43,13 @@ const useTypeAndAttributesRepository = () => {
         doApiRequestForHooks<null>(_request, config, isMounted, null, setLoading, setError, getAllTypes)
     }
 
+    async function createAttributeValue(sku: string, name: string, attributeId: string, valueType: string, value: string) {
+        if (loading || !isMounted.current) return
+        setError("")
+        const config = { ...ATTRIBUTE_VALUE_CREATE_ENDPOINT, data: { name, sku, attributeId, value, valueType } }
+        doApiRequestForHooks<null>(_request, config, isMounted, null, setLoading, setError, getAllTypes)
+    }
+
     useEffect(() => {
         getAllTypes()
     }, [])
@@ -60,7 +67,8 @@ const useTypeAndAttributesRepository = () => {
         getAllTypes,
         createType,
         createSubtype,
-        createAttribute
+        createAttribute,
+        createAttributeValue
     }
 }
 

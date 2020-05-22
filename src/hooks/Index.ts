@@ -19,7 +19,6 @@ export const useCheckboxInput = (initialValue: boolean) => {
     const [checked, setValue] = useState(initialValue)
 
     const handleChange = (e: React.FormEvent<HTMLInputElement>) => {
-        console.log("here")
         setValue(e.currentTarget.checked)
     }
 

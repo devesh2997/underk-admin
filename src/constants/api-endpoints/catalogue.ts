@@ -19,3 +19,8 @@ export const ATTRIBUTE_CREATE_ENDPOINT = {
     method: HTTP_METHODS.POST,
     url: baseURL + "/attribute",
 };
+
+export const ATTRIBUTE_VALUE_CREATE_ENDPOINT = {
+    method: HTTP_METHODS.POST,
+    url: baseURL + "/attribute-value",
+};

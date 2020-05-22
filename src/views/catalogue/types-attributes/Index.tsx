@@ -29,7 +29,8 @@ const TypesAttributesTab = () => {
     getAllTypes,
     createType,
     createSubtype,
-    createAttribute
+    createAttribute,
+    createAttributeValue,
   } = useTypeRepository();
   return (
     <>
@@ -109,13 +110,16 @@ const TypesAttributesTab = () => {
               <Col>
                 <TabContent activeTab={"tabs" + activeTab}>
                   <TabPane tabId="tabs1">
-                    <TypesAttributesView
-                      getAllTypes={getAllTypes}
-                      types={types}
-                    />
+                    <TypesAttributesView types={types} />
                   </TabPane>
                   <TabPane tabId="tabs2">
-                    <TypesAttributesAdd types={types} createAttribute={createAttribute} createType={createType} createSubtype={createSubtype} />
+                    <TypesAttributesAdd
+                      createAttributeValue={createAttributeValue}
+                      types={types}
+                      createAttribute={createAttribute}
+                      createType={createType}
+                      createSubtype={createSubtype}
+                    />
                   </TabPane>
                   <TabPane tabId="tabs3">
                     <p className="description">
