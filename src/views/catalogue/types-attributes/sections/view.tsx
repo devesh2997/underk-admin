@@ -1,10 +1,9 @@
 import React from "react";
-import classnames from "classnames";
 
 // reactstrap components
-import { Container, Row, Col, Button } from "reactstrap";
-import useTypeRepository from "data/catalogue/TypeAndAttributes.repository";
+import { Container, Row, Col } from "reactstrap";
 import Type from "models/catalogue/Type";
+import Refresh from "components/Widgets/Refresh";
 
 type Props = {
   types: Type[];
@@ -16,9 +15,9 @@ const TypesAttributesView = (props: Props) => {
   return (
     <>
       <Container fluid>
-        <Button color="primary" onClick={getAllTypes}>
-          Refresh
-        </Button>
+        <span onClick={props.getAllTypes}>
+          <Refresh />
+        </span>
         <Row>
           <Col>{types && JSON.stringify(types)}</Col>
         </Row>

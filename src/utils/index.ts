@@ -13,6 +13,41 @@ import { to } from "await-to-ts"
 import { MONTHS } from "../constants";
 import { isUndefined } from "util";
 
+//get age from dob
+export const getAge = (date: any) => {
+  if (isEmpty(date)) return
+  let today = new Date();
+  let birthDate = new Date(date);
+  let age = today.getFullYear() - birthDate.getFullYear();
+  let m = today.getMonth() - birthDate.getMonth();
+  if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+    age--;
+  }
+  return age;
+}
+
+export const getPrimaryColor = () => {
+  return "#0DAC8E"
+}
+
+export const beautifyName = (firstName?: string, lastName?: string) => {
+  let beauty = ""
+  firstName = firstName as string
+  lastName = lastName as string
+  if (isNotEmpty(firstName) && firstName.length > 0) {
+    beauty += firstName[0].toUpperCase()
+    if (firstName.length > 1)
+      beauty += firstName.substring(1)
+  }
+  if (isNotEmpty(lastName) && lastName.length > 0) {
+    beauty += " "
+    beauty += lastName[0].toUpperCase()
+    if (lastName.length > 1)
+      beauty += lastName.substring(1)
+  }
+  return beauty
+}
+
 export const isEmpty = (value: any) => {
   return isNull(value) || isUndefined(value)
 }

@@ -127,12 +127,12 @@ const AuthUserProvider: React.FC = (props) => {
       return {
         success: false,
         data: undefined,
-        error: undefined
+        error: undefined,
       };
     }
     if (!responseStatus.isSuccessful) {
       if (isMounted.current)
-        TE(
+        console.log(
           (isPlainObjectWithKeys(response.data) &&
             stringify(response.data.error)) ||
             response.statusText

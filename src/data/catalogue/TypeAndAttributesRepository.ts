@@ -1,8 +1,6 @@
-import React, { useContext, useState, useEffect, useRef } from "react";
+import { useContext, useState, useEffect, useRef } from "react";
 import { AuthUserContext } from "session";
-import { ApiResponse } from "../../session/AuthUserProvider";
 import Type from "models/catalogue/Type";
-import { TO, TE } from "utils";
 import { TYPE_GET_ALL_ENDPOINT, TYPE_CREATE_ENDPOINT } from "constants/api-endpoints/catalogue";
 import { doApiRequestForHooks } from "data/utils";
 
