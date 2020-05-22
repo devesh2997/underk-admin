@@ -111,7 +111,7 @@ const JsonTreeView: React.FC<Props> = (props: Props) => {
       <ReactJson
         src={src}
         theme={theme.value as ThemeKeys}
-        style={{ fontSize: fontSize.value }}
+        style={{ fontSize: fontSize.value, fontFamily:"Open Sans" }}
         displayDataTypes={displayDataTypes.checked}
         displayObjectSize={displayObjectSize.checked}
       />

@@ -20,7 +20,7 @@ import TypesAttributesTab from "./types-attributes/Index";
 import { useTabSelect } from "hooks/Index";
 
 const Catalogue: React.FC = () => {
-  const { activeTab, toggleActiveTab } = useTabSelect(4);
+  const { activeTab, toggleActiveTab } = useTabSelect(1);
   return (
     <>
       <CatalogueHeader />

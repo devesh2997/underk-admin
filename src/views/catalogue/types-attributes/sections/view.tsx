@@ -26,7 +26,7 @@ type Props = {
 
 const TypesAttributesView = (props: Props) => {
   const { types } = props;
-  const { activeTab, toggleActiveTab } = useTabSelect(2);
+  const { activeTab, toggleActiveTab } = useTabSelect(1);
   return (
     <Container fluid>
       <Row>
