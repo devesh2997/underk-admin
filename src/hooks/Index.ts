@@ -14,6 +14,21 @@ export const useFormInput = (initialValue: string) => {
     }
 }
 
+//hook for checkbox input fields
+export const useCheckboxInput = (initialValue: boolean) => {
+    const [checked, setValue] = useState(initialValue)
+
+    const handleChange = (e: React.FormEvent<HTMLInputElement>) => {
+        console.log("here")
+        setValue(e.currentTarget.checked)
+    }
+
+    return {
+        checked,
+        onChange: handleChange
+    }
+}
+
 //hook for selecting tabs
 export const useTabSelect = (initialTab: number) => {
     const [value, setValue] = useState(initialTab)

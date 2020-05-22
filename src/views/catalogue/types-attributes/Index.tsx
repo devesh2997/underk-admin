@@ -11,12 +11,14 @@ import {
   Col,
   TabPane,
   TabContent,
+  UncontrolledAlert,
 } from "reactstrap";
 import TypesAttributesView from "./sections/view";
-import TypesAttributesAdd from "./sections/add";
+import TypesAttributesAdd from "./sections/create";
 import { useTabSelect } from "hooks/Index";
 import useTypeRepository from "data/catalogue/TypeAndAttributesRepository";
 import Loading from "components/Widgets/Loading";
+import Refresh from "components/Widgets/Refresh";
 
 const TypesAttributesTab = () => {
   const { activeTab, toggleActiveTab } = useTabSelect(1);
@@ -26,12 +28,14 @@ const TypesAttributesTab = () => {
     types,
     getAllTypes,
     createType,
+    createSubtype,
+    createAttribute
   } = useTypeRepository();
   return (
     <>
       <Container fluid>
         <>
-          <Row>
+          <Row className="align-items-center">
             <Col>
               <div className="nav-wrapper">
                 <Nav
@@ -85,6 +89,15 @@ const TypesAttributesTab = () => {
                 </Nav>
               </div>
             </Col>
+            <Col lg="1">
+              <span
+                className="icon icon-shape bg-white rounded-circle shadow"
+                onClick={getAllTypes}
+                style={{ cursor: "pointer" }}
+              >
+                <Refresh size={24} />
+              </span>
+            </Col>
           </Row>
           <Row className="justify-content-md-center">
             {loading && (
@@ -102,7 +115,7 @@ const TypesAttributesTab = () => {
                     />
                   </TabPane>
                   <TabPane tabId="tabs2">
-                    <TypesAttributesAdd createType={createType} />
+                    <TypesAttributesAdd types={types} createAttribute={createAttribute} createType={createType} createSubtype={createSubtype} />
                   </TabPane>
                   <TabPane tabId="tabs3">
                     <p className="description">
@@ -117,6 +130,15 @@ const TypesAttributesTab = () => {
               </Col>
             )}
           </Row>
+          {error && (
+            <Row>
+              <Col>
+                <UncontrolledAlert color="danger" fade={false}>
+                  <span className="alert-inner--text">{error}</span>
+                </UncontrolledAlert>
+              </Col>
+            </Row>
+          )}
         </>
       </Container>
     </>

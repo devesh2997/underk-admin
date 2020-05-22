@@ -9,3 +9,13 @@ export const TYPE_CREATE_ENDPOINT = {
     method: HTTP_METHODS.POST,
     url: baseURL + "/type",
 };
+
+export const SUBTYPE_CREATE_ENDPOINT = {
+    method: HTTP_METHODS.POST,
+    url: baseURL + "/subtype",
+};
+
+export const ATTRIBUTE_CREATE_ENDPOINT = {
+    method: HTTP_METHODS.POST,
+    url: baseURL + "/attribute",
+};

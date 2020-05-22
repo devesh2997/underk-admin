@@ -19,7 +19,7 @@ const UserList: React.FC<Props> = (props) => {
 
   return (
     <TableWithColorToggler
-      color="dark"
+      color="light"
       columns={["id", "Name", "Mobile", "Email", "Gender", "Age", "Created At"]}
     >
       <tbody>

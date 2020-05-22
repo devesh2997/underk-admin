@@ -1,7 +1,7 @@
 import { useContext, useState, useEffect, useRef } from "react";
 import { AuthUserContext } from "session";
 import Type from "models/catalogue/Type";
-import { TYPE_GET_ALL_ENDPOINT, TYPE_CREATE_ENDPOINT } from "constants/api-endpoints/catalogue";
+import { TYPE_GET_ALL_ENDPOINT, TYPE_CREATE_ENDPOINT, SUBTYPE_CREATE_ENDPOINT, ATTRIBUTE_CREATE_ENDPOINT } from "constants/api-endpoints/catalogue";
 import { doApiRequestForHooks } from "data/utils";
 
 const useTypeAndAttributesRepository = () => {
@@ -16,14 +16,31 @@ const useTypeAndAttributesRepository = () => {
 
     async function getAllTypes() {
         if (loading || !isMounted.current) return
+        setError("")
         doApiRequestForHooks<Type[]>(_request, TYPE_GET_ALL_ENDPOINT, isMounted, setTypes, setLoading, setError, null)
     }
 
     async function createType(sku: string, name: string) {
         if (loading || !isMounted.current) return
+        setError("")
         const config = { ...TYPE_CREATE_ENDPOINT, data: { sku, name } }
         doApiRequestForHooks<null>(_request, config, isMounted, null, setLoading, setError, getAllTypes)
 
+    }
+
+    async function createSubtype(sku: string, name: string, typeSku: string) {
+        if (loading || !isMounted.current) return
+        setError("")
+        const config = { ...SUBTYPE_CREATE_ENDPOINT, data: { sku, name, typeSku } }
+        doApiRequestForHooks<null>(_request, config, isMounted, null, setLoading, setError, getAllTypes)
+
+    }
+
+    async function createAttribute(name: string, subtypeSku: string) {
+        if (loading || !isMounted.current) return
+        setError("")
+        const config = { ...ATTRIBUTE_CREATE_ENDPOINT, data: { name, subtypeSku } }
+        doApiRequestForHooks<null>(_request, config, isMounted, null, setLoading, setError, getAllTypes)
     }
 
     useEffect(() => {
@@ -41,7 +58,9 @@ const useTypeAndAttributesRepository = () => {
         error,
         loading,
         getAllTypes,
-        createType
+        createType,
+        createSubtype,
+        createAttribute
     }
 }
 
