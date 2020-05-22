@@ -7,6 +7,8 @@ import {
   isPlainObjectWithKeys,
   getResponseStatus,
   stringify,
+  TO,
+  TE,
 } from "../utils";
 
 type AuthUser = {
@@ -16,16 +18,27 @@ type AuthUser = {
   policies: string[];
 };
 
+export type ApiResponse<T> = {
+  success: boolean;
+  data: T | undefined;
+  error: string | undefined;
+};
+
 type AuthUserContextValue = {
   data: AuthUser | null;
   login: (alias: string, password: string) => Promise<void>;
   logout: () => void;
-  doRequest: (config: AxiosRequestConfig) => Promise<Object>;
+  doRequest: <T>(config: AxiosRequestConfig) => Promise<ApiResponse<T>>;
 };
 
-export const AuthUserContext = React.createContext<AuthUserContextValue | null>(
-  null
-);
+export const AuthUserContext = React.createContext<AuthUserContextValue>({
+  data: null,
+  login: async () => {},
+  logout: () => {},
+  doRequest: async () => {
+    return { success: false, data: undefined, error: undefined };
+  },
+});
 
 const AuthUserProvider: React.FC = (props) => {
   let isMounted = useRef(true);
@@ -85,34 +98,42 @@ const AuthUserProvider: React.FC = (props) => {
     deleteSessionFromStorage();
   }
 
-  async function doRequest(config: AxiosRequestConfig) {
+  async function doRequest<T>(config: AxiosRequestConfig) {
     if (!authUser) {
-      throw new Error("Not Authenticated");
+      TE("Not Authenticated");
     }
 
-    try {
-      const response = await axios({
+    let err: any, response;
+
+    [err, response] = await TO(
+      axios({
         ...config,
         headers: {
-          Authorization: `Bearer ${authUser.token}`,
+          Authorization: `Bearer ${authUser?.token}`,
         },
-      });
-      const responseStatus = getResponseStatus(response.status);
-      if (responseStatus.isSuccessful) {
-        return response.data;
-      } else {
-        if (responseStatus.isUnauthorized) {
-          logout();
-        }
-        throw new Error(
+      })
+    );
+    console.log(response.data);
+
+    if (err) TE(err);
+
+    const responseStatus = getResponseStatus(response.status);
+    if (responseStatus.isUnauthorized) {
+      logout();
+    }
+    if (!responseStatus.isSuccessful) {
+      if (isMounted.current)
+        TE(
           (isPlainObjectWithKeys(response.data) &&
             stringify(response.data.error)) ||
             response.statusText
         );
-      }
-    } catch (error) {
-      throw error;
     }
+    return {
+      success: response.data.success as boolean,
+      data: response.data.result as T | undefined,
+      error: response.data.error as string | undefined,
+    };
   }
 
   return (

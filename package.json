@@ -51,6 +51,7 @@
     "@types/react-dom": "^16.9.8",
     "@types/react-router-dom": "^5.1.5",
     "@types/reactstrap": "^8.4.2",
+    "await-to-ts": "^1.0.6",
     "axios": "^0.19.2",
     "chart.js": "2.9.3",
     "classnames": "2.2.6",

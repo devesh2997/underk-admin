@@ -7,7 +7,8 @@ import {
   isArray,
 } from "lodash";
 import Axios, { AxiosRequestConfig, AxiosResponse, AxiosError } from "axios";
-import POLICIES from "underk-policies";
+import POLICIES, { policy } from "underk-policies";
+import { to } from "await-to-ts"
 
 import { MONTHS } from "../constants";
 import { isUndefined } from "util";
@@ -76,11 +77,11 @@ export const axios = async (
 
 export const doPoliciesMatch = (
   userPolicies: string[],
-  allowedPolicies: string[]
+  allowedPolicies: policy[]
 ) => {
   return (
     userPolicies.includes(POLICIES.SUPER.name) ||
-    allowedPolicies.some((policy) => userPolicies.includes(policy))
+    allowedPolicies.some((policy) => userPolicies.includes(policy.name))
     // allowedPolicies.every((policy) => userPolicies.includes(policy))
   );
 };
@@ -104,3 +105,23 @@ export const prepareMultiOptsForRequest = (
 ) => {
   return JSON.stringify(options.map((option) => option.value));
 };
+
+export const TE = (err: any, log: boolean = true) => {
+  // TE stands for Throw Error
+  if (log === true) {
+    console.error(err)
+  }
+
+  if (typeof err === 'string')
+    throw new Error(err)
+
+  else throw err
+}
+
+export const TO = async (promise: Promise<any>): Promise<[any, any]> => {
+  let err, res
+    ;[err, res] = await to(promise)
+  if (err) return [err, null]
+
+  return [null, res]
+}

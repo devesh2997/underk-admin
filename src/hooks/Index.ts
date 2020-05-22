@@ -14,7 +14,7 @@ export const useFormInput = (initialValue: string) => {
     }
 }
 
-//hook for selectting tabs
+//hook for selecting tabs
 export const useTabSelect = (initialTab: number) => {
     const [value, setValue] = useState(initialTab)
 

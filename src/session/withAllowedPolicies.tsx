@@ -2,8 +2,9 @@ import React, { useContext, useEffect, useState, useRef } from "react";
 
 import { AuthUserContext } from "./AuthUserProvider";
 import { doPoliciesMatch } from "../utils";
+import { policy } from "underk-policies";
 
-const withAllowedPolicies = (allowedPolicies: string[]) => (
+const withAllowedPolicies = (allowedPolicies: policy[]) => (
   Component: React.ComponentType
 ) => {
   const PolicyWrapperComponent: React.FC = (props) => {
