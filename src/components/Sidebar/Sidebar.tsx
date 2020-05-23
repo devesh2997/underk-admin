@@ -62,7 +62,7 @@ const Sidebar: React.FC<SidebarProps> = ({ routes, logo }) => {
             activeClassName="active"
           >
             <i className={prop.icon} />
-            {prop.name}
+            {collapseOpen && prop.name}
           </NavLink>
         </NavItem>
       );
@@ -193,7 +193,7 @@ const Sidebar: React.FC<SidebarProps> = ({ routes, logo }) => {
               </Col>
             </Row>
           </div>
-          {/* Form */}
+          {/* Form
           <Form className="mt-4 mb-3 d-md-none">
             <InputGroup className="input-group-rounded input-group-merge">
               <Input
@@ -208,31 +208,31 @@ const Sidebar: React.FC<SidebarProps> = ({ routes, logo }) => {
                 </InputGroupText>
               </InputGroupAddon>
             </InputGroup>
-          </Form>
+          </Form> */}
           {/* Navigation */}
           <Nav navbar>{createLinks(routes)}</Nav>
           {/* Divider */}
           <hr className="my-3" />
           {/* Heading */}
-          <h6 className="navbar-heading text-muted">Documentation</h6>
+          {/* <h6 className="navbar-heading text-muted">Documentation</h6> */}
           {/* Navigation */}
           <Nav className="mb-md-3" navbar>
             <NavItem>
               <NavLink href="https://demos.creative-tim.com/argon-dashboard-react/#/documentation/overview?ref=adr-admin-sidebar">
                 <i className="ni ni-spaceship" />
-                Getting started
+                {/* Getting started */}
               </NavLink>
             </NavItem>
             <NavItem>
               <NavLink href="https://demos.creative-tim.com/argon-dashboard-react/#/documentation/colors?ref=adr-admin-sidebar">
                 <i className="ni ni-palette" />
-                Foundation
+                {/* Foundation */}
               </NavLink>
             </NavItem>
             <NavItem>
               <NavLink href="https://demos.creative-tim.com/argon-dashboard-react/#/documentation/alerts?ref=adr-admin-sidebar">
                 <i className="ni ni-ui-04" />
-                Components
+                {/* Components */}
               </NavLink>
             </NavItem>
           </Nav>
