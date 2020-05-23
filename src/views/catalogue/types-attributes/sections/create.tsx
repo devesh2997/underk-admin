@@ -33,7 +33,7 @@ export const TypesAttributesCreate = (props: Props) => {
   function getEntityForm() {
     switch (selectedEntity.value) {
       case "Type":
-        return <TypeCreate createType={createType} />;
+        return <TypeCreate createType={createType} types={types} />;
       case "Subtype":
         return <SubtypeCreate createSubtype={createSubtype} types={types} />;
       case "Attribute":
@@ -84,47 +84,60 @@ export const TypesAttributesCreate = (props: Props) => {
 
 const TypeCreate = (props: {
   createType: (sku: string, name: string) => Promise<void>;
+  types: Type[];
 }) => {
+  const { createType, types } = props;
   const sku = useFormInput("");
   const name = useFormInput("");
 
-  function validateInput(): boolean {
-    return sku.value.length > 0 && name.value.length > 0;
+  let errors: string[] = [];
+  let valid = true;
+  if (sku.value.length === 0) {
+    valid = false;
+    errors.push("SKU is empty");
+  } else {
+    if (types.some((t) => t.sku === sku.value)) {
+      valid = false;
+      errors.push("SKU is already in use.");
+    }
+  }
+
+  if (name.value.length === 0) {
+    valid = false;
+    errors.push("Name is empty");
   }
 
   return (
     <>
-      <h3 className="mb-3">Type Form :</h3>
-      <Row>
-        <Col sm="2">SKU:</Col>
-        <Col>
-          <FormGroup>
-            <Input id="skuInput" name="sku" type="text" {...sku} />
-          </FormGroup>
-        </Col>
-      </Row>
-      <Row>
-        <Col sm="2">Name:</Col>
-        <Col>
-          <FormGroup>
-            <Input id="nameInput" name="name" type="text" {...name} />
-          </FormGroup>
-        </Col>
-      </Row>
-      <Row className="justify-content-md-center">
-        <Col lg="2">
-          <Button
-            color="primary"
-            type="button"
-            disabled={!validateInput()}
-            onClick={() => {
-              props.createType(sku.value, name.value);
-            }}
-          >
-            Submit
-          </Button>
-        </Col>
-      </Row>
+      <FormWithGuidesAndErros
+        errors={errors}
+        valid={valid}
+        heading="Type Form :"
+        onSubmit={() => createType(sku.value, name.value)}
+        guides={[
+          <span>Name and SKU both are compulsory.</span>,
+          <span>
+            SKU should be unique. No two Types can have the same SKU.
+          </span>,
+        ]}
+      >
+        <Row>
+          <Col sm="2">SKU:</Col>
+          <Col>
+            <FormGroup>
+              <Input id="skuInput" name="sku" type="text" {...sku} />
+            </FormGroup>
+          </Col>
+        </Row>
+        <Row>
+          <Col sm="2">Name:</Col>
+          <Col>
+            <FormGroup>
+              <Input id="nameInput" name="name" type="text" {...name} />
+            </FormGroup>
+          </Col>
+        </Row>
+      </FormWithGuidesAndErros>
     </>
   );
 };
@@ -149,6 +162,14 @@ const SubtypeCreate = (props: {
   if (sku.value.length === 0) {
     valid = false;
     errors.push("SKU is empty");
+  } else {
+    sku.value = sku.value.toUpperCase();
+    for (let i = 0; i < types.length; i++) {
+      if (types[i].subtypes?.some((s) => s.sku === sku.value)) {
+        valid = false;
+        errors.push("SKU is already in use.");
+      }
+    }
   }
   if (name.value.length === 0) {
     valid = false;
@@ -157,82 +178,51 @@ const SubtypeCreate = (props: {
 
   return (
     <>
-      <Row>
-        <Col>
-          <h3 className="mb-3">Subtype Form :</h3>
-        </Col>
-      </Row>
-      <Row>
-        <Col>
-          <ul className="list-unstyled">
-            <li>
-              Guide:
-              <ul>
-                <li>Selecting type from the dropdown is compulsory.</li>
-                <li>Name and SKU both are compulsory</li>
-              </ul>
-            </li>
-          </ul>
-        </Col>
-      </Row>
-      <Row className="mt-3">
-        <Col sm="2">Type:</Col>
-        <Col>
-          <FormGroup>
-            <Input id="skuInput" name="sku" type="select" {...typeSku}>
-              <option value="-">-</option>
-              {types.map((t) => (
-                <option key={t.sku} value={t.sku}>
-                  {t.name}
-                </option>
-              ))}
-            </Input>
-          </FormGroup>
-        </Col>
-      </Row>
-      <Row>
-        <Col sm="2">SKU:</Col>
-        <Col>
-          <FormGroup>
-            <Input id="skuInput" name="sku" type="text" {...sku} />
-          </FormGroup>
-        </Col>
-      </Row>
-      <Row>
-        <Col sm="2">Name:</Col>
-        <Col>
-          <FormGroup>
-            <Input id="nameInput" name="name" type="text" {...name} />
-          </FormGroup>
-        </Col>
-      </Row>
-      <Row className="justify-content-md-center">
-        <Col lg="2">
-          <Button
-            color="primary"
-            type="button"
-            disabled={!valid}
-            onClick={() => {
-              createSubtype(sku.value, name.value, typeSku.value);
-            }}
-          >
-            Submit
-          </Button>
-        </Col>
-      </Row>
-      <Row>
-        <Col>
-          <Row>
-            <Col>
-              <ul>
-                {errors.map((err) => (
-                  <li key={err}>{err}</li>
+      <FormWithGuidesAndErros
+        heading="Subtype Form : "
+        guides={[
+          <span>Selecting type from the dropdown is compulsory.</span>,
+          <span>Name and SKU both are compulsory.</span>,
+          <span>
+            SKU should be uniques. No two subtypes can have the same SKU.
+          </span>,
+        ]}
+        errors={errors}
+        valid={valid}
+        onSubmit={() => createSubtype(sku.value, name.value, typeSku.value)}
+      >
+        <Row className="mt-3">
+          <Col sm="2">Type:</Col>
+          <Col>
+            <FormGroup>
+              <Input id="skuInput" name="sku" type="select" {...typeSku}>
+                <option value="-">-</option>
+                {types.map((t) => (
+                  <option key={t.sku} value={t.sku}>
+                    {t.name}
+                  </option>
                 ))}
-              </ul>
-            </Col>
-          </Row>
-        </Col>
-      </Row>
+              </Input>
+            </FormGroup>
+          </Col>
+        </Row>
+        <Row>
+          <Col sm="2">SKU:</Col>
+          <Col>
+            <FormGroup>
+              <Input id="skuInput" name="sku" type="text" {...sku} />
+            </FormGroup>
+          </Col>
+        </Row>
+        <Row>
+          <Col sm="2">Name:</Col>
+          <Col>
+            <FormGroup>
+              <Input id="nameInput" name="name" type="text" {...name} />
+            </FormGroup>
+          </Col>
+        </Row>
+      </FormWithGuidesAndErros>
     </>
   );
 };

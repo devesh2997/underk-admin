@@ -5,6 +5,7 @@ import {
   DropdownToggle,
   DropdownMenu,
   DropdownItem,
+  Badge,
 } from "reactstrap";
 import { beautifyName, beautifyDate, getAge } from "utils";
 import TableWithColorToggler from "components/Widgets/TableWithColorToggler";
@@ -27,8 +28,28 @@ const UserList: React.FC<Props> = (props) => {
           <tr key={user.id}>
             <td>{user.id}</td>
             <th>{beautifyName(user.firstName, user.lastName)}</th>
-            <td>{user.mobileCountryCode + " " + user.mobileNumber}</td>
-            <td>{user.email}</td>
+            <td>
+              {user.mobileNumber !== undefined && user.mobileNumber !== null && (
+                <Badge color="" className="badge-dot mr-4">
+                  <i
+                    className={
+                      user.mobileVerified ? "bg-success" : "bg-warning"
+                    }
+                  />
+                  {user.mobileCountryCode + " " + user.mobileNumber}
+                </Badge>
+              )}
+            </td>
+            <td>
+              {user.email !== undefined && user.email !== null && (
+                <Badge color="" className="badge-dot mr-4">
+                  <i
+                    className={user.emailVerified ? "bg-success" : "bg-warning"}
+                  />
+                  {user.email}
+                </Badge>
+              )}
+            </td>
             <td>
               <GenderIcon gender={user.gender} />{" "}
             </td>

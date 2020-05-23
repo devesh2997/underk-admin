@@ -21,7 +21,7 @@ import { useTabSelect } from "hooks/Index";
 import CollectionsTab from "./collections/Index";
 
 const Catalogue: React.FC = () => {
-  const { activeTab, toggleActiveTab } = useTabSelect(1);
+  const { activeTab, toggleActiveTab } = useTabSelect(4);
   return (
     <>
       <CatalogueHeader />
