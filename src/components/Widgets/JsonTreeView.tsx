@@ -17,10 +17,10 @@ type Props = {
 
 const JsonTreeView: React.FC<Props> = (props: Props) => {
   const { src } = props;
-  const theme = useFormInput("monokai");
+  const theme = useFormInput("bright-inverted");
   const fontSize = useFormInput("14px");
   const displayObjectSize = useCheckboxInput(false);
-  const displayDataTypes = useCheckboxInput(false);
+  const collapsed = useCheckboxInput(false);
   return (
     <Card>
       <CardHeader>
@@ -29,60 +29,53 @@ const JsonTreeView: React.FC<Props> = (props: Props) => {
             <h3 className="mb-0">Tree view</h3>
           </div>
           <div className="col text-right">
-            <InputGroup>
-              <InputGroupAddon addonType="prepend">
-                <InputGroupText>Theme :</InputGroupText>
-              </InputGroupAddon>
-              <Input type="select" {...theme}>
-                <option value="monokai">Monokai</option>
-                <option value="apathy">apathy</option>
-                <option value="apathy:inverted">apathy:inverted</option>
-                <option value="ashes">ashes</option>
-                <option value="bespin">bespin</option>
-                <option value="brewer">brewer</option>
-                <option value="bright:inverted">bright:inverted</option>
-                <option value="bright">bright</option>
-                <option value="chalk">chalk</option>
-                <option value="codeschool">codeschool</option>
-                <option value="colors">colors</option>
-                <option value="eighties">eighties</option>
-                <option value="embers">embers</option>
-                <option value="eighties">eighties</option>
-                <option value="flat">flat</option>
-                <option value="google">google</option>
-                <option value="grayscale">grayscale</option>
-                <option value="grayscale:inverted">grayscale:inverted</option>
-                <option value="greenscreen">greenscreen</option>
-                <option value="harmonic">harmonic</option>
-                <option value="hopscotch">hopscotch</option>
-                <option value="isotope">isotope</option>
-                <option value="marrakesh">marrakesh</option>
-                <option value="mocha">mocha</option>
-                <option value="paraiso">paraiso</option>
-                <option value="pop">pop</option>
-                <option value="ocean">ocean</option>
-                <option value="railscasts">railscasts</option>
-                <option value="rjv-default">rjv-default</option>
-                <option value="shapeshifter">shapeshifter</option>
-                <option value="shapeshifter:inverted">
-                  shapeshifter:inverted
-                </option>
-                <option value="solarized">solarized</option>
-                <option value="summerfruit">summerfruit</option>
-                <option value="summerfruit:inverted">
-                  summerfruit:inverted
-                </option>
-                <option value="threezerotwofour">threezerotwofour</option>
-                <option value="tomorrow">tomorrow</option>
-                <option value="tube">tube</option>
-                <option value="twilight">twilight</option>
-              </Input>
-            </InputGroup>
+            <Input type="select" {...theme}>
+              <option value="bright:inverted">bright:inverted</option>
+              <option value="monokai">Monokai</option>
+              <option value="apathy">apathy</option>
+              <option value="apathy:inverted">apathy:inverted</option>
+              <option value="ashes">ashes</option>
+              <option value="bespin">bespin</option>
+              <option value="brewer">brewer</option>
+              <option value="bright">bright</option>
+              <option value="chalk">chalk</option>
+              <option value="codeschool">codeschool</option>
+              <option value="colors">colors</option>
+              <option value="eighties">eighties</option>
+              <option value="embers">embers</option>
+              <option value="eighties">eighties</option>
+              <option value="flat">flat</option>
+              <option value="google">google</option>
+              <option value="grayscale">grayscale</option>
+              <option value="grayscale:inverted">grayscale:inverted</option>
+              <option value="greenscreen">greenscreen</option>
+              <option value="harmonic">harmonic</option>
+              <option value="hopscotch">hopscotch</option>
+              <option value="isotope">isotope</option>
+              <option value="marrakesh">marrakesh</option>
+              <option value="mocha">mocha</option>
+              <option value="paraiso">paraiso</option>
+              <option value="pop">pop</option>
+              <option value="ocean">ocean</option>
+              <option value="railscasts">railscasts</option>
+              <option value="rjv-default">rjv-default</option>
+              <option value="shapeshifter">shapeshifter</option>
+              <option value="shapeshifter:inverted">
+                shapeshifter:inverted
+              </option>
+              <option value="solarized">solarized</option>
+              <option value="summerfruit">summerfruit</option>
+              <option value="summerfruit:inverted">summerfruit:inverted</option>
+              <option value="threezerotwofour">threezerotwofour</option>
+              <option value="tomorrow">tomorrow</option>
+              <option value="tube">tube</option>
+              <option value="twilight">twilight</option>
+            </Input>
           </div>
           <div className="col text-right">
             <InputGroup>
               <InputGroupAddon addonType="prepend">
-                <InputGroupText>Font Size:</InputGroupText>
+                <InputGroupText>Font:</InputGroupText>
               </InputGroupAddon>
               <Input type="select" {...fontSize}>
                 <option value="12px">12</option>
@@ -95,25 +88,36 @@ const JsonTreeView: React.FC<Props> = (props: Props) => {
             </InputGroup>
           </div>
           <div className="col text-right">
-            <label className="custom-toggle">
-              <input type="checkbox" {...displayObjectSize} />
-              <span className="custom-toggle-slider rounded-circle" />
-            </label>
+            <InputGroup>
+              <InputGroupAddon addonType="prepend">
+                <InputGroupText>Collapsed :</InputGroupText>
+              </InputGroupAddon>
+              <label className="custom-toggle">
+                <input type="checkbox" {...collapsed} />
+                <span className="custom-toggle-slider rounded-circle" />
+              </label>
+            </InputGroup>
           </div>
           <div className="col text-right">
-            <label className="custom-toggle">
-              <input type="checkbox" {...displayDataTypes} />
-              <span className="custom-toggle-slider rounded-circle" />
-            </label>
+            <InputGroup>
+              <InputGroupAddon addonType="prepend">
+                <InputGroupText>Object Size :</InputGroupText>
+              </InputGroupAddon>
+              <label className="custom-toggle">
+                <input type="checkbox" {...displayObjectSize} />
+                <span className="custom-toggle-slider rounded-circle" />
+              </label>
+            </InputGroup>
           </div>
         </Row>
       </CardHeader>
       <ReactJson
         src={src}
         theme={theme.value as ThemeKeys}
-        style={{ fontSize: fontSize.value, fontFamily:"Open Sans" }}
-        displayDataTypes={displayDataTypes.checked}
+        style={{ fontSize: fontSize.value, fontFamily: "Open Sans" }}
         displayObjectSize={displayObjectSize.checked}
+        collapsed={collapsed.checked}
+        displayDataTypes={false}
       />
     </Card>
   );

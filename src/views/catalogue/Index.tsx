@@ -18,9 +18,10 @@ import CatalogueHeader from "components/Headers/CatalogueHeader";
 import CategoriesTab from "./categories/Index";
 import TypesAttributesTab from "./types-attributes/Index";
 import { useTabSelect } from "hooks/Index";
+import CollectionsTab from "./collections/Index";
 
 const Catalogue: React.FC = () => {
-  const { activeTab, toggleActiveTab } = useTabSelect(1);
+  const { activeTab, toggleActiveTab } = useTabSelect(4);
   return (
     <>
       <CatalogueHeader />
@@ -117,7 +118,7 @@ const Catalogue: React.FC = () => {
                     <CategoriesTab />
                   </TabPane>
                   <TabPane tabId="tabs3">
-                    <p className="description">test</p>
+                    <CollectionsTab />
                   </TabPane>
                   <TabPane tabId="tabs4">
                     <TypesAttributesTab />

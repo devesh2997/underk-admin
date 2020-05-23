@@ -9,13 +9,15 @@ import {
   Navbar,
   Nav,
   Container,
-  Media
+  Media,
 } from "reactstrap";
 import { AuthUserContext } from "session";
 
 type AdminNavbarProps = {
   brandText: string;
-}
+  uChatCollapsed: boolean;
+  uChatToggler: React.Dispatch<React.SetStateAction<boolean>>;
+};
 
 const AdminNavbar: React.FC<AdminNavbarProps> = (props) => {
   const authUser = useContext(AuthUserContext);
@@ -86,11 +88,20 @@ const AdminNavbar: React.FC<AdminNavbarProps> = (props) => {
                 </DropdownItem>
               </DropdownMenu>
             </UncontrolledDropdown>
+            {props.uChatCollapsed ? (
+              <i
+                className="ni ni-chat-round ml-3"
+                style={{ fontSize: "24px", color: "white" }}
+                onClick={() => props.uChatToggler(!props.uChatCollapsed)}
+              />
+            ) : (
+              ""
+            )}
           </Nav>
         </Container>
       </Navbar>
     </>
   );
-}
+};
 
 export default AdminNavbar;

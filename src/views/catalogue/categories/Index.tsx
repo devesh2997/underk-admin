@@ -11,15 +11,47 @@ import {
   Col,
   TabPane,
   TabContent,
+  UncontrolledAlert,
 } from "reactstrap";
 import CategoriesView from "./sections/view";
 import { useTabSelect } from "hooks/Index";
+import useCategoriesRepository from "data/catalogue/CategoriesRepository";
+import Refresh from "components/Widgets/Refresh";
+import Loading from "components/Widgets/Loading";
+import CategoryCreate from "./sections/CategoryCreate";
 
 const CategoriesTab = () => {
   const { activeTab, toggleActiveTab } = useTabSelect(1);
+  const {
+    categories,
+    categoriesFlatArray,
+    loading,
+    error,
+    message,
+    getAll,
+    create,
+  } = useCategoriesRepository();
   return (
     <>
       <Container fluid>
+        {message && (
+          <Row>
+            <Col>
+              <UncontrolledAlert color="success" fade={false}>
+                <span className="alert-inner--text">{message}</span>
+              </UncontrolledAlert>
+            </Col>
+          </Row>
+        )}
+        {error && (
+          <Row>
+            <Col>
+              <UncontrolledAlert color="danger" fade={false}>
+                <span className="alert-inner--text">{error}</span>
+              </UncontrolledAlert>
+            </Col>
+          </Row>
+        )}
         <Row>
           <Col>
             <div className="nav-wrapper">
@@ -74,29 +106,53 @@ const CategoriesTab = () => {
               </Nav>
             </div>
           </Col>
+          <Col lg="1">
+            <span
+              className="icon icon-shape bg-white rounded-circle shadow"
+              onClick={getAll}
+              style={{ cursor: "pointer" }}
+            >
+              <Refresh size={24} />
+            </span>
+          </Col>
         </Row>
-        <Row>
-          <Container fluid>
-            <TabContent activeTab={"tabs" + activeTab}>
-              <TabPane tabId="tabs1">
-                <CategoriesView />
-              </TabPane>
-              <TabPane tabId="tabs2">Test</TabPane>
-              <TabPane tabId="tabs3">
-                <p className="description">
-                  Raw denim you probably haven't heard of them jean shorts
-                  Austin. Nesciunt tofu stumptown aliqua, retro synth master
-                  cleanse. Mustache cliche tempor, williamsburg carles vegan
-                  helvetica. Reprehenderit butcher retro keffiyeh dreamcatcher
-                  synth.
-                </p>
-              </TabPane>
-            </TabContent>
-          </Container>
+        <Row className="justify-content-md-center">
+          {loading && (
+            <Col lg="2">
+              <Loading />
+            </Col>
+          )}
+          {!loading && (
+            <Col>
+              <TabContent activeTab={"tabs" + activeTab}>
+                <TabPane tabId="tabs1">
+                  <CategoriesView
+                    categories={categories}
+                    categoriesFlatArray={categoriesFlatArray}
+                  />
+                </TabPane>
+                <TabPane tabId="tabs2">
+                  <CategoryCreate
+                    create={create}
+                    categories={categoriesFlatArray}
+                  />
+                </TabPane>
+                <TabPane tabId="tabs3">
+                  <p className="description">
+                    Raw denim you probably haven't heard of them jean shorts
+                    Austin. Nesciunt tofu stumptown aliqua, retro synth master
+                    cleanse. Mustache cliche tempor, williamsburg carles vegan
+                    helvetica. Reprehenderit butcher retro keffiyeh dreamcatcher
+                    synth.
+                  </p>
+                </TabPane>
+              </TabContent>
+            </Col>
+          )}
         </Row>
       </Container>
     </>
   );
 };
 
-export default CategoriesTab
+export default CategoriesTab;

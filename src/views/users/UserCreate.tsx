@@ -10,6 +10,7 @@ import {
   InputGroup,
   InputGroupAddon,
   InputGroupText,
+  CardHeader,
 } from "reactstrap";
 import { useFormInput } from "hooks/Index";
 import ReactDatetime from "react-datetime";
@@ -17,11 +18,10 @@ import { isNumber } from "util";
 
 type Props = {
   create: (userInfo: User) => Promise<void>;
-  error: string;
 };
 
 const UserCreate: React.FC<Props> = (props: Props) => {
-  const { create, error } = props;
+  const { create } = props;
   const firstName = useFormInput("");
   const lastName = useFormInput("");
   const mobileNumber = useFormInput("");
@@ -69,12 +69,10 @@ const UserCreate: React.FC<Props> = (props: Props) => {
 
   return (
     <Card className="shadow">
+      <CardHeader>
+        <h3 className="mb-3">User Form :</h3>
+      </CardHeader>
       <CardBody>
-        <Row>
-          <Col>
-            <h3 className="mb-3">User Form :</h3>
-          </Col>
-        </Row>
         <Row>
           <Col>
             <ul className="list-unstyled">
@@ -251,9 +249,6 @@ const UserCreate: React.FC<Props> = (props: Props) => {
               Submit
             </Button>
           </Col>
-        </Row>
-        <Row className="mt-3 text-color-red">
-          <Col>{JSON.stringify(error)}</Col>
         </Row>
         <ul>
           {errors.map((err) => (

@@ -4,87 +4,35 @@ import classnames from "classnames";
 // reactstrap components
 import {
   Container,
-  Row,
-  Col,
   Nav,
   NavItem,
   NavLink,
-  TabContent,
+  Row,
+  Col,
   TabPane,
+  TabContent,
   UncontrolledAlert,
 } from "reactstrap";
-import UsersHeader from "components/Headers/UsersHeader";
+import CollectionsView from "./sections/CollectionsView";
 import { useTabSelect } from "hooks/Index";
-import useUsersRepository from "data/UsersRepository";
-import Loading from "components/Widgets/Loading";
-import UserList from "./UserList";
+import useCollectionsRepository from "data/catalogue/CollectionsRepository";
 import Refresh from "components/Widgets/Refresh";
-import UserCreate from "./UserCreate";
+import Loading from "components/Widgets/Loading";
+import CollectionCreate from "./sections/CollectionCreate";
 
-const Users: React.FC = () => {
+const CollectionsTab = () => {
   const { activeTab, toggleActiveTab } = useTabSelect(1);
   const {
+    collections,
     loading,
     error,
     message,
-    users,
     getAll,
     create,
-  } = useUsersRepository();
+  } = useCollectionsRepository();
   return (
     <>
-      <UsersHeader totalUsers={users.length}></UsersHeader>
-      <Container className="mt--7" fluid>
-        <Row className="align-items-center">
-          <Col>
-            <div className="nav-wrapper">
-              <Nav
-                className="nav-fill flex-column flex-md-row"
-                id="tabs-icons-text"
-                pills
-                role="tablist"
-              >
-                <NavItem>
-                  <NavLink
-                    aria-selected={activeTab === 1}
-                    className={classnames("mb-sm-3 mb-md-0", {
-                      active: activeTab === 1,
-                    })}
-                    onClick={(e) => toggleActiveTab(e, 1)}
-                    href="#products"
-                    role="tab"
-                  >
-                    <i className="ni ni-bullet-list-67 mr-2"></i>
-                    List
-                  </NavLink>
-                </NavItem>
-                <NavItem>
-                  <NavLink
-                    aria-selected={activeTab === 2}
-                    className={classnames("mb-sm-3 mb-md-0", {
-                      active: activeTab === 2,
-                    })}
-                    onClick={(e) => toggleActiveTab(e, 2)}
-                    href="#categories"
-                    role="tab"
-                  >
-                    <i className="ni ni-fat-add mr-2"></i>
-                    Create New User
-                  </NavLink>
-                </NavItem>
-              </Nav>
-            </div>
-          </Col>
-          <Col lg="1">
-            <span
-              className="icon icon-shape bg-white rounded-circle shadow"
-              onClick={getAll}
-              style={{ cursor: "pointer" }}
-            >
-              <Refresh size={24} />
-            </span>
-          </Col>
-        </Row>
+      <Container fluid>
         {message && (
           <Row>
             <Col>
@@ -103,6 +51,70 @@ const Users: React.FC = () => {
             </Col>
           </Row>
         )}
+        <Row>
+          <Col>
+            <div className="nav-wrapper">
+              <Nav
+                className="nav-fill flex-column flex-md-row"
+                id="tabs-icons-text"
+                pills
+                role="tablist"
+              >
+                <NavItem>
+                  <NavLink
+                    aria-selected={activeTab === 1}
+                    className={classnames("mb-sm-3 mb-md-0", {
+                      active: activeTab === 1,
+                    })}
+                    onClick={(e) => toggleActiveTab(e, 1)}
+                    href="#products"
+                    role="tab"
+                  >
+                    <i className="far fa-eye mr-2" />
+                    View
+                  </NavLink>
+                </NavItem>
+                <NavItem>
+                  <NavLink
+                    aria-selected={activeTab === 2}
+                    className={classnames("mb-sm-3 mb-md-0", {
+                      active: activeTab === 2,
+                    })}
+                    onClick={(e) => toggleActiveTab(e, 2)}
+                    href="#collections"
+                    role="tab"
+                  >
+                    <i className="ni ni-fat-add mr-2"></i>
+                    Add Single Collection
+                  </NavLink>
+                </NavItem>
+                <NavItem>
+                  <NavLink
+                    aria-selected={activeTab === 3}
+                    className={classnames("mb-sm-3 mb-md-0", {
+                      active: activeTab === 3,
+                    })}
+                    onClick={(e) => toggleActiveTab(e, 3)}
+                    href="#collections"
+                    role="tab"
+                  >
+                    <i className="fas fa-table mr-2"></i>
+                    Bulk upload collections
+                  </NavLink>
+                </NavItem>
+              </Nav>
+            </div>
+          </Col>
+          <Col lg="1">
+            <span
+              className="icon icon-shape bg-white rounded-circle shadow"
+              onClick={getAll}
+              style={{ cursor: "pointer" }}
+            >
+              <Refresh size={24} />
+            </span>
+          </Col>
+        </Row>
         <Row className="justify-content-md-center">
           {loading && (
             <Col lg="2">
@@ -113,10 +125,24 @@ const Users: React.FC = () => {
             <Col>
               <TabContent activeTab={"tabs" + activeTab}>
                 <TabPane tabId="tabs1">
-                  <UserList users={users} />
+                  <CollectionsView
+                    collections={collections}
+                  />
                 </TabPane>
                 <TabPane tabId="tabs2">
-                  <UserCreate create={create} />
+                  <CollectionCreate
+                    create={create}
+                    collections={collections}
+                  />
+                </TabPane>
+                <TabPane tabId="tabs3">
+                  <p className="description">
+                    Raw denim you probably haven't heard of them jean shorts
+                    Austin. Nesciunt tofu stumptown aliqua, retro synth master
+                    cleanse. Mustache cliche tempor, williamsburg carles vegan
+                    helvetica. Reprehenderit butcher retro keffiyeh dreamcatcher
+                    synth.
+                  </p>
                 </TabPane>
               </TabContent>
             </Col>
@@ -127,4 +153,4 @@ const Users: React.FC = () => {
   );
 };
 
-export default Users;
+export default CollectionsTab;

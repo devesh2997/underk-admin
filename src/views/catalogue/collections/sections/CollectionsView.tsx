@@ -13,18 +13,17 @@ import {
   TabContent,
 } from "reactstrap";
 import { useTabSelect } from "hooks/Index";
-import { Category } from "models/catalogue/Category";
+import { Collection } from "models/catalogue/Collection";
 import TableWithColorToggler from "components/Widgets/TableWithColorToggler";
 import JsonTreeView from "components/Widgets/JsonTreeView";
 
 type Props = {
-  categories: Category[];
-  categoriesFlatArray: Category[] | undefined;
+  collections: Collection[];
 };
 
-const CategoriesView: React.FC<Props> = (props: Props) => {
+const CollectionsView: React.FC<Props> = (props: Props) => {
   const { activeTab, toggleActiveTab } = useTabSelect(1);
-  const { categories, categoriesFlatArray } = props;
+  const { collections } = props;
   return (
     <>
       <Container fluid>
@@ -75,10 +74,10 @@ const CategoriesView: React.FC<Props> = (props: Props) => {
           <Col>
             <TabContent activeTab={"tabs" + activeTab}>
               <TabPane tabId="tabs1">
-                <CategoriesListView categoriesFlatArray={categoriesFlatArray} />
+                <CollectionsListView collections={collections} />
               </TabPane>
               <TabPane tabId="tabs2">
-                <JsonTreeView src={categories} />
+                <JsonTreeView src={collections} />
               </TabPane>
             </TabContent>
           </Col>
@@ -89,28 +88,27 @@ const CategoriesView: React.FC<Props> = (props: Props) => {
 };
 
 type ListViewProps = {
-  categoriesFlatArray: Category[] | undefined;
+  collections: Collection[] | undefined;
 };
 
-const CategoriesListView: React.FC<ListViewProps> = (props: ListViewProps) => {
-  const categoriesFlatArray = props.categoriesFlatArray;
+const CollectionsListView: React.FC<ListViewProps> = (props: ListViewProps) => {
+  const collections = props.collections;
 
   let rows: JSX.Element[] | undefined = [];
 
-  rows = categoriesFlatArray?.map((category) => (
+  rows = collections?.map((category) => (
     <tr key={category.slug}>
       <td>{category.id}</td>
       <td>{category.name}</td>
       <td>{category.slug}</td>
-      <td>{category.sku}</td>
     </tr>
   ));
 
   return (
-    <TableWithColorToggler columns={["id", "name", "slug", "sku"]}>
+    <TableWithColorToggler columns={["id", "name", "slug"]}>
       <tbody>{rows}</tbody>
     </TableWithColorToggler>
   );
 };
 
-export default CategoriesView;
+export default CollectionsView;

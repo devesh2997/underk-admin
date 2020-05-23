@@ -21,10 +21,11 @@ import Loading from "components/Widgets/Loading";
 import Refresh from "components/Widgets/Refresh";
 
 const TypesAttributesTab = () => {
-  const { activeTab, toggleActiveTab } = useTabSelect(1);
+  const { activeTab, toggleActiveTab } = useTabSelect(2);
   const {
     loading,
     error,
+    message,
     types,
     getAllTypes,
     createType,
@@ -36,6 +37,24 @@ const TypesAttributesTab = () => {
     <>
       <Container fluid>
         <>
+          {message && (
+            <Row>
+              <Col>
+                <UncontrolledAlert color="success" fade={false}>
+                  <span className="alert-inner--text">{message}</span>
+                </UncontrolledAlert>
+              </Col>
+            </Row>
+          )}
+          {error && (
+            <Row>
+              <Col>
+                <UncontrolledAlert color="danger" fade={false}>
+                  <span className="alert-inner--text">{error}</span>
+                </UncontrolledAlert>
+              </Col>
+            </Row>
+          )}
           <Row className="align-items-center">
             <Col>
               <div className="nav-wrapper">
@@ -134,15 +153,6 @@ const TypesAttributesTab = () => {
               </Col>
             )}
           </Row>
-          {error && (
-            <Row>
-              <Col>
-                <UncontrolledAlert color="danger" fade={false}>
-                  <span className="alert-inner--text">{error}</span>
-                </UncontrolledAlert>
-              </Col>
-            </Row>
-          )}
         </>
       </Container>
     </>

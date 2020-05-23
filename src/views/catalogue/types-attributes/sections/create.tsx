@@ -10,13 +10,20 @@ import {
 } from "reactstrap";
 import { useFormInput, useCheckboxInput } from "hooks/Index";
 import Type from "models/catalogue/Type";
+import FormWithGuidesAndErros from "components/Widgets/FormWithGuidesAndErros";
 
 type Props = {
   types: Type[];
   createType: (sku: string, name: string) => Promise<void>;
   createSubtype(sku: string, name: string, typeSku: string): Promise<void>;
   createAttribute: (name: string, subtypeSku: string) => Promise<void>;
-  createAttributeValue: (sku: string, name: string, attributeId: string, valueType: string, value: string) => Promise<void>
+  createAttributeValue: (
+    sku: string,
+    name: string,
+    attributeId: string,
+    valueType: string,
+    value: string
+  ) => Promise<void>;
 };
 
 export const TypesAttributesCreate = (props: Props) => {
@@ -26,7 +33,7 @@ export const TypesAttributesCreate = (props: Props) => {
   function getEntityForm() {
     switch (selectedEntity.value) {
       case "Type":
-        return <TypeCreate createType={createType} />;
+        return <TypeCreate createType={createType} types={types} />;
       case "Subtype":
         return <SubtypeCreate createSubtype={createSubtype} types={types} />;
       case "Attribute":
@@ -77,47 +84,60 @@ export const TypesAttributesCreate = (props: Props) => {
 
 const TypeCreate = (props: {
   createType: (sku: string, name: string) => Promise<void>;
+  types: Type[];
 }) => {
+  const { createType, types } = props;
   const sku = useFormInput("");
   const name = useFormInput("");
 
-  function validateInput(): boolean {
-    return sku.value.length > 0 && name.value.length > 0;
+  let errors: string[] = [];
+  let valid = true;
+  if (sku.value.length === 0) {
+    valid = false;
+    errors.push("SKU is empty");
+  } else {
+    if (types.some((t) => t.sku === sku.value)) {
+      valid = false;
+      errors.push("SKU is already in use.");
+    }
+  }
+
+  if (name.value.length === 0) {
+    valid = false;
+    errors.push("Name is empty");
   }
 
   return (
     <>
-      <h3 className="mb-3">Type Form :</h3>
-      <Row>
-        <Col sm="2">SKU:</Col>
-        <Col>
-          <FormGroup>
-            <Input id="skuInput" name="sku" type="text" {...sku} />
-          </FormGroup>
-        </Col>
-      </Row>
-      <Row>
-        <Col sm="2">Name:</Col>
-        <Col>
-          <FormGroup>
-            <Input id="nameInput" name="name" type="text" {...name} />
-          </FormGroup>
-        </Col>
-      </Row>
-      <Row className="justify-content-md-center">
-        <Col lg="2">
-          <Button
-            color="primary"
-            type="button"
-            disabled={!validateInput()}
-            onClick={() => {
-              props.createType(sku.value, name.value);
-            }}
-          >
-            Submit
-          </Button>
-        </Col>
-      </Row>
+      <FormWithGuidesAndErros
+        errors={errors}
+        valid={valid}
+        heading="Type Form :"
+        onSubmit={() => createType(sku.value, name.value)}
+        guides={[
+          <span>Name and SKU both are compulsory.</span>,
+          <span>
+            SKU should be unique. No two Types can have the same SKU.
+          </span>,
+        ]}
+      >
+        <Row>
+          <Col sm="2">SKU:</Col>
+          <Col>
+            <FormGroup>
+              <Input id="skuInput" name="sku" type="text" {...sku} />
+            </FormGroup>
+          </Col>
+        </Row>
+        <Row>
+          <Col sm="2">Name:</Col>
+          <Col>
+            <FormGroup>
+              <Input id="nameInput" name="name" type="text" {...name} />
+            </FormGroup>
+          </Col>
+        </Row>
+      </FormWithGuidesAndErros>
     </>
   );
 };
@@ -142,6 +162,14 @@ const SubtypeCreate = (props: {
   if (sku.value.length === 0) {
     valid = false;
     errors.push("SKU is empty");
+  } else {
+    sku.value = sku.value.toUpperCase();
+    for (let i = 0; i < types.length; i++) {
+      if (types[i].subtypes?.some((s) => s.sku === sku.value)) {
+        valid = false;
+        errors.push("SKU is already in use.");
+      }
+    }
   }
   if (name.value.length === 0) {
     valid = false;
@@ -150,82 +178,51 @@ const SubtypeCreate = (props: {
 
   return (
     <>
-      <Row>
-        <Col>
-          <h3 className="mb-3">Subtype Form :</h3>
-        </Col>
-      </Row>
-      <Row>
-        <Col>
-          <ul className="list-unstyled">
-            <li>
-              Guide:
-              <ul>
-                <li>Selecting type from the dropdown is compulsory.</li>
-                <li>Name and SKU both are compulsory</li>
-              </ul>
-            </li>
-          </ul>
-        </Col>
-      </Row>
-      <Row className="mt-3">
-        <Col sm="2">Type:</Col>
-        <Col>
-          <FormGroup>
-            <Input id="skuInput" name="sku" type="select" {...typeSku}>
-              <option value="-">-</option>
-              {types.map((t) => (
-                <option key={t.sku} value={t.sku}>
-                  {t.name}
-                </option>
-              ))}
-            </Input>
-          </FormGroup>
-        </Col>
-      </Row>
-      <Row>
-        <Col sm="2">SKU:</Col>
-        <Col>
-          <FormGroup>
-            <Input id="skuInput" name="sku" type="text" {...sku} />
-          </FormGroup>
-        </Col>
-      </Row>
-      <Row>
-        <Col sm="2">Name:</Col>
-        <Col>
-          <FormGroup>
-            <Input id="nameInput" name="name" type="text" {...name} />
-          </FormGroup>
-        </Col>
-      </Row>
-      <Row className="justify-content-md-center">
-        <Col lg="2">
-          <Button
-            color="primary"
-            type="button"
-            disabled={!valid}
-            onClick={() => {
-              createSubtype(sku.value, name.value, typeSku.value);
-            }}
-          >
-            Submit
-          </Button>
-        </Col>
-      </Row>
-      <Row>
-        <Col>
-          <Row>
-            <Col>
-              <ul>
-                {errors.map((err) => (
-                  <li key={err}>{err}</li>
+      <FormWithGuidesAndErros
+        heading="Subtype Form : "
+        guides={[
+          <span>Selecting type from the dropdown is compulsory.</span>,
+          <span>Name and SKU both are compulsory.</span>,
+          <span>
+            SKU should be uniques. No two subtypes can have the same SKU.
+          </span>,
+        ]}
+        errors={errors}
+        valid={valid}
+        onSubmit={() => createSubtype(sku.value, name.value, typeSku.value)}
+      >
+        <Row className="mt-3">
+          <Col sm="2">Type:</Col>
+          <Col>
+            <FormGroup>
+              <Input id="skuInput" name="sku" type="select" {...typeSku}>
+                <option value="-">-</option>
+                {types.map((t) => (
+                  <option key={t.sku} value={t.sku}>
+                    {t.name}
+                  </option>
                 ))}
-              </ul>
-            </Col>
-          </Row>
-        </Col>
-      </Row>
+              </Input>
+            </FormGroup>
+          </Col>
+        </Row>
+        <Row>
+          <Col sm="2">SKU:</Col>
+          <Col>
+            <FormGroup>
+              <Input id="skuInput" name="sku" type="text" {...sku} />
+            </FormGroup>
+          </Col>
+        </Row>
+        <Row>
+          <Col sm="2">Name:</Col>
+          <Col>
+            <FormGroup>
+              <Input id="nameInput" name="name" type="text" {...name} />
+            </FormGroup>
+          </Col>
+        </Row>
+      </FormWithGuidesAndErros>
     </>
   );
 };
@@ -305,149 +302,111 @@ const AttributeCreate = (props: {
 
   return (
     <>
-      <Row>
-        <Col>
-          <h3 className="mb-3">Attribute Form :</h3>
-        </Col>
-      </Row>
-      <Row>
-        <Col>
-          <ul className="list-unstyled">
-            <li>
-              Guide:
-              <ul>
-                <li>Selecting subtype from the dropdown is compulsory.</li>
-                <li>Name is compulsory</li>
-                <li>
-                  <strong>skuOrdering :</strong> If the value of this attribute
-                  will be used to determine the final sku of the product then
-                  this field should be used to determine the positioning of this
-                  attribute in the overall sku. If this attribute is not used in
-                  sku calculation, then -1 should be entered. For a given
-                  subtype, no two attribute can have the same skuOrdering.
-                </li>
-                <li>
-                  <strong>isOption :</strong> If this attribute provides
-                  multiple choices for the user then this should be checked. For
-                  example, in t-shirts the size attribute fulfils this condition
-                  because the user has to pick a size before adding the product
-                  to the cart.
-                </li>
-                <li>
-                  <strong>variantsBasis :</strong>If this attribute provided
-                  multiple variants of the same product, then this should be
-                  checked. For example, in t-shirts, the user can see all the
-                  available colors on the product page.
-                </li>
-              </ul>
-            </li>
-          </ul>
-        </Col>
-      </Row>
-      <Row className="mt-3">
-        <Col sm="2">Subtype:</Col>
-        <Col>
-          <FormGroup>
-            <Input id="skuInput" name="sku" type="select" {...subtypeSku}>
-              <option value="-">-</option>
-              {subtypeOptions}
-            </Input>
-          </FormGroup>
-        </Col>
-      </Row>
-      <Row>
-        <Col sm="2">Name:</Col>
-        <Col>
-          <FormGroup>
-            <Input id="nameInput" name="name" type="text" {...name} />
-          </FormGroup>
-        </Col>
-      </Row>
-      <Row className="mb-3">
-        <Col>
-          SKU ordering already in use for this subtype :{" "}
-          {JSON.stringify(skuOrderingsInUse)}. Please choose some number other
-          than these.
-        </Col>
-      </Row>
-      <Row>
-        <Col sm="2">skuOrdering:</Col>
-        <Col>
-          <FormGroup>
-            <Input
-              id="skuOrderingInput"
-              name="skuOrdering"
-              type="text"
-              {...skuOrdering}
-            />
-          </FormGroup>
-        </Col>
-      </Row>
-      <Row>
-        <Col></Col>
-        <Col>
-          <div className="custom-control custom-checkbox mb-3">
-            <input
-              className="custom-control-input"
-              id="isOption Check"
-              {...isOption}
-              type="checkbox"
-            />
-            <label className="custom-control-label" htmlFor="isOption Check">
-              isOption
-            </label>
-          </div>
-        </Col>
-        <Col>
-          <div className="custom-control custom-checkbox mb-3">
-            <input
-              className="custom-control-input"
-              id="variantsBasisCheck"
-              {...variantsBasis}
-              type="checkbox"
-            />
-            <label
-              className="custom-control-label"
-              htmlFor="variantsBasisCheck"
-            >
-              variantsBasis
-            </label>
-          </div>
-        </Col>
-      </Row>
-      <Row className="justify-content-md-center mt-3">
-        <Col lg="2">
-          <Button
-            color="primary"
-            type="button"
-            disabled={!valid}
-            onClick={() => {
-              name.value = name.value.toLowerCase();
-              createAttribute(name.value, subtypeSku.value);
-            }}
-          >
-            Submit
-          </Button>
-        </Col>
-      </Row>
-      <Row>
-        <Col>
-          <Row>
-            <Col>
-              <ul className="list-unstyled">
-                <li>
-                  Errors:
-                  <ul>
-                    {errors.map((err) => (
-                      <li key={err}>{err}</li>
-                    ))}
-                  </ul>
-                </li>
-              </ul>
-            </Col>
-          </Row>
-        </Col>
-      </Row>
+      <FormWithGuidesAndErros
+        heading="Attribute Form : "
+        valid={valid}
+        errors={errors}
+        onSubmit={() => {
+          name.value = name.value.toLowerCase();
+          createAttribute(name.value, subtypeSku.value);
+        }}
+        guides={[
+          <span>Selecting subtype from the dropdown is compulsory.</span>,
+          <span>Name is compulsory</span>,
+          <span>
+            <strong>skuOrdering :</strong> If the value of this attribute will
+            be used to determine the final sku of the product then this field
+            should be used to determine the positioning of this attribute in the
+            overall sku. If this attribute is not used in sku calculation, then
+            -1 should be entered. For a given subtype, no two attribute can have
+            the same skuOrdering.
+          </span>,
+          <span>
+            <strong>isOption :</strong> If this attribute provides multiple
+            choices for the user then this should be checked. For example, in
+            t-shirts the size attribute fulfils this condition because the user
+            has to pick a size before adding the product to the cart.
+          </span>,
+          <span>
+            <strong>variantsBasis :</strong>If this attribute provided multiple
+            variants of the same product, then this should be checked. For
+            example, in t-shirts, the user can see all the available colors on
+            the product page.
+          </span>,
+        ]}
+      >
+        <Row className="mt-3">
+          <Col sm="2">Subtype:</Col>
+          <Col>
+            <FormGroup>
+              <Input id="skuInput" name="sku" type="select" {...subtypeSku}>
+                <option value="-">-</option>
+                {subtypeOptions}
+              </Input>
+            </FormGroup>
+          </Col>
+        </Row>
+        <Row>
+          <Col sm="2">Name:</Col>
+          <Col>
+            <FormGroup>
+              <Input id="nameInput" name="name" type="text" {...name} />
+            </FormGroup>
+          </Col>
+        </Row>
+        <Row className="mb-3">
+          <Col>
+            SKU ordering already in use for this subtype :{" "}
+            {JSON.stringify(skuOrderingsInUse)}. Please choose some number other
+            than these.
+          </Col>
+        </Row>
+        <Row>
+          <Col sm="2">skuOrdering:</Col>
+          <Col>
+            <FormGroup>
+              <Input
+                id="skuOrderingInput"
+                name="skuOrdering"
+                type="text"
+                {...skuOrdering}
+              />
+            </FormGroup>
+          </Col>
+        </Row>
+        <Row>
+          <Col></Col>
+          <Col>
+            <div className="custom-control custom-checkbox mb-3">
+              <input
+                className="custom-control-input"
+                id="isOption Check"
+                {...isOption}
+                type="checkbox"
+              />
+              <label className="custom-control-label" htmlFor="isOption Check">
+                isOption
+              </label>
+            </div>
+          </Col>
+          <Col>
+            <div className="custom-control custom-checkbox mb-3">
+              <input
+                className="custom-control-input"
+                id="variantsBasisCheck"
+                {...variantsBasis}
+                type="checkbox"
+              />
+              <label
+                className="custom-control-label"
+                htmlFor="variantsBasisCheck"
+              >
+                variantsBasis
+              </label>
+            </div>
+          </Col>
+        </Row>
+      </FormWithGuidesAndErros>
     </>
   );
 };

@@ -22,6 +22,7 @@ export type ApiResponse<T> = {
   success: boolean;
   data: T | undefined;
   error: string | undefined;
+  message: string | undefined;
 };
 
 type AuthUserContextValue = {
@@ -36,7 +37,12 @@ export const AuthUserContext = React.createContext<AuthUserContextValue>({
   login: async () => {},
   logout: () => {},
   doRequest: async () => {
-    return { success: false, data: undefined, error: undefined };
+    return {
+      success: false,
+      data: undefined,
+      error: undefined,
+      message: undefined,
+    };
   },
 });
 
@@ -128,6 +134,7 @@ const AuthUserProvider: React.FC = (props) => {
         success: false,
         data: undefined,
         error: undefined,
+        message: undefined,
       };
     }
     if (!responseStatus.isSuccessful) {
@@ -142,6 +149,7 @@ const AuthUserProvider: React.FC = (props) => {
       success: response.data.success as boolean,
       data: response.data.result as T | undefined,
       error: response.data.error as string | undefined,
+      message: response.data.message as string | undefined,
     };
   }
 
