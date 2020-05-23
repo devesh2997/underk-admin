@@ -1,0 +1,29 @@
+.custom-nav-tabs {
+  display: flex;
+  padding-left: 0;
+  margin-bottom: 0;
+  list-style: none;
+  overflow: auto;
+  background-color: $gray-100;
+  border-bottom: 1px solid $gray-200;
+}
+
+.nav-tab-item {
+  text-align: center;
+
+  .nav-link {
+    padding: 0.625rem 1.25rem;
+    font-weight: 500;
+    font-size: 0.875rem;
+    transition: all 0.15s ease;
+    background-image: linear-gradient(to right, $primary, $primary);
+    background-position: bottom center;
+    background-repeat: no-repeat;
+    background-size: 100% 0px;
+
+    &.active {
+      color: $primary;
+      background-size: 100% 3px;
+    }
+  }
+}
