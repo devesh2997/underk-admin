@@ -46,7 +46,7 @@ const useTypeAndAttributesRepository = () => {
         doApiRequestForHooks<null>(_request, config, isMounted, null, setLoading, setError, setMessage, getAllTypes)
     }
 
-    async function createAttributeValue(sku: string, name: string, attributeId: string, valueType: string, value: string) {
+    async function createAttributeValue(name: string, sku: string, attributeId: string, valueType: string, value: string) {
         if (loading || !isMounted.current) return
         setError("")
         setMessage("")
