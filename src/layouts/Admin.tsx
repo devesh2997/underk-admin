@@ -14,7 +14,7 @@ const Admin: React.FC = (props) => {
   const location = useLocation();
   const mainContent = useRef<HTMLDivElement | null>(null);
 
-  const [uChatCollapsed, setUChatCollapsed] = useState(true)
+  const [uChatCollapsed, setUChatCollapsed] = useState(true);
 
   useEffect(() => {
     document.documentElement.scrollTop = 0;
@@ -63,18 +63,28 @@ const Admin: React.FC = (props) => {
       <div className="main-content" ref={mainContent}>
         <Row>
           <Col>
-            <AdminNavbar {...props} brandText={getBrandText()} uChatCollapsed={uChatCollapsed} uChatToggler={setUChatCollapsed}/>
+            <AdminNavbar
+              {...props}
+              brandText={getBrandText()}
+              uChatCollapsed={uChatCollapsed}
+              uChatToggler={setUChatCollapsed}
+            />
             <Switch>
               {getRoutes(routes)}
               <Redirect from="*" to="/admin/index" />
             </Switch>
-          </Col>
-          <Col lg="2" style={{display:uChatCollapsed?'none':''}} onClick={()=>setUChatCollapsed(!uChatCollapsed)}>uChat</Col>
-        </Row>
 
-        <Container fluid>
-          <AdminFooter />
-        </Container>
+            <Container fluid>
+              <AdminFooter />
+            </Container>
+          </Col>
+          <Col
+            lg="2"
+            style={{ display: uChatCollapsed ? "none" : "", backgroundColor:"black" }}
+            onClick={() => setUChatCollapsed(!uChatCollapsed)}
+          >uChat
+          </Col>
+        </Row>
       </div>
     </>
   );

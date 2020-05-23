@@ -13,10 +13,18 @@ import {
   TabContent,
 } from "reactstrap";
 import { useTabSelect } from "hooks/Index";
+import { Category } from "models/catalogue/Category";
+import TableWithColorToggler from "components/Widgets/TableWithColorToggler";
+import JsonTreeView from "components/Widgets/JsonTreeView";
 
-const CategoriesView = () => {
+type Props = {
+  categories: Category[];
+  categoriesFlatArray: Category[] | undefined;
+};
+
+const CategoriesView: React.FC<Props> = (props: Props) => {
   const { activeTab, toggleActiveTab } = useTabSelect(1);
-
+  const { categories, categoriesFlatArray } = props;
   return (
     <>
       <Container fluid>
@@ -64,25 +72,45 @@ const CategoriesView = () => {
           </Col>
         </Row>
         <Row>
-          <TabContent activeTab={"tabs" + activeTab}>
-            <TabPane tabId="tabs1">
-              <p className="description">
-                Raw denim you probably haven't heard of them jean shorts Austin.
-                Nesciunt tofu stumptown aliqua, retro synth master cleanse.
-                Mustache cliche tempor, williamsburg carles vegan helvetica.
-                Reprehenderit butcher retro keffiyeh dreamcatcher synth.
-              </p>
-              <p className="description">
-                Raw denim you probably haven't heard of them jean shorts Austin.
-                Nesciunt tofu stumptown aliqua, retro synth master cleanse.
-              </p>
-            </TabPane>
-            <TabPane tabId="tabs2">Test</TabPane>
-          </TabContent>
+          <Col>
+            <TabContent activeTab={"tabs" + activeTab}>
+              <TabPane tabId="tabs1">
+                <CategoriesListView categoriesFlatArray={categoriesFlatArray} />
+              </TabPane>
+              <TabPane tabId="tabs2">
+                <JsonTreeView src={categories} />
+              </TabPane>
+            </TabContent>
+          </Col>
         </Row>
       </Container>
     </>
   );
 };
 
-export default CategoriesView
+type ListViewProps = {
+  categoriesFlatArray: Category[] | undefined;
+};
+
+const CategoriesListView: React.FC<ListViewProps> = (props: ListViewProps) => {
+  const categoriesFlatArray = props.categoriesFlatArray;
+
+  let rows: JSX.Element[] | undefined = [];
+
+  rows = categoriesFlatArray?.map((category) => (
+    <tr key={category.slug}>
+      <td>{category.id}</td>
+      <td>{category.name}</td>
+      <td>{category.slug}</td>
+      <td>{category.sku}</td>
+    </tr>
+  ));
+
+  return (
+    <TableWithColorToggler columns={["id", "name", "slug", "sku"]}>
+      <tbody>{rows}</tbody>
+    </TableWithColorToggler>
+  );
+};
+
+export default CategoriesView;

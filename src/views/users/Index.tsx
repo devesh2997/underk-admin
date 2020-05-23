@@ -11,6 +11,7 @@ import {
   NavLink,
   TabContent,
   TabPane,
+  UncontrolledAlert,
 } from "reactstrap";
 import UsersHeader from "components/Headers/UsersHeader";
 import { useTabSelect } from "hooks/Index";
@@ -22,7 +23,14 @@ import UserCreate from "./UserCreate";
 
 const Users: React.FC = () => {
   const { activeTab, toggleActiveTab } = useTabSelect(1);
-  const { loading, error, users, getAll, create } = useUsersRepository();
+  const {
+    loading,
+    error,
+    message,
+    users,
+    getAll,
+    create,
+  } = useUsersRepository();
   return (
     <>
       <UsersHeader totalUsers={users.length}></UsersHeader>
@@ -77,6 +85,24 @@ const Users: React.FC = () => {
             </span>
           </Col>
         </Row>
+        {message && (
+          <Row>
+            <Col>
+              <UncontrolledAlert color="success" fade={false}>
+                <span className="alert-inner--text">{message}</span>
+              </UncontrolledAlert>
+            </Col>
+          </Row>
+        )}
+        {error && (
+          <Row>
+            <Col>
+              <UncontrolledAlert color="danger" fade={false}>
+                <span className="alert-inner--text">{error}</span>
+              </UncontrolledAlert>
+            </Col>
+          </Row>
+        )}
         <Row className="justify-content-md-center">
           {loading && (
             <Col lg="2">
@@ -85,14 +111,14 @@ const Users: React.FC = () => {
           )}
           {!loading && (
             <Col>
-                  <TabContent activeTab={"tabs" + activeTab}>
-                    <TabPane tabId="tabs1">
-                      <UserList users={users} />
-                    </TabPane>
-                    <TabPane tabId="tabs2">
-                      <UserCreate create={create} error={error} />
-                    </TabPane>
-                  </TabContent>
+              <TabContent activeTab={"tabs" + activeTab}>
+                <TabPane tabId="tabs1">
+                  <UserList users={users} />
+                </TabPane>
+                <TabPane tabId="tabs2">
+                  <UserCreate create={create} />
+                </TabPane>
+              </TabContent>
             </Col>
           )}
         </Row>
