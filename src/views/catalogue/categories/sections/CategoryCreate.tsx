@@ -34,10 +34,19 @@ const CategoryCreate: React.FC<Props> = (props: Props) => {
     errors.push("SKU is empty");
   } else {
     sku.value = sku.value.toUpperCase();
+    if (categories?.some((c) => c.sku === sku.value)) {
+      valid = false;
+      errors.push("SKU is already in use.");
+    }
   }
   if (slug.value.length === 0) {
     valid = false;
     errors.push("Slug is empty");
+  } else {
+    if (categories?.some((c) => c.slug === slug.value)) {
+      valid = false;
+      errors.push("SLUG is already in use.");
+    }
   }
 
   return (

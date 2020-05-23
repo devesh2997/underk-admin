@@ -17,7 +17,7 @@ type Props = {
 
 const JsonTreeView: React.FC<Props> = (props: Props) => {
   const { src } = props;
-  const theme = useFormInput("monokai");
+  const theme = useFormInput("bright-inverted");
   const fontSize = useFormInput("14px");
   const displayObjectSize = useCheckboxInput(false);
   const collapsed = useCheckboxInput(false);
@@ -30,13 +30,13 @@ const JsonTreeView: React.FC<Props> = (props: Props) => {
           </div>
           <div className="col text-right">
             <Input type="select" {...theme}>
+              <option value="bright:inverted">bright:inverted</option>
               <option value="monokai">Monokai</option>
               <option value="apathy">apathy</option>
               <option value="apathy:inverted">apathy:inverted</option>
               <option value="ashes">ashes</option>
               <option value="bespin">bespin</option>
               <option value="brewer">brewer</option>
-              <option value="bright:inverted">bright:inverted</option>
               <option value="bright">bright</option>
               <option value="chalk">chalk</option>
               <option value="codeschool">codeschool</option>
@@ -117,6 +117,7 @@ const JsonTreeView: React.FC<Props> = (props: Props) => {
         style={{ fontSize: fontSize.value, fontFamily: "Open Sans" }}
         displayObjectSize={displayObjectSize.checked}
         collapsed={collapsed.checked}
+        displayDataTypes={false}
       />
     </Card>
   );

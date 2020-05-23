@@ -41,7 +41,6 @@ const useCategoriesRepository = () => {
 
     async function create(name: string, slug: string, sku: string, parentSlug: string) {
         if (loading || !isMounted.current) return
-        console.log(parentSlug)
         setError("")
         setMessage("")
         const config = { ...CATEGORY_CREATE_ENDPOINT, data: { sku, name, slug, parentSlug } }
