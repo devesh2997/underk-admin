@@ -52,6 +52,14 @@ export const isEmpty = (value: any) => {
   return isNull(value) || isUndefined(value)
 }
 
+export const isEmptyString = (value: string) => {
+  return isNull(value) || isUndefined(value) || value.length === 0
+}
+
+export const isNotEmptyString = (value: string) => {
+  return !isNull(value) && !isUndefined(value) && value.length !== 0
+}
+
 export const isNotEmpty = (value: any) => {
   return !isNull(value) && !isUndefined(value)
 }

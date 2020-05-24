@@ -19,6 +19,7 @@ import useCategoriesRepository from "data/catalogue/CategoriesRepository";
 import Refresh from "components/Widgets/Refresh";
 import Loading from "components/Widgets/Loading";
 import CategoryCreate from "./sections/CategoryCreate";
+import CategoryBulk from "./sections/CategoryBulk";
 
 const CategoriesTab = () => {
   const { activeTab, toggleActiveTab } = useTabSelect(1);
@@ -138,13 +139,7 @@ const CategoriesTab = () => {
                   />
                 </TabPane>
                 <TabPane tabId="tabs3">
-                  <p className="description">
-                    Raw denim you probably haven't heard of them jean shorts
-                    Austin. Nesciunt tofu stumptown aliqua, retro synth master
-                    cleanse. Mustache cliche tempor, williamsburg carles vegan
-                    helvetica. Reprehenderit butcher retro keffiyeh dreamcatcher
-                    synth.
-                  </p>
+                  <CategoryBulk categories={categoriesFlatArray} />
                 </TabPane>
               </TabContent>
             </Col>

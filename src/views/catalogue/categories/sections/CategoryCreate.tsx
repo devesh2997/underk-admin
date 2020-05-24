@@ -2,7 +2,7 @@ import React from "react";
 import { Category } from "models/catalogue/Category";
 import { CardBody, Card, Row, Col, CardHeader, Input } from "reactstrap";
 import { useFormInput } from "hooks/Index";
-import FormWithGuidesAndErros from "components/Widgets/FormWithGuidesAndErros";
+import FormWithGuidesAndErrors from "components/Widgets/FormWithGuidesAndErrors";
 
 type Props = {
   create: (
@@ -50,7 +50,7 @@ const CategoryCreate: React.FC<Props> = (props: Props) => {
   }
 
   return (
-    <FormWithGuidesAndErros
+    <FormWithGuidesAndErrors
       heading="Category Form"
       errors={errors}
       valid={valid}
@@ -104,7 +104,7 @@ const CategoryCreate: React.FC<Props> = (props: Props) => {
           <Input {...slug} />
         </Col>
       </Row>
-    </FormWithGuidesAndErros>
+    </FormWithGuidesAndErrors>
   );
 };
 export default CategoryCreate;

@@ -12,13 +12,13 @@ type Props = {
   children?: React.ReactNode;
 };
 
-const FormWithGuidesAndErros: React.FC<Props> = (props: Props) => {
+const FormWithGuidesAndErrors: React.FC<Props> = (props: Props) => {
   const { heading, guides, onSubmit, errors, valid } = props;
   return (
     <Card className="shadow">
       {heading && (
         <CardHeader>
-          <h2>{heading} </h2>
+          <h3>{heading} </h3>
         </CardHeader>
       )}
       <CardBody>
@@ -28,7 +28,7 @@ const FormWithGuidesAndErros: React.FC<Props> = (props: Props) => {
               <Col>
                 <ul className="list-unstyled">
                   <li>
-                    <strong>Guide:</strong>
+                    <h4 className="text-muted">Guide:</h4>
                     <ul>
                       {guides.map((g, i) => (
                         <li key={i}>{g}</li>
@@ -45,20 +45,16 @@ const FormWithGuidesAndErros: React.FC<Props> = (props: Props) => {
         {errors && errors.length > 0 && (
           <Row className="mt-5">
             <Col>
-              <Row>
-                <Col>
-                  <ul className="list-unstyled">
-                    <li>
-                      Errors:
-                      <ul>
-                        {errors.map((err) => (
-                          <li key={err}>{err}</li>
-                        ))}
-                      </ul>
-                    </li>
+              <ul className="list-unstyled">
+                <li>
+                  <h4 style={{ color: "red" }}>Errors:</h4>
+                  <ul>
+                    {errors.map((err) => (
+                      <li key={err}>{err}</li>
+                    ))}
                   </ul>
-                </Col>
-              </Row>
+                </li>
+              </ul>
             </Col>
           </Row>
         )}
@@ -81,8 +77,8 @@ const FormWithGuidesAndErros: React.FC<Props> = (props: Props) => {
   );
 };
 
-FormWithGuidesAndErros.defaultProps = {
+FormWithGuidesAndErrors.defaultProps = {
   valid: true,
 };
 
-export default FormWithGuidesAndErros;
+export default FormWithGuidesAndErrors;

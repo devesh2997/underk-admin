@@ -21,7 +21,7 @@ import Loading from "components/Widgets/Loading";
 import Refresh from "components/Widgets/Refresh";
 
 const TypesAttributesTab = () => {
-  const { activeTab, toggleActiveTab } = useTabSelect(2);
+  const { activeTab, toggleActiveTab } = useTabSelect(1);
   const {
     loading,
     error,

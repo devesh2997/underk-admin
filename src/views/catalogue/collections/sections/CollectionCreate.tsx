@@ -2,7 +2,7 @@ import React from "react";
 import { Collection } from "models/catalogue/Collection";
 import { CardBody, Card, Row, Col, CardHeader, Input } from "reactstrap";
 import { useFormInput } from "hooks/Index";
-import FormWithGuidesAndErros from "components/Widgets/FormWithGuidesAndErros";
+import FormWithGuidesAndErrors from "components/Widgets/FormWithGuidesAndErrors";
 
 type Props = {
   create: (name: string, slug: string) => Promise<void>;
@@ -31,7 +31,7 @@ const CollectionCreate: React.FC<Props> = (props: Props) => {
   }
 
   return (
-    <FormWithGuidesAndErros
+    <FormWithGuidesAndErrors
       heading="Collection Form"
       errors={errors}
       valid={valid}
@@ -58,7 +58,7 @@ const CollectionCreate: React.FC<Props> = (props: Props) => {
           <Input {...slug} />
         </Col>
       </Row>
-    </FormWithGuidesAndErros>
+    </FormWithGuidesAndErrors>
   );
 };
 export default CollectionCreate;

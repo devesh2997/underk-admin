@@ -10,7 +10,7 @@ import {
 } from "reactstrap";
 import { useFormInput, useCheckboxInput } from "hooks/Index";
 import Type from "models/catalogue/Type";
-import FormWithGuidesAndErros from "components/Widgets/FormWithGuidesAndErros";
+import FormWithGuidesAndErrors from "components/Widgets/FormWithGuidesAndErrors";
 
 type Props = {
   types: Type[];
@@ -109,7 +109,7 @@ const TypeCreate = (props: {
 
   return (
     <>
-      <FormWithGuidesAndErros
+      <FormWithGuidesAndErrors
         errors={errors}
         valid={valid}
         heading="Type Form :"
@@ -137,7 +137,7 @@ const TypeCreate = (props: {
             </FormGroup>
           </Col>
         </Row>
-      </FormWithGuidesAndErros>
+      </FormWithGuidesAndErrors>
     </>
   );
 };
@@ -178,7 +178,7 @@ const SubtypeCreate = (props: {
 
   return (
     <>
-      <FormWithGuidesAndErros
+      <FormWithGuidesAndErrors
         heading="Subtype Form : "
         guides={[
           <span>Selecting type from the dropdown is compulsory.</span>,
@@ -222,7 +222,7 @@ const SubtypeCreate = (props: {
             </FormGroup>
           </Col>
         </Row>
-      </FormWithGuidesAndErros>
+      </FormWithGuidesAndErrors>
     </>
   );
 };
@@ -302,7 +302,7 @@ const AttributeCreate = (props: {
 
   return (
     <>
-      <FormWithGuidesAndErros
+      <FormWithGuidesAndErrors
         heading="Attribute Form : "
         valid={valid}
         errors={errors}
@@ -406,7 +406,7 @@ const AttributeCreate = (props: {
             </div>
           </Col>
         </Row>
-      </FormWithGuidesAndErros>
+      </FormWithGuidesAndErrors>
     </>
   );
 };
