@@ -2,7 +2,9 @@ import { Category } from "models/catalogue/Category"
 import { useRef, useContext, useState, useEffect } from "react"
 import { AuthUserContext } from "session"
 import { doApiRequestForHooks } from "data/utils"
-import { CATEGORY_GET_ALL_ENDPOINT, CATEGORY_CREATE_ENDPOINT } from "constants/api-endpoints/catalogue"
+import { CATEGORY_GET_ALL_ENDPOINT, CATEGORY_CREATE_ENDPOINT, CATEGORY_BULK_CREATE_ENDPOINT } from "constants/api-endpoints/catalogue"
+import { BulkCreateResult } from "models/shared/BulkCreateResult"
+import { CategoryCreateInfo } from "views/catalogue/categories/sections/CategoryBulk"
 
 const useCategoriesRepository = () => {
     const isMounted = useRef(true)
@@ -14,6 +16,8 @@ const useCategoriesRepository = () => {
     const [error, setError] = useState("")
     const [message, setMessage] = useState("")
     const [categories, setCategories] = useState<Category[]>([])
+
+    const [bulkCreateResult, setBulkCreateResult] = useState<BulkCreateResult<Category>>()
 
     const [categoriesFlatArray, setCategoriesFlatArray] = useState<Category[] | undefined>(<Category[]>[])
 
@@ -48,6 +52,16 @@ const useCategoriesRepository = () => {
 
     }
 
+    async function bulkCreate(categoriesInfo: CategoryCreateInfo[]) {
+        console.log('here')
+        if (loading || !isMounted.current) return
+        setError("")
+        setMessage("")
+        const config = { ...CATEGORY_BULK_CREATE_ENDPOINT, data: categoriesInfo }
+        doApiRequestForHooks<BulkCreateResult<Category> | undefined>(_request, config, isMounted, setBulkCreateResult, setLoading, setError, setMessage, getAll)
+
+    }
+
     useEffect(() => {
         let cats: Category[] | undefined = []
         for (let i = 0; i < categories.length; i++) {
@@ -69,6 +83,8 @@ const useCategoriesRepository = () => {
     return {
         categories,
         categoriesFlatArray,
+        bulkCreateResult,
+        bulkCreate,
         error,
         message,
         loading,

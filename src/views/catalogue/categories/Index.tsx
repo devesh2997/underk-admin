@@ -4,8 +4,6 @@ import classnames from "classnames";
 // reactstrap components
 import {
   Container,
-  Nav,
-  NavItem,
   NavLink,
   Row,
   Col,
@@ -20,12 +18,15 @@ import Refresh from "components/Widgets/Refresh";
 import Loading from "components/Widgets/Loading";
 import CategoryCreate from "./sections/CategoryCreate";
 import CategoryBulk from "./sections/CategoryBulk";
+import { CustomNavTabs, NavTabItem } from "components/Widgets/CustomNavTabs";
 
 const CategoriesTab = () => {
   const { activeTab, toggleActiveTab } = useTabSelect(1);
   const {
     categories,
     categoriesFlatArray,
+    bulkCreate,
+    bulkCreateResult,
     loading,
     error,
     message,
@@ -56,27 +57,20 @@ const CategoriesTab = () => {
         <Row>
           <Col>
             <div className="nav-wrapper">
-              <Nav
-                className="nav-fill flex-column flex-md-row"
-                id="tabs-icons-text"
-                pills
-                role="tablist"
-              >
-                <NavItem>
+              <CustomNavTabs>
+                <NavTabItem>
                   <NavLink
                     aria-selected={activeTab === 1}
                     className={classnames("mb-sm-3 mb-md-0", {
                       active: activeTab === 1,
                     })}
                     onClick={(e) => toggleActiveTab(e, 1)}
-                    href="#products"
-                    role="tab"
                   >
                     <i className="far fa-eye mr-2" />
                     View
                   </NavLink>
-                </NavItem>
-                <NavItem>
+                </NavTabItem>
+                <NavTabItem>
                   <NavLink
                     aria-selected={activeTab === 2}
                     className={classnames("mb-sm-3 mb-md-0", {
@@ -89,8 +83,8 @@ const CategoriesTab = () => {
                     <i className="ni ni-fat-add mr-2"></i>
                     Add Single Category
                   </NavLink>
-                </NavItem>
-                <NavItem>
+                </NavTabItem>
+                <NavTabItem>
                   <NavLink
                     aria-selected={activeTab === 3}
                     className={classnames("mb-sm-3 mb-md-0", {
@@ -103,8 +97,8 @@ const CategoriesTab = () => {
                     <i className="fas fa-table mr-2"></i>
                     Bulk upload categories
                   </NavLink>
-                </NavItem>
-              </Nav>
+                </NavTabItem>
+              </CustomNavTabs>
             </div>
           </Col>
           <Col lg="1">
@@ -139,7 +133,7 @@ const CategoriesTab = () => {
                   />
                 </TabPane>
                 <TabPane tabId="tabs3">
-                  <CategoryBulk categories={categoriesFlatArray} />
+                  <CategoryBulk categories={categoriesFlatArray} bulkCreateResult={bulkCreateResult} bulkCreate={bulkCreate}/>
                 </TabPane>
               </TabContent>
             </Col>

@@ -10,6 +10,11 @@ export const CATEGORY_CREATE_ENDPOINT = {
     url: baseURL + "/category",
 };
 
+export const CATEGORY_BULK_CREATE_ENDPOINT = {
+    method: HTTP_METHODS.POST,
+    url: baseURL + "/category/bulk",
+};
+
 export const COLLECTION_GET_ALL_ENDPOINT = {
     method: HTTP_METHODS.GET,
     url: baseURL + "/collections",

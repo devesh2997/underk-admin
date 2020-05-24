@@ -6,7 +6,6 @@ import {
   FormGroup,
   Input,
   Container,
-  Button,
 } from "reactstrap";
 import { useFormInput, useCheckboxInput } from "hooks/Index";
 import Type from "models/catalogue/Type";
@@ -256,7 +255,7 @@ const AttributeCreate = (props: {
 
             if (typeof subtype.attributes !== "undefined") {
               for (let k = 0; k < subtype.attributes.length; k++) {
-                if (subtype.attributes[k].skuOrdering != -1)
+                if (subtype.attributes[k].skuOrdering !== -1)
                   skuOrderingsInUse.push(subtype.attributes[k].skuOrdering);
               }
             }

@@ -4,8 +4,6 @@ import classnames from "classnames";
 // reactstrap components
 import {
   Container,
-  Nav,
-  NavItem,
   NavLink,
   Row,
   Col,
@@ -19,6 +17,7 @@ import useCollectionsRepository from "data/catalogue/CollectionsRepository";
 import Refresh from "components/Widgets/Refresh";
 import Loading from "components/Widgets/Loading";
 import CollectionCreate from "./sections/CollectionCreate";
+import { NavTabItem, CustomNavTabs } from "components/Widgets/CustomNavTabs";
 
 const CollectionsTab = () => {
   const { activeTab, toggleActiveTab } = useTabSelect(1);
@@ -54,13 +53,8 @@ const CollectionsTab = () => {
         <Row>
           <Col>
             <div className="nav-wrapper">
-              <Nav
-                className="nav-fill flex-column flex-md-row"
-                id="tabs-icons-text"
-                pills
-                role="tablist"
-              >
-                <NavItem>
+              <CustomNavTabs>
+                <NavTabItem>
                   <NavLink
                     aria-selected={activeTab === 1}
                     className={classnames("mb-sm-3 mb-md-0", {
@@ -73,8 +67,8 @@ const CollectionsTab = () => {
                     <i className="far fa-eye mr-2" />
                     View
                   </NavLink>
-                </NavItem>
-                <NavItem>
+                </NavTabItem>
+                <NavTabItem>
                   <NavLink
                     aria-selected={activeTab === 2}
                     className={classnames("mb-sm-3 mb-md-0", {
@@ -87,8 +81,8 @@ const CollectionsTab = () => {
                     <i className="ni ni-fat-add mr-2"></i>
                     Add Single Collection
                   </NavLink>
-                </NavItem>
-                <NavItem>
+                </NavTabItem>
+                <NavTabItem>
                   <NavLink
                     aria-selected={activeTab === 3}
                     className={classnames("mb-sm-3 mb-md-0", {
@@ -101,8 +95,8 @@ const CollectionsTab = () => {
                     <i className="fas fa-table mr-2"></i>
                     Bulk upload collections
                   </NavLink>
-                </NavItem>
-              </Nav>
+                </NavTabItem>
+              </CustomNavTabs>
             </div>
           </Col>
           <Col lg="1">
@@ -125,15 +119,10 @@ const CollectionsTab = () => {
             <Col>
               <TabContent activeTab={"tabs" + activeTab}>
                 <TabPane tabId="tabs1">
-                  <CollectionsView
-                    collections={collections}
-                  />
+                  <CollectionsView collections={collections} />
                 </TabPane>
                 <TabPane tabId="tabs2">
-                  <CollectionCreate
-                    create={create}
-                    collections={collections}
-                  />
+                  <CollectionCreate create={create} collections={collections} />
                 </TabPane>
                 <TabPane tabId="tabs3">
                   <p className="description">

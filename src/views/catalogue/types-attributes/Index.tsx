@@ -4,8 +4,6 @@ import classnames from "classnames";
 // reactstrap components
 import {
   Container,
-  Nav,
-  NavItem,
   NavLink,
   Row,
   Col,
@@ -19,6 +17,7 @@ import { useTabSelect } from "hooks/Index";
 import useTypeRepository from "data/catalogue/TypeAndAttributesRepository";
 import Loading from "components/Widgets/Loading";
 import Refresh from "components/Widgets/Refresh";
+import { CustomNavTabs, NavTabItem } from "components/Widgets/CustomNavTabs";
 
 const TypesAttributesTab = () => {
   const { activeTab, toggleActiveTab } = useTabSelect(1);
@@ -58,13 +57,8 @@ const TypesAttributesTab = () => {
           <Row className="align-items-center">
             <Col>
               <div className="nav-wrapper">
-                <Nav
-                  className="nav-fill flex-column flex-md-row"
-                  id="tabs-icons-text"
-                  pills
-                  role="tablist"
-                >
-                  <NavItem>
+                <CustomNavTabs>
+                  <NavTabItem>
                     <NavLink
                       aria-selected={activeTab === 1}
                       className={classnames("mb-sm-3 mb-md-0", {
@@ -77,8 +71,8 @@ const TypesAttributesTab = () => {
                       <i className="far fa-eye mr-2" />
                       View
                     </NavLink>
-                  </NavItem>
-                  <NavItem>
+                  </NavTabItem>
+                  <NavTabItem>
                     <NavLink
                       aria-selected={activeTab === 2}
                       className={classnames("mb-sm-3 mb-md-0", {
@@ -91,8 +85,8 @@ const TypesAttributesTab = () => {
                       <i className="ni ni-fat-add mr-2"></i>
                       Add Types, Subtypes or Attributes
                     </NavLink>
-                  </NavItem>
-                  <NavItem>
+                  </NavTabItem>
+                  <NavTabItem>
                     <NavLink
                       aria-selected={activeTab === 3}
                       className={classnames("mb-sm-3 mb-md-0", {
@@ -105,8 +99,8 @@ const TypesAttributesTab = () => {
                       <i className="fas fa-table mr-2"></i>
                       Bulk upload AttributeValues
                     </NavLink>
-                  </NavItem>
-                </Nav>
+                  </NavTabItem>
+                </CustomNavTabs>
               </div>
             </Col>
             <Col lg="1">

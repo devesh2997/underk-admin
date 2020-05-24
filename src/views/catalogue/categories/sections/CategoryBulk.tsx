@@ -5,21 +5,41 @@ import { Row, Col, Table, Input } from "reactstrap";
 import CSVReader from "react-csv-reader";
 import { isEmpty, isNotEmpty, isEmptyString, isNotEmptyString } from "utils";
 import { Category } from "models/catalogue/Category";
+import { BulkCreateResult } from "models/shared/BulkCreateResult";
+
+export type CategoryCreateInfo = {
+  name: string;
+  slug: string;
+  sku: string;
+  parentSlug: string;
+};
 
 type Props = {
   categories: Category[] | undefined;
+  bulkCreate: (
+    categoriesInfo: {
+      name: string;
+      slug: string;
+      sku: string;
+      parentSlug: string;
+    }[]
+  ) => Promise<void>;
+  bulkCreateResult: BulkCreateResult<Category> | undefined;
 };
 
 const CategoryBulk: React.FC<Props> = (props: Props) => {
-  const { categories } = props;
+  const { categories, bulkCreate, bulkCreateResult } = props;
   let [errors, setErrors] = useState<string[]>([]);
 
   let [valid, setValid] = useState(false);
 
-  function handleFileSelection(csvData: any[], fileInfo: any) {
-    console.log(fileInfo);
+  let [categoriesInfo, setCategoriesInfo] = useState<CategoryCreateInfo[]>([]);
+
+  function handleFileSelection(csvData: any[], _: any) {
+    let categoriesInfo: CategoryCreateInfo[] = [];
     let errors = [];
     for (let i = 0; i < csvData.length; i++) {
+      let isValid = true;
       const row = csvData[i];
       if (isEmpty(row)) continue;
       if (
@@ -30,12 +50,15 @@ const CategoryBulk: React.FC<Props> = (props: Props) => {
         continue;
       const rowStr = "Row " + (i + 1) + " : ";
       if (isEmptyString(row[0])) {
+        isValid = false;
         errors.push(rowStr + "Name should not be empty.");
       }
       if (isEmptyString(row[1])) {
+        isValid = false;
         errors.push(rowStr + "SKU should not be empty.");
       }
       if (isEmptyString(row[2])) {
+        isValid = false;
         errors.push(rowStr + "Slug should not be empty.");
       }
 
@@ -47,6 +70,7 @@ const CategoryBulk: React.FC<Props> = (props: Props) => {
           isNotEmptyString(rowj[0]) &&
           row[0] === rowj[0]
         ) {
+          isValid = false;
           errors.push(rowStr + "Duplicate name exists at row " + j);
         }
         if (
@@ -54,6 +78,7 @@ const CategoryBulk: React.FC<Props> = (props: Props) => {
           isNotEmptyString(rowj[0]) &&
           row[1] === rowj[1]
         ) {
+          isValid = false;
           errors.push(rowStr + "Duplicate SKU exists at row " + j);
         }
         if (
@@ -61,39 +86,57 @@ const CategoryBulk: React.FC<Props> = (props: Props) => {
           isNotEmptyString(rowj[0]) &&
           row[2] === rowj[2]
         ) {
+          isValid = false;
           errors.push(rowStr + "Duplicate slug exists at row " + j);
         }
       }
       if (typeof categories !== "undefined") {
         if (isNotEmptyString(row[0])) {
           if (categories.some((c) => c.name === row[0])) {
+            isValid = false;
             errors.push(rowStr + "Name is already in use.");
           }
         }
         if (isNotEmptyString(row[1])) {
           if (categories.some((c) => c.sku === row[1])) {
+            isValid = false;
             errors.push(rowStr + "SKU is already in use.");
           }
         }
         if (isNotEmptyString(row[2])) {
           if (categories.some((c) => c.slug === row[2])) {
+            isValid = false;
             errors.push(rowStr + "Slug is already in use.");
           }
         }
       }
 
+      if(i===24){
+        console.log('here')
+      }
+
       if (isNotEmptyString(row[3])) {
         if (!categories?.some((c) => c.slug === row[3])) {
-          if (!csvData.some((s) => s[3] === row[3] && s[1] !== row[1])) {
+          if (!csvData.some((s) => s[1] === row[3] && s[1] !== row[1])) {
+            isValid = false;
             errors.push(
               rowStr + "Parent slug does not match with any existing category"
             );
           }
         }
       }
-      setValid(errors.length === 0);
-      setErrors(errors);
+      if (isValid) {
+        categoriesInfo.push({
+          name: row[0],
+          slug: row[1],
+          sku: row[2],
+          parentSlug: isNotEmptyString(row[3]) ? row[3] : undefined,
+        });
+      }
     }
+    setValid(errors.length === 0);
+    setErrors(errors);
+    setCategoriesInfo(categoriesInfo);
   }
   return (
     <FormWithGuidesAndErrors
@@ -110,7 +153,9 @@ const CategoryBulk: React.FC<Props> = (props: Props) => {
           If the category has a parent, please enter the slug of it's parent.
         </span>,
       ]}
-      onSubmit={() => {}}
+      onSubmit={() => {
+        bulkCreate(categoriesInfo);
+      }}
     >
       <Row>
         <Col>
@@ -148,6 +193,46 @@ const CategoryBulk: React.FC<Props> = (props: Props) => {
         </Col>
       </Row>
       <hr className="my-3" />
+      {bulkCreateResult && (
+        <>
+          <Row className="mt-5">
+            <Col>Bulk create result : </Col>
+          </Row>
+          {bulkCreateResult.errors && bulkCreateResult.errors.length > 0 && (
+            <Row className="mt-5">
+              <Col>
+                <ul className="list-unstyled">
+                  <li>
+                    <h4 style={{ color: "red" }}>Errors:</h4>
+                    <ul>
+                      {bulkCreateResult.errors.map((err) => (
+                        <li key={err.index}>{`Row : ${err.index} , error : ${err.error}`}</li>
+                      ))}
+                    </ul>
+                  </li>
+                </ul>
+              </Col>
+            </Row>
+          )}
+          {bulkCreateResult.entitiesCreated && bulkCreateResult.entitiesCreated.length > 0 && (
+            <Row className="mt-5">
+              <Col>
+                <ul className="list-unstyled">
+                  <li>
+                    <h4 style={{ color: "red" }}>Categories created :</h4>
+                    <ul>
+                      {bulkCreateResult.entitiesCreated.map((ent,i) => (
+                        <li key={i}>{JSON.stringify(ent)}</li>
+                      ))}
+                    </ul>
+                  </li>
+                </ul>
+              </Col>
+            </Row>
+          )}
+        </>
+      )}
+
       <Row className="mt-5">
         <Col sm="2">CSV File : </Col>
         <Col>

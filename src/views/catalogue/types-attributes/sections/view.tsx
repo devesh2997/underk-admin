@@ -13,11 +13,8 @@ import {
   TabPane,
 } from "reactstrap";
 import Type from "models/catalogue/Type";
-import Refresh from "components/Widgets/Refresh";
 import TableWithColorToggler from "components/Widgets/TableWithColorToggler";
-import { isEmpty } from "utils";
 import { useTabSelect } from "hooks/Index";
-import ReactJson from "react-json-view";
 import JsonTreeView from "components/Widgets/JsonTreeView";
 
 type Props = {
