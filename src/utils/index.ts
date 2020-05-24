@@ -5,17 +5,17 @@ import {
   isNumber,
   isString,
   isArray,
+  isUndefined
 } from "lodash";
 import Axios, { AxiosRequestConfig, AxiosResponse, AxiosError } from "axios";
 import POLICIES, { policy } from "underk-policies";
-import { to } from "await-to-ts"
+import { to } from "await-to-ts";
 
 import { MONTHS } from "../constants";
-import { isUndefined } from "util";
 
 //get age from dob
 export const getAge = (date: any) => {
-  if (isEmpty(date)) return
+  if (isEmpty(date)) return;
   let today = new Date();
   let birthDate = new Date(date);
   let age = today.getFullYear() - birthDate.getFullYear();
@@ -24,33 +24,31 @@ export const getAge = (date: any) => {
     age--;
   }
   return age;
-}
+};
 
 export const getPrimaryColor = () => {
-  return "#0DAC8E"
-}
+  return "#0DAC8E";
+};
 
 export const beautifyName = (firstName?: string, lastName?: string) => {
-  let beauty = ""
-  firstName = firstName as string
-  lastName = lastName as string
+  let beauty = "";
+  firstName = firstName as string;
+  lastName = lastName as string;
   if (isNotEmpty(firstName) && firstName.length > 0) {
-    beauty += firstName[0].toUpperCase()
-    if (firstName.length > 1)
-      beauty += firstName.substring(1)
+    beauty += firstName[0].toUpperCase();
+    if (firstName.length > 1) beauty += firstName.substring(1);
   }
   if (isNotEmpty(lastName) && lastName.length > 0) {
-    beauty += " "
-    beauty += lastName[0].toUpperCase()
-    if (lastName.length > 1)
-      beauty += lastName.substring(1)
+    beauty += " ";
+    beauty += lastName[0].toUpperCase();
+    if (lastName.length > 1) beauty += lastName.substring(1);
   }
-  return beauty
-}
+  return beauty;
+};
 
 export const isEmpty = (value: any) => {
-  return isNull(value) || isUndefined(value)
-}
+  return isNull(value) || isUndefined(value);
+};
 
 export const isEmptyString = (value: string) => {
   return isNull(value) || isUndefined(value) || value.length === 0
@@ -61,8 +59,8 @@ export const isNotEmptyString = (value: string) => {
 }
 
 export const isNotEmpty = (value: any) => {
-  return !isNull(value) && !isUndefined(value)
-}
+  return !isNull(value) && !isUndefined(value);
+};
 
 export const isPlainObjectWithKeys = (value: any) => {
   return isPlainObject(value) && !isNull(value);
@@ -152,19 +150,21 @@ export const prepareMultiOptsForRequest = (
 export const TE = (err: any, log: boolean = true) => {
   // TE stands for Throw Error
   if (log === true) {
-    console.error(err)
+    console.error(err);
   }
 
-  if (typeof err === 'string')
-    throw new Error(err)
-
-  else throw err
-}
+  if (typeof err === "string") throw new Error(err);
+  else throw err;
+};
 
 export const TO = async (promise: Promise<any>): Promise<[any, any]> => {
-  let err, res
-    ;[err, res] = await to(promise)
-  if (err) return [err, null]
+  let err, res;
+  [err, res] = await to(promise);
+  if (err) return [err, null];
 
-  return [null, res]
-}
+  return [null, res];
+};
+
+export const beautifyNumber = (num: number): string => {
+  return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+};
