@@ -50,6 +50,7 @@
     "@types/node": "^14.0.4",
     "@types/react-dom": "^16.9.8",
     "@types/react-router-dom": "^5.1.5",
+    "@types/react-select": "^3.0.13",
     "@types/reactstrap": "^8.4.2",
     "await-to-ts": "^1.0.6",
     "axios": "^0.19.2",
@@ -69,6 +70,7 @@
     "react-json-view": "^1.19.1",
     "react-router-dom": "5.1.2",
     "react-scripts": "3.4.1",
+    "react-select": "^3.1.0",
     "reactstrap": "8.4.1",
     "underk-policies": "git+https://github.com/devesh2997/underk-policies.git#master"
   },

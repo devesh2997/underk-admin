@@ -5,7 +5,7 @@ import Maps from "views/examples/Maps";
 import Login from "views/Login";
 import Tables from "views/examples/Tables";
 import Icons from "views/examples/Icons";
-import Personnel from "views/personnel/Index";
+import Personnel from "views/personnel";
 import Users from "views/users/Index";
 import Catalogue from "views/catalogue/Index";
 

@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { AxiosRequestConfig } from "axios";
 
-import { URLS, HTTP_METHODS } from "../constants";
+import { ADMIN_LOGIN_ENDPOINT } from "constants/api-endpoints";
 import {
   axios,
   isPlainObjectWithKeys,
@@ -9,7 +9,7 @@ import {
   stringify,
   TO,
   TE,
-} from "../utils";
+} from "utils";
 
 type AuthUser = {
   auid: string;
@@ -80,8 +80,7 @@ const AuthUserProvider: React.FC = (props) => {
   async function login(alias: string, password: string) {
     try {
       const response = await axios({
-        method: HTTP_METHODS.POST,
-        url: URLS.ADMIN_LOGIN_URL,
+        ...ADMIN_LOGIN_ENDPOINT,
         data: {
           alias,
           password,
