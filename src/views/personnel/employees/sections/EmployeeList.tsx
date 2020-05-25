@@ -1,19 +1,20 @@
 import React from "react";
 import TableWithColorToggler from "components/Widgets/TableWithColorToggler";
-import { EmployeeRepo } from "data/EmployeeRepository";
 import { NavLink, Badge, Row } from "reactstrap";
 import { beautifyName, getAge } from "utils";
 import GenderIcon from "components/Widgets/GenderIcon";
 import Loading from "components/Widgets/Loading";
+import Employee from "models/Employee";
 
 type EmployeeListProps = {
-  employeeRepo: EmployeeRepo;
+  loading: boolean;
+  employees: Employee[]
 };
 
-const EmployeeList: React.FC<EmployeeListProps> = ({ employeeRepo }) => {
+const EmployeeList: React.FC<EmployeeListProps> = ({ loading, employees }) => {
   return (
     <>
-      {employeeRepo.loading ? (
+      {loading ? (
         <div className="text-center">
           <Loading />
         </div>
@@ -31,7 +32,7 @@ const EmployeeList: React.FC<EmployeeListProps> = ({ employeeRepo }) => {
           ]}
         >
           <tbody>
-            {employeeRepo.employees.map((employee) => (
+            {employees.map((employee) => (
               <tr key={employee.euid}>
                 <td>{beautifyName(employee.firstName, employee.lastName)}</td>
                 <td>

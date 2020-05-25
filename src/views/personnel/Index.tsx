@@ -38,13 +38,21 @@ const Personnel: React.FC = () => {
     switch (route.path) {
       case "/admins":
         return {
-          adminRepo,
-          roleRepo,
-          policyRepo,
+          loadingAdmins: adminRepo.loading,
+          admins: adminRepo.admins,
+          createAdmin: adminRepo.create,
+          loadingRoles: roleRepo.loading,
+          roles: roleRepo.roles,
+          createRole: roleRepo.create,
+          loadingPolicies: policyRepo.loading,
+          policies: policyRepo.policies,
+          employees: employeeRepo.employees,
         };
       case "/employees":
         return {
-          employeeRepo,
+          loading: employeeRepo.loading,
+          employees: employeeRepo.employees,
+          createEmployee: employeeRepo.create,
         };
       default:
         return {};
@@ -71,7 +79,7 @@ const Personnel: React.FC = () => {
         <Route
           path={prop.layout + prop.path}
           exact={prop.exact || false}
-          children={({match}) => (
+          children={({ match }) => (
             <NavItem>
               <Link
                 className={classnames("mb-sm-3 mb-md-0 nav-link", {

@@ -9,42 +9,6 @@ import {
 } from "constants/api-endpoints/employee";
 import { doApiRequestForHooks } from "data/utils";
 
-export interface EmployeeRepo {
-  loading: boolean;
-  error: string;
-  message: string;
-  employees: Employee[];
-  getAllEmployees: () => Promise<void>;
-  createEmployee: (data: {
-    firstName: string;
-    lastName: string;
-    email: string;
-    mobileCountryCode: string;
-    mobileNumber: number;
-    dob?: number;
-    gender: string;
-    picUrl?: string;
-    mobileVerified: boolean;
-    emailVerified: boolean;
-    address: string;
-  }) => Promise<void>;
-  deleteEmployee: (params: { euid: string }) => Promise<void>;
-  updateEmployee: (data: {
-    euid: string;
-    firstName: string;
-    lastName: string;
-    email: string;
-    mobileCountryCode: string;
-    mobileNumber: number;
-    dob: number;
-    gender: string;
-    picUrl: string;
-    mobileVerified: boolean;
-    emailVerified: boolean;
-    address: string;
-  }) => Promise<void>;
-}
-
 function useEmployeeRepository() {
   const isMounted = useRef(true);
 
@@ -56,7 +20,7 @@ function useEmployeeRepository() {
   const [message, setMessage] = useState("");
   const [employees, setEmployees] = useState<Employee[]>([]);
 
-  async function getAllEmployees() {
+  async function getAll() {
     if (loading || !isMounted.current) return;
     setError("");
     doApiRequestForHooks<Employee[]>(
@@ -71,7 +35,7 @@ function useEmployeeRepository() {
     );
   }
 
-  async function createEmployee(data: {
+  async function create(data: {
     firstName: string;
     lastName: string;
     email: string;
@@ -95,14 +59,14 @@ function useEmployeeRepository() {
       setLoading,
       setError,
       setMessage,
-      getAllEmployees
+      getAll
     );
   }
 
-  async function deleteEmployee(params: { euid: string }) {
+  async function deleteById(euid: string) {
     if (loading || !isMounted.current) return;
     setError("");
-    const config = { ...EMPLOYEE_DELETE_ENDPOINT, params };
+    const config = { ...EMPLOYEE_DELETE_ENDPOINT, params: { euid } };
     doApiRequestForHooks<null>(
       _request,
       config,
@@ -111,11 +75,11 @@ function useEmployeeRepository() {
       setLoading,
       setError,
       setMessage,
-      getAllEmployees
+      getAll
     );
   }
 
-  async function updateEmployee(data: {
+  async function update(data: {
     euid: string;
     firstName: string;
     lastName: string;
@@ -140,12 +104,12 @@ function useEmployeeRepository() {
       setLoading,
       setError,
       setMessage,
-      getAllEmployees
+      getAll
     );
   }
 
   useEffect(() => {
-    getAllEmployees();
+    getAll();
   }, []);
 
   useEffect(() => {
@@ -159,10 +123,10 @@ function useEmployeeRepository() {
     error,
     message,
     employees,
-    getAllEmployees,
-    createEmployee,
-    deleteEmployee,
-    updateEmployee,
+    getAll,
+    create,
+    deleteById,
+    update,
   };
 }
 
