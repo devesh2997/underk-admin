@@ -55,7 +55,7 @@ const Admin: React.FC = (props) => {
         {...props}
         routes={routes}
         logo={{
-          innerLink: "/admin/index",
+          innerLink: "/admin/dashboard",
           imgSrc: require("assets/img/brand/logo-short.png"),
           imgAlt: "...",
         }}
@@ -71,7 +71,7 @@ const Admin: React.FC = (props) => {
             />
             <Switch>
               {getRoutes(routes)}
-              <Redirect from="*" to="/admin/index" />
+              <Redirect from="*" to="/admin/dashboard" />
             </Switch>
 
             <Container fluid>
@@ -80,9 +80,13 @@ const Admin: React.FC = (props) => {
           </Col>
           <Col
             lg="2"
-            style={{ display: uChatCollapsed ? "none" : "", backgroundColor:"black" }}
+            style={{
+              display: uChatCollapsed ? "none" : "",
+              backgroundColor: "black",
+            }}
             onClick={() => setUChatCollapsed(!uChatCollapsed)}
-          >uChat
+          >
+            uChat
           </Col>
         </Row>
       </div>

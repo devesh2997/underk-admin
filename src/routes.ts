@@ -1,26 +1,27 @@
 import React from "react";
 
-import Index from "views/Index";
-import Login from "views/Login";
-import Tables from "views/examples/Tables";
-import Personnel from "views/personnel/Index";
+import Dashboard from "views/Dashboard";
+import Personnel from "views/personnel";
 import Users from "views/users/Index";
 import Catalogue from "views/catalogue/Index";
+import Login from "views/Login";
 
 export type RouteType = {
   path: string;
   name: string;
-  icon: string;
-  component: React.ComponentType;
+  exact?: boolean;
+  icon?: string;
+  component: React.ComponentType<any>;
   layout: string;
+  // allowedPolicies?: string[];
 };
 
 const routes: RouteType[] = [
   {
-    path: "/index",
+    path: "/dashboard",
     name: "Dashboard",
     icon: "ni ni-tv-2 text-primary",
-    component: Index,
+    component: Dashboard,
     layout: "/admin",
   },
   {
@@ -42,13 +43,6 @@ const routes: RouteType[] = [
     name: "Catalogue",
     icon: "ni ni-box-2 text-orange",
     component: Catalogue,
-    layout: "/admin",
-  },
-  {
-    path: "/tables",
-    name: "Tables",
-    icon: "ni ni-bullet-list-67 text-red",
-    component: Tables,
     layout: "/admin",
   },
   {
