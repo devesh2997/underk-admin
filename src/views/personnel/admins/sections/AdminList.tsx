@@ -1,18 +1,19 @@
 import React from "react";
-import { AdminRepo } from "data/AdminRepository";
 import Loading from "components/Widgets/Loading";
 import TableWithColorToggler from "components/Widgets/TableWithColorToggler";
 import { Badge, Button } from "reactstrap";
 import { beautifyDate } from "utils";
+import Admin from "models/Admin";
 
 type AdminListProps = {
-  adminRepo: AdminRepo;
+  loading: boolean;
+  admins: Admin[]
 };
 
-const AdminList: React.FC<AdminListProps> = ({ adminRepo }) => {
+const AdminList: React.FC<AdminListProps> = ({ loading, admins }) => {
   return (
     <>
-      {adminRepo.loading ? (
+      {loading ? (
         <div className="text-center">
           <Loading />
         </div>
@@ -29,7 +30,7 @@ const AdminList: React.FC<AdminListProps> = ({ adminRepo }) => {
           ]}
         >
           <tbody>
-            {adminRepo.admins.map((admin) => (
+            {admins.map((admin) => (
               <tr key={admin.auid}>
                 <td>{admin.alias}</td>
                 <td>

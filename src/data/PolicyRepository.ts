@@ -4,14 +4,6 @@ import Policy from "models/Policy";
 import { POLICY_GET_ALL_ENDPOINT } from "constants/api-endpoints/policy";
 import { doApiRequestForHooks } from "data/utils";
 
-export interface PolicyRepo {
-  loading: boolean;
-  error: string;
-  message: string;
-  policies: Policy[];
-  getAllPolicies: () => Promise<void>;
-}
-
 function usePolicyRepository() {
   const isMounted = useRef(true);
 
@@ -23,7 +15,7 @@ function usePolicyRepository() {
   const [message, setMessage] = useState("");
   const [policies, setPolicies] = useState<Policy[]>([]);
 
-  async function getAllPolicies() {
+  async function getAll() {
     if (loading || !isMounted.current) return;
     setError("");
     doApiRequestForHooks<Policy[]>(
@@ -39,7 +31,7 @@ function usePolicyRepository() {
   }
 
   useEffect(() => {
-    getAllPolicies();
+    getAll();
   }, []);
 
   useEffect(() => {
@@ -53,7 +45,7 @@ function usePolicyRepository() {
     error,
     message,
     policies,
-    getAllPolicies,
+    getAll,
   };
 }
 

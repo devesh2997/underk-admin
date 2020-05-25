@@ -10,28 +10,6 @@ import {
 } from "constants/api-endpoints/role";
 import { doApiRequestForHooks } from "data/utils";
 
-export interface RoleRepo {
-  loading: boolean;
-  error: string;
-  message: string;
-  roles: Role[];
-  getAllRoles: () => Promise<void>;
-  createRole: (data: {
-    name: string;
-    description: string;
-    policyNames: string;
-  }) => Promise<void>;
-  deleteRole: (params: { id: number }) => Promise<void>;
-  addPoliciesToRole: (data: {
-    id: number;
-    policyNames: string;
-  }) => Promise<void>;
-  deletePoliciesFromRole: (data: {
-    id: number;
-    policyNames: string;
-  }) => Promise<void>;
-}
-
 function useRoleRepository() {
   const isMounted = useRef(true);
 
@@ -43,7 +21,7 @@ function useRoleRepository() {
   const [message, setMessage] = useState("");
   const [roles, setRoles] = useState<Role[]>([]);
 
-  async function getAllRoles() {
+  async function getAll() {
     if (loading || !isMounted.current) return;
     setError("");
     doApiRequestForHooks<Role[]>(
@@ -58,7 +36,7 @@ function useRoleRepository() {
     );
   }
 
-  async function createRole(data: {
+  async function create(data: {
     name: string;
     description: string;
     policyNames: string;
@@ -74,14 +52,14 @@ function useRoleRepository() {
       setLoading,
       setError,
       setMessage,
-      getAllRoles
+      getAll
     );
   }
 
-  async function deleteRole(params: { id: number }) {
+  async function deleteById(id: number) {
     if (loading || !isMounted.current) return;
     setError("");
-    const config = { ...ROLE_DELETE_ENDPOINT, params };
+    const config = { ...ROLE_DELETE_ENDPOINT, params: { id } };
     doApiRequestForHooks<null>(
       _request,
       config,
@@ -90,7 +68,7 @@ function useRoleRepository() {
       setLoading,
       setError,
       setMessage,
-      getAllRoles
+      getAll
     );
   }
 
@@ -106,7 +84,7 @@ function useRoleRepository() {
       setLoading,
       setError,
       setMessage,
-      getAllRoles
+      getAll
     );
   }
 
@@ -125,12 +103,12 @@ function useRoleRepository() {
       setLoading,
       setError,
       setMessage,
-      getAllRoles
+      getAll
     );
   }
 
   useEffect(() => {
-    getAllRoles();
+    getAll();
   }, []);
 
   useEffect(() => {
@@ -144,9 +122,9 @@ function useRoleRepository() {
     error,
     message,
     roles,
-    getAllRoles,
-    createRole,
-    deleteRole,
+    getAll,
+    create,
+    deleteById,
     addPoliciesToRole,
     deletePoliciesFromRole,
   };

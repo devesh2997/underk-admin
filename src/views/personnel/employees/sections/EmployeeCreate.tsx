@@ -14,13 +14,24 @@ import {
 } from "reactstrap";
 import { useFormInput } from "hooks/Index";
 import ReactDatetime from "react-datetime";
-import { EmployeeRepo } from "data/EmployeeRepository";
 
 type EmployeeCreateProps = {
-  employeeRepo: EmployeeRepo;
+  createEmployee: (data: {
+    firstName: string;
+    lastName: string;
+    email: string;
+    mobileCountryCode: string;
+    mobileNumber: number;
+    dob?: number;
+    gender: string;
+    picUrl?: string;
+    mobileVerified: boolean;
+    emailVerified: boolean;
+    address: string;
+  }) => Promise<void>;
 };
 
-const EmployeeCreate: React.FC<EmployeeCreateProps> = ({ employeeRepo }) => {
+const EmployeeCreate: React.FC<EmployeeCreateProps> = ({ createEmployee }) => {
   const firstName = useFormInput("");
   const lastName = useFormInput("");
   const email = useFormInput("");
@@ -34,7 +45,7 @@ const EmployeeCreate: React.FC<EmployeeCreateProps> = ({ employeeRepo }) => {
 
   function onSubmit(event: React.FormEvent) {
     event.preventDefault();
-    employeeRepo.createEmployee({
+    createEmployee({
       firstName: firstName.value,
       lastName: lastName.value,
       email: email.value,

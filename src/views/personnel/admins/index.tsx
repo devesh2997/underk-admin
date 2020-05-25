@@ -5,10 +5,13 @@ import { RouteType } from "routes";
 import AdminList from "./sections/AdminList";
 import RoleList from "./sections/RoleList";
 import PolicyList from "./sections/PolicyList";
-import { AdminRepo } from "data/AdminRepository";
-import { RoleRepo } from "data/RoleRepository";
-import { PolicyRepo } from "data/PolicyRepository";
 import { CustomNavTabs, NavTabItem } from "components/Widgets/CustomNavTabs";
+import AdminCreate from "./sections/AdminCreate";
+import RoleCreate from "./sections/RoleCreate";
+import Admin from "models/Admin";
+import Employee from "models/Employee";
+import Role from "models/Role";
+import Policy from "models/Policy";
 
 const adminRoutes: RouteType[] = [
   {
@@ -35,28 +38,85 @@ const adminRoutes: RouteType[] = [
     component: PolicyList,
     layout: "/admin/personnel/admins",
   },
+  {
+    path: "/create",
+    name: "Create Admin",
+    exact: true,
+    icon: "fas fa-plus",
+    component: AdminCreate,
+    layout: "/admin/personnel/admins",
+  },
+  {
+    path: "/roles/create",
+    name: "Create Role",
+    exact: true,
+    icon: "fas fa-plus",
+    component: RoleCreate,
+    layout: "/admin/personnel/admins",
+  },
 ];
 
 type AdminsProps = {
-  adminRepo: AdminRepo;
-  roleRepo: RoleRepo;
-  policyRepo: PolicyRepo;
+  loadingAdmins: boolean;
+  admins: Admin[];
+  createAdmin: (data: {
+    alias: string;
+    password: string;
+    euid: string;
+    policyNames: string;
+    roleIds: string;
+  }) => Promise<void>;
+  loadingRoles: boolean;
+  roles: Role[];
+  createRole: (data: {
+    name: string;
+    description: string;
+    policyNames: string;
+  }) => Promise<void>;
+  loadingPolicies: boolean;
+  policies: Policy[];
+  employees: Employee[];
 };
 
-const Admins: React.FC<AdminsProps> = ({ adminRepo, roleRepo, policyRepo }) => {
+const Admins: React.FC<AdminsProps> = ({
+  loadingAdmins,
+  admins,
+  createAdmin,
+  loadingRoles,
+  roles,
+  createRole,
+  loadingPolicies,
+  policies,
+  employees,
+}) => {
   function getRouteSpecificProps(route: RouteType): Object {
     switch (route.path) {
       case "/":
         return {
-          adminRepo,
+          loading: loadingAdmins,
+          admins
         };
       case "/roles":
         return {
-          roleRepo,
+          loading: loadingRoles,
+          roles
         };
       case "/policies":
         return {
-          policyRepo,
+          loading: loadingPolicies,
+          policies
+        };
+      case "/create":
+        return {
+          createAdmin,
+          roles,
+          policies,
+          employees,
+        };
+      case "/roles/create":
+        return {
+          createRole,
+          policies,
         };
       default:
         return {};

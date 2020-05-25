@@ -2,10 +2,10 @@ import React from "react";
 import classnames from "classnames";
 import { Route, Switch, Link } from "react-router-dom";
 import { CustomNavTabs, NavTabItem } from "components/Widgets/CustomNavTabs";
-import { EmployeeRepo } from "data/EmployeeRepository";
 import EmployeeList from "./sections/EmployeeList";
 import EmployeeCreate from "./sections/EmployeeCreate";
 import { RouteType } from "routes";
+import Employee from "models/Employee";
 
 const employeeRoutes: RouteType[] = [
   {
@@ -27,16 +27,41 @@ const employeeRoutes: RouteType[] = [
 ];
 
 type EmployeesProps = {
-  employeeRepo: EmployeeRepo;
+  loading: boolean;
+  employees: Employee[];
+  createEmployee: (data: {
+    firstName: string;
+    lastName: string;
+    email: string;
+    mobileCountryCode: string;
+    mobileNumber: number;
+    dob?: number;
+    gender: string;
+    picUrl?: string;
+    mobileVerified: boolean;
+    emailVerified: boolean;
+    address: string;
+  }) => Promise<void>;
 };
 
-const Employees: React.FC<EmployeesProps> = ({ employeeRepo }) => {
+const Employees: React.FC<EmployeesProps> = ({
+  loading,
+  employees,
+  createEmployee,
+}) => {
   function getRouteSpecificProps(route: RouteType): Object {
     switch (route.path) {
-      default:
+      case "/":
         return {
-          employeeRepo,
+          loading,
+          employees,
         };
+      case "/create":
+        return {
+          createEmployee,
+        };
+      default:
+        return {};
     }
   }
 

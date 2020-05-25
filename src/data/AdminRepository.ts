@@ -9,28 +9,8 @@ import {
 } from "constants/api-endpoints/admin";
 import { doApiRequestForHooks } from "data/utils";
 
-export interface AdminRepo {
-  loading: boolean;
-  error: string;
-  message: string;
-  admins: Admin[];
-  getAllAdmins: () => Promise<void>;
-  createAdmin: (data: {
-    alias: string;
-    password: string;
-    euid: string;
-    policyNames: string;
-    roleIds: string;
-  }) => Promise<void>;
-  deleteAdmin: (params: { auid: string } | { alias: string }) => Promise<void>;
-  updateAdmin: (data: {
-    auid: string;
-    alias: string;
-    euid: string;
-    policyNames: string;
-    roleIds: string;
-  }) => Promise<void>;
-}
+// TODO: define functions args
+// FIXME: error and message should be a part of function return
 
 function useAdminRepository() {
   const isMounted = useRef(true);
@@ -43,7 +23,7 @@ function useAdminRepository() {
   const [message, setMessage] = useState("");
   const [admins, setAdmins] = useState<Admin[]>([]);
 
-  async function getAllAdmins() {
+  async function getAll() {
     if (loading || !isMounted.current) return;
     setError("");
     doApiRequestForHooks<Admin[]>(
@@ -58,7 +38,7 @@ function useAdminRepository() {
     );
   }
 
-  async function createAdmin(data: {
+  async function create(data: {
     alias: string;
     password: string;
     euid: string;
@@ -76,14 +56,14 @@ function useAdminRepository() {
       setLoading,
       setError,
       setMessage,
-      getAllAdmins
+      getAll
     );
   }
 
-  async function deleteAdmin(params: { auid: string } | { alias: string }) {
+  async function deleteById(auid: string) {
     if (loading || !isMounted.current) return;
     setError("");
-    const config = { ...ADMIN_DELETE_ENDPOINT, params };
+    const config = { ...ADMIN_DELETE_ENDPOINT, params: { auid } };
     doApiRequestForHooks<null>(
       _request,
       config,
@@ -92,11 +72,27 @@ function useAdminRepository() {
       setLoading,
       setError,
       setMessage,
-      getAllAdmins
+      getAll
     );
   }
 
-  async function updateAdmin(data: {
+  async function deleteByAlias(alias: string) {
+    if (loading || !isMounted.current) return;
+    setError("");
+    const config = { ...ADMIN_DELETE_ENDPOINT, params: { alias } };
+    doApiRequestForHooks<null>(
+      _request,
+      config,
+      isMounted,
+      null,
+      setLoading,
+      setError,
+      setMessage,
+      getAll
+    );
+  }
+
+  async function update(data: {
     auid: string;
     alias: string;
     euid: string;
@@ -114,12 +110,12 @@ function useAdminRepository() {
       setLoading,
       setError,
       setMessage,
-      getAllAdmins
+      getAll
     );
   }
 
   useEffect(() => {
-    getAllAdmins();
+    getAll();
   }, []);
 
   useEffect(() => {
@@ -133,10 +129,11 @@ function useAdminRepository() {
     error,
     message,
     admins,
-    getAllAdmins,
-    createAdmin,
-    deleteAdmin,
-    updateAdmin,
+    getAll,
+    create,
+    deleteById,
+    deleteByAlias,
+    update,
   };
 }
 
