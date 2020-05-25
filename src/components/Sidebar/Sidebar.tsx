@@ -48,19 +48,23 @@ const Sidebar: React.FC<SidebarProps> = ({ routes, logo }) => {
   // creates the links that appear in the left menu / Sidebar
   function createLinks(routes: RouteType[]) {
     return routes.map((prop, key) => {
-      return (
-        <NavItem key={key}>
-          <NavLink
-            to={prop.layout + prop.path}
-            tag={NavLinkRRD}
-            onClick={() => toggleCollapse(false)}
-            activeClassName="active"
-          >
-            <i className={prop.icon} />
-            {collapseOpen && prop.name}
-          </NavLink>
-        </NavItem>
-      );
+      if (prop.layout === "/admin") {
+        return (
+          <NavItem key={key}>
+            <NavLink
+              to={prop.layout + prop.path}
+              tag={NavLinkRRD}
+              onClick={() => toggleCollapse(false)}
+              activeClassName="active"
+            >
+              <i className={prop.icon} />
+              {collapseOpen && prop.name}
+            </NavLink>
+          </NavItem>
+        );
+      } else {
+        return null;
+      }
     });
   }
 
