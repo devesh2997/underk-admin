@@ -104,6 +104,7 @@ const TypesAttributesTableView = (props: Props) => {
                 <td>{type.name}</td>
                 <td>{subtype.name}</td>
                 <td>{attribute.name}</td>
+                <td>{attribute.id}</td>
               </tr>
             );
           }
@@ -127,7 +128,13 @@ const TypesAttributesTableView = (props: Props) => {
   return (
     <>
       <TableWithColorToggler
-        columns={["Type", "Subtype", "Attribute", "AttributeValue"]}
+        columns={[
+          "Type",
+          "Subtype",
+          "Attribute",
+          "Attribute ID",
+          "AttributeValue",
+        ]}
       >
         <tbody>{rows}</tbody>
       </TableWithColorToggler>

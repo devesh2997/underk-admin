@@ -2,7 +2,10 @@ import { Collection } from "models/catalogue/Collection"
 import { useRef, useContext, useState, useEffect } from "react"
 import { AuthUserContext } from "session"
 import { doApiRequestForHooks } from "data/utils"
-import { COLLECTION_GET_ALL_ENDPOINT, COLLECTION_CREATE_ENDPOINT } from "constants/api-endpoints/catalogue"
+import { COLLECTION_GET_ALL_ENDPOINT, COLLECTION_CREATE_ENDPOINT, COLLECTION_BULK_CREATE_ENDPOINT } from "constants/api-endpoints/catalogue"
+import { BulkCreateResult } from "models/shared/BulkCreateResult"
+
+export type CollectionCreateInfo = { name: string; slug: string }
 
 const useCollectionsRepository = () => {
     const isMounted = useRef(true)
@@ -14,6 +17,8 @@ const useCollectionsRepository = () => {
     const [error, setError] = useState("")
     const [message, setMessage] = useState("")
     const [collections, setCollections] = useState<Collection[]>([])
+    const [bulkCreateResult, setBulkCreateResult] = useState<BulkCreateResult<Collection>>()
+
 
     async function getAll() {
         if (loading || !isMounted.current) return
@@ -29,6 +34,14 @@ const useCollectionsRepository = () => {
 
     }
 
+    async function bulkCreate(categoriesInfo: CollectionCreateInfo[]) {
+        if (loading || !isMounted.current) return
+        setError("")
+        setMessage("")
+        const config = { ...COLLECTION_BULK_CREATE_ENDPOINT, data: categoriesInfo }
+        doApiRequestForHooks<BulkCreateResult<Collection> | undefined>(_request, config, isMounted, setBulkCreateResult, setLoading, setError, setMessage, getAll)
+    }
+
     useEffect(() => {
         getAll()
     }, [])
@@ -41,6 +54,8 @@ const useCollectionsRepository = () => {
 
     return {
         collections,
+        bulkCreate,
+        bulkCreateResult,
         error,
         message,
         loading,

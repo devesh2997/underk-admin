@@ -25,6 +25,11 @@ export const COLLECTION_CREATE_ENDPOINT = {
     url: baseURL + "/collection",
 };
 
+export const COLLECTION_BULK_CREATE_ENDPOINT = {
+    method: HTTP_METHODS.POST,
+    url: baseURL + "/collection/bulk",
+};
+
 export const TYPE_GET_ALL_ENDPOINT = {
     method: HTTP_METHODS.GET,
     url: baseURL + "/types",
@@ -48,4 +53,9 @@ export const ATTRIBUTE_CREATE_ENDPOINT = {
 export const ATTRIBUTE_VALUE_CREATE_ENDPOINT = {
     method: HTTP_METHODS.POST,
     url: baseURL + "/attribute-value",
+};
+
+export const ATTRIBUTE_VALUE_BULK_CREATE_ENDPOINT = {
+    method: HTTP_METHODS.POST,
+    url: baseURL + "/attribute-value/bulk",
 };

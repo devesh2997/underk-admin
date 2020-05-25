@@ -1,8 +1,18 @@
 import { useContext, useState, useEffect, useRef } from "react";
 import { AuthUserContext } from "session";
 import Type from "models/catalogue/Type";
-import { TYPE_GET_ALL_ENDPOINT, TYPE_CREATE_ENDPOINT, SUBTYPE_CREATE_ENDPOINT, ATTRIBUTE_CREATE_ENDPOINT, ATTRIBUTE_VALUE_CREATE_ENDPOINT } from "constants/api-endpoints/catalogue";
+import { TYPE_GET_ALL_ENDPOINT, TYPE_CREATE_ENDPOINT, SUBTYPE_CREATE_ENDPOINT, ATTRIBUTE_CREATE_ENDPOINT, ATTRIBUTE_VALUE_CREATE_ENDPOINT, ATTRIBUTE_VALUE_BULK_CREATE_ENDPOINT } from "constants/api-endpoints/catalogue";
 import { doApiRequestForHooks } from "data/utils";
+import { AttributeValue } from "models/catalogue/AttributeValue";
+import { BulkCreateResult } from "models/shared/BulkCreateResult";
+
+export type AttributeValueCreateInfo = {
+    sku: string,
+    name: string,
+    attributeId: number,
+    valueType?: string,
+    value: string
+}
 
 const useTypeAndAttributesRepository = () => {
     const isMounted = useRef(true)
@@ -14,6 +24,9 @@ const useTypeAndAttributesRepository = () => {
     const [error, setError] = useState("")
     const [message, setMessage] = useState("")
     const [types, setTypes] = useState<Type[]>([])
+
+    const [bulkCreateAttributeValueAttributeValueResult, setBulkCreateAttributeValueResult] = useState<BulkCreateResult<AttributeValue>>()
+
 
     async function getAllTypes() {
         if (loading || !isMounted.current) return
@@ -28,6 +41,7 @@ const useTypeAndAttributesRepository = () => {
         doApiRequestForHooks<null>(_request, config, isMounted, null, setLoading, setError, setMessage, getAllTypes)
 
     }
+
 
     async function createSubtype(sku: string, name: string, typeSku: string) {
         if (loading || !isMounted.current) return
@@ -54,6 +68,15 @@ const useTypeAndAttributesRepository = () => {
         doApiRequestForHooks<null>(_request, config, isMounted, null, setLoading, setError, setMessage, getAllTypes)
     }
 
+    async function bulkCreateAttributeValue(attributeValuesInfo: AttributeValueCreateInfo[]) {
+        if (loading || !isMounted.current) return
+        setError("")
+        setMessage("")
+        const config = { ...ATTRIBUTE_VALUE_BULK_CREATE_ENDPOINT, data: attributeValuesInfo }
+        doApiRequestForHooks<BulkCreateResult<AttributeValue> | undefined>(_request, config, isMounted, setBulkCreateAttributeValueResult, setLoading, setError, setMessage, getAllTypes)
+
+    }
+
     useEffect(() => {
         getAllTypes()
     }, [])
@@ -67,6 +90,8 @@ const useTypeAndAttributesRepository = () => {
     return {
         types,
         error,
+        bulkCreateAttributeValueAttributeValueResult,
+        bulkCreateAttributeValue,
         message,
         loading,
         getAllTypes,

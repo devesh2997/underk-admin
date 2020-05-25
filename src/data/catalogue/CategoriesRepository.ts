@@ -4,8 +4,14 @@ import { AuthUserContext } from "session"
 import { doApiRequestForHooks } from "data/utils"
 import { CATEGORY_GET_ALL_ENDPOINT, CATEGORY_CREATE_ENDPOINT, CATEGORY_BULK_CREATE_ENDPOINT } from "constants/api-endpoints/catalogue"
 import { BulkCreateResult } from "models/shared/BulkCreateResult"
-import { CategoryCreateInfo } from "views/catalogue/categories/sections/CategoryBulk"
 
+
+export type CategoryCreateInfo = {
+    name: string;
+    slug: string;
+    sku: string;
+    parentSlug: string;
+  };
 const useCategoriesRepository = () => {
     const isMounted = useRef(true)
 
@@ -53,7 +59,6 @@ const useCategoriesRepository = () => {
     }
 
     async function bulkCreate(categoriesInfo: CategoryCreateInfo[]) {
-        console.log('here')
         if (loading || !isMounted.current) return
         setError("")
         setMessage("")

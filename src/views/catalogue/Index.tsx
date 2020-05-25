@@ -26,7 +26,7 @@ const Catalogue: React.FC = () => {
     <>
       <CatalogueHeader />
       <Container className="mt--7" fluid>
-        <Row>
+        <Row  className="align-items-center">
           <Col>
             <div className="nav-wrapper">
               <Nav
@@ -97,35 +97,31 @@ const Catalogue: React.FC = () => {
         </Row>
         <Row>
           <Col>
-            <Card className="shadow">
-              <CardBody>
-                <TabContent activeTab={"tabs" + activeTab}>
-                  <TabPane tabId="tabs1">
-                    <p className="description">
-                      Raw denim you probably haven't heard of them jean shorts
-                      Austin. Nesciunt tofu stumptown aliqua, retro synth master
-                      cleanse. Mustache cliche tempor, williamsburg carles vegan
-                      helvetica. Reprehenderit butcher retro keffiyeh
-                      dreamcatcher synth.
-                    </p>
-                    <p className="description">
-                      Raw denim you probably haven't heard of them jean shorts
-                      Austin. Nesciunt tofu stumptown aliqua, retro synth master
-                      cleanse.
-                    </p>
-                  </TabPane>
-                  <TabPane tabId="tabs2">
-                    <CategoriesTab />
-                  </TabPane>
-                  <TabPane tabId="tabs3">
-                    <CollectionsTab />
-                  </TabPane>
-                  <TabPane tabId="tabs4">
-                    <TypesAttributesTab />
-                  </TabPane>
-                </TabContent>
-              </CardBody>
-            </Card>
+            <TabContent activeTab={"tabs" + activeTab}>
+              <TabPane tabId="tabs1">
+                <p className="description">
+                  Raw denim you probably haven't heard of them jean shorts
+                  Austin. Nesciunt tofu stumptown aliqua, retro synth master
+                  cleanse. Mustache cliche tempor, williamsburg carles vegan
+                  helvetica. Reprehenderit butcher retro keffiyeh dreamcatcher
+                  synth.
+                </p>
+                <p className="description">
+                  Raw denim you probably haven't heard of them jean shorts
+                  Austin. Nesciunt tofu stumptown aliqua, retro synth master
+                  cleanse.
+                </p>
+              </TabPane>
+              <TabPane tabId="tabs2">
+                <CategoriesTab />
+              </TabPane>
+              <TabPane tabId="tabs3">
+                <CollectionsTab />
+              </TabPane>
+              <TabPane tabId="tabs4">
+                <TypesAttributesTab />
+              </TabPane>
+            </TabContent>
           </Col>
         </Row>
       </Container>
