@@ -1,7 +1,7 @@
 import React from "react";
 
 import Dashboard from "views/Dashboard";
-import Personnel from "views/personnel";
+import Personnel from "views/personnel/Index";
 import Users from "views/users/Index";
 import Catalogue from "views/catalogue/Index";
 import Login from "views/Login";
