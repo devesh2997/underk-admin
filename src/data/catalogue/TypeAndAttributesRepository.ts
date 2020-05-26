@@ -25,7 +25,7 @@ const useTypeAndAttributesRepository = () => {
     const [message, setMessage] = useState("")
     const [types, setTypes] = useState<Type[]>([])
 
-    const [bulkCreateAttributeValueAttributeValueResult, setBulkCreateAttributeValueResult] = useState<BulkCreateResult<AttributeValue>>()
+    const [bulkCreateAttributeValueResult, setBulkCreateAttributeValueResult] = useState<BulkCreateResult<AttributeValue>>()
 
 
     async function getAllTypes() {
@@ -90,7 +90,7 @@ const useTypeAndAttributesRepository = () => {
     return {
         types,
         error,
-        bulkCreateAttributeValueAttributeValueResult,
+        bulkCreateAttributeValueResult,
         bulkCreateAttributeValue,
         message,
         loading,

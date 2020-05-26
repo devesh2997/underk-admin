@@ -11,6 +11,7 @@ export const doApiRequestForHooks = async <T>(request: <T>(config: AxiosRequestC
     if (err) TE(err)
     if (isMounted.current) { if (setLoading !== null) setLoading(false) }
     if (res.success) {
+        console.log(res.data)
         if (typeof res.data !== 'undefined') {
             if (isMounted.current) { if (setValue !== null) setValue(res.data) }
             if (isMounted.current) { if (setMessage !== null) setMessage(res.message as string) }

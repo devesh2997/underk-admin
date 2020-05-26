@@ -20,12 +20,15 @@ import useTypeRepository from "data/catalogue/TypeAndAttributesRepository";
 import Loading from "components/Widgets/Loading";
 import Refresh from "components/Widgets/Refresh";
 import { CustomNavTabs, NavTabItem } from "components/Widgets/CustomNavTabs";
+import AttributeValueBulk from "./sections/AttributeValueBulk";
 
 const TypesAttributesTab = () => {
   const { activeTab, toggleActiveTab } = useTabSelect(1);
   const {
     loading,
     error,
+    bulkCreateAttributeValue,
+    bulkCreateAttributeValueResult,
     message,
     types,
     getAllTypes,
@@ -137,13 +140,11 @@ const TypesAttributesTab = () => {
                     />
                   </TabPane>
                   <TabPane tabId="tabs3">
-                    <p className="description">
-                      Raw denim you probably haven't heard of them jean shorts
-                      Austin. Nesciunt tofu stumptown aliqua, retro synth master
-                      cleanse. Mustache cliche tempor, williamsburg carles vegan
-                      helvetica. Reprehenderit butcher retro keffiyeh
-                      dreamcatcher synth.
-                    </p>
+                    <AttributeValueBulk
+                      bulkCreateAttributeValue={bulkCreateAttributeValue}
+                      bulkCreateResult={bulkCreateAttributeValueResult}
+                      types={types}
+                    />
                   </TabPane>
                 </TabContent>
               </CardBody>
