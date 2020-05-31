@@ -12,6 +12,7 @@ import Admin from "models/Admin";
 import Employee from "models/Employee";
 import Role from "models/Role";
 import Policy from "models/Policy";
+import { AdminCreateFunc } from "data/AdminRepository";
 
 const adminRoutes: RouteType[] = [
   {
@@ -59,13 +60,7 @@ const adminRoutes: RouteType[] = [
 type AdminsProps = {
   loadingAdmins: boolean;
   admins: Admin[];
-  createAdmin: (data: {
-    alias: string;
-    password: string;
-    euid: string;
-    policyNames: string;
-    roleIds: string;
-  }) => Promise<void>;
+  createAdmin: AdminCreateFunc;
   loadingRoles: boolean;
   roles: Role[];
   createRole: (data: {

@@ -7,112 +7,118 @@ import {
   ADMIN_DELETE_ENDPOINT,
   ADMIN_UPDATE_ENDPOINT,
 } from "constants/api-endpoints/admin";
-import { doApiRequestForHooks } from "data/utils";
+import { doApiRequest } from "data/utils";
+import { TO, TE } from "utils";
+import { ApiResponse } from "session/AuthUserProvider";
 
-// TODO: define functions args
-// FIXME: error and message should be a part of function return
+export type AdminGetAllFunc = () => Promise<void>;
+export type AdminCreateFunc = (data: {
+  alias: string;
+  password: string;
+  euid?: string;
+  policyNames: string;
+  roleIds: string;
+}) => Promise<ApiResponse<null>>;
+export type AdminDeleteByIdFunc = (auid: string) => Promise<ApiResponse<null>>;
+export type AdminDeleteByAliasFunc = (
+  alias: string
+) => Promise<ApiResponse<null>>;
+export type AdminUpdateFunc = (data: {
+  auid: string;
+  alias?: string;
+  euid?: string;
+  policyNames?: string;
+  roleIds?: string;
+}) => Promise<ApiResponse<null>>;
 
 function useAdminRepository() {
   const isMounted = useRef(true);
 
   const authUser = useContext(AuthUserContext);
-  const _request = authUser.doRequest;
 
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-  const [message, setMessage] = useState("");
+  const [loading, toggleLoading] = useState(false);
   const [admins, setAdmins] = useState<Admin[]>([]);
+  const [error, setError] = useState("");
 
-  async function getAll() {
+  const getAll: AdminGetAllFunc = async () => {
     if (loading || !isMounted.current) return;
-    setError("");
-    doApiRequestForHooks<Admin[]>(
-      _request,
-      ADMIN_GET_ALL_ENDPOINT,
-      isMounted,
-      setAdmins,
-      setLoading,
-      setError,
-      setMessage,
-      null
+    isMounted.current && toggleLoading(true);
+    isMounted.current && setError("");
+    const [err, res] = await TO(
+      doApiRequest<Admin[]>(authUser.doRequest, ADMIN_GET_ALL_ENDPOINT)
     );
-  }
+    if (err) {
+      isMounted.current && setError(err.message as string);
+      // console.error("Admin.getAll", err.message);
+    } else {
+      isMounted.current && setAdmins(res.data as Admin[]);
+      // console.log("Admin.getAll", res.message);
+    }
+    isMounted.current && toggleLoading(false);
+  };
 
-  async function create(data: {
-    alias: string;
-    password: string;
-    euid: string;
-    policyNames: string;
-    roleIds: string;
-  }) {
-    if (loading || !isMounted.current) return;
-    setError("");
+  const create: AdminCreateFunc = async (data) => {
+    if (loading) TE("Please wait for the previous request to complete");
+
+    if(data.alias.length < 3) {
+      TE("Alias must be atleast 3 characters long");
+    }
+    if(data.password.length < 6) {
+      TE("Password must be atleast 6 characters long");
+    }
+
     const config = { ...ADMIN_CREATE_ENDPOINT, data };
-    doApiRequestForHooks<null>(
-      _request,
-      config,
-      isMounted,
-      null,
-      setLoading,
-      setError,
-      setMessage,
-      getAll
-    );
-  }
 
-  async function deleteById(auid: string) {
-    if (loading || !isMounted.current) return;
-    setError("");
+    let err: any, res: ApiResponse<null>;
+    [err, res] = await TO(doApiRequest<null>(authUser.doRequest, config));
+    if (err) TE(err);
+
+    await getAll();
+
+    return res;
+  };
+
+  const deleteById: AdminDeleteByIdFunc = async (auid) => {
+    if (loading) TE("Please wait for the previous request to complete");
+
     const config = { ...ADMIN_DELETE_ENDPOINT, params: { auid } };
-    doApiRequestForHooks<null>(
-      _request,
-      config,
-      isMounted,
-      null,
-      setLoading,
-      setError,
-      setMessage,
-      getAll
-    );
-  }
 
-  async function deleteByAlias(alias: string) {
-    if (loading || !isMounted.current) return;
-    setError("");
+    let err: any, res: ApiResponse<null>;
+    [err, res] = await TO(doApiRequest<null>(authUser.doRequest, config));
+    if (err) TE(err);
+
+    await getAll();
+
+    return res;
+  };
+
+  const deleteByAlias: AdminDeleteByAliasFunc = async (alias) => {
+    if (loading) TE("Please wait for the previous request to complete");
+
     const config = { ...ADMIN_DELETE_ENDPOINT, params: { alias } };
-    doApiRequestForHooks<null>(
-      _request,
-      config,
-      isMounted,
-      null,
-      setLoading,
-      setError,
-      setMessage,
-      getAll
-    );
-  }
 
-  async function update(data: {
-    auid: string;
-    alias: string;
-    euid: string;
-    policyNames: string;
-    roleIds: string;
-  }) {
-    if (loading || !isMounted.current) return;
-    setError("");
+    let err: any, res: ApiResponse<null>;
+    [err, res] = await TO(doApiRequest<null>(authUser.doRequest, config));
+    if (err) TE(err);
+
+    await getAll();
+
+    return res;
+  };
+
+  const update: AdminUpdateFunc = async (data) => {
+    if (loading) TE("Please wait for the previous request to complete");
+
     const config = { ...ADMIN_UPDATE_ENDPOINT, data };
-    doApiRequestForHooks<null>(
-      _request,
-      config,
-      isMounted,
-      null,
-      setLoading,
-      setError,
-      setMessage,
-      getAll
-    );
-  }
+
+    let err: any, res: ApiResponse<null>;
+    [err, res] = await TO(doApiRequest<null>(authUser.doRequest, config));
+    if (err) TE(err);
+
+    await getAll();
+
+    return res;
+  };
 
   useEffect(() => {
     getAll();
@@ -126,9 +132,8 @@ function useAdminRepository() {
 
   return {
     loading,
-    error,
-    message,
     admins,
+    error,
     getAll,
     create,
     deleteById,

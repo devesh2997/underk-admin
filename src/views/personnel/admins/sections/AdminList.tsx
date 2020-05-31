@@ -14,7 +14,7 @@ const AdminList: React.FC<AdminListProps> = ({ loading, admins }) => {
   return (
     <>
       {loading ? (
-        <div className="text-center">
+        <div className="text-center mt-3">
           <Loading />
         </div>
       ) : (
