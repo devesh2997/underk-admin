@@ -59,21 +59,24 @@ const AdminCreate: React.FC<AdminCreateProps> = ({
 
   async function onSubmit(event: React.FormEvent) {
     event.preventDefault();
+
     isMounted.current && toggleLoading(true);
     isMounted.current && setError("");
-    try {
-      const response = await createAdmin({
-        alias: alias.value,
-        password: password.value,
-        euid: euid.value,
-        roleIds: JSON.stringify(roleIds),
-        policyNames: JSON.stringify(policyNames),
-      });
-      console.log("AdminCreate", response);
+
+    const result = await createAdmin({
+      alias: alias.value,
+      password: password.value,
+      euid: euid.value,
+      roleIds: JSON.stringify(roleIds),
+      policyNames: JSON.stringify(policyNames),
+    });
+    if(result.isErr()) {
+      isMounted.current && setError(result.error);
+    } else {
+      console.log("AdminCreate", result.value);
       history.push("/admin/personnel/admins");
-    } catch (error) {
-      isMounted.current && setError(error.message);
     }
+
     isMounted.current && toggleLoading(false);
   }
 

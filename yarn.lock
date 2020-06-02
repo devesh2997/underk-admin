@@ -7938,6 +7938,11 @@ neo-async@^2.5.0, neo-async@^2.6.1:
   resolved "https://registry.yarnpkg.com/neo-async/-/neo-async-2.6.1.tgz#ac27ada66167fa8849a6addd837f6b189ad2081c"
   integrity sha512-iyam8fBuCUpWeKPGpaNMetEocMt364qkCsfL9JuhjXX6dRnguRVOfk2GZaDpPjcOKiiXCPINZC1GczQ7iTq3Zw==
 
+neverthrow@^2.3.4:
+  version "2.3.4"
+  resolved "https://registry.yarnpkg.com/neverthrow/-/neverthrow-2.3.4.tgz#3531e684cd691336421904b7905de0d3e837bda9"
+  integrity sha512-OMVR4878+nb82MYe+2dR3i6Pt858t9cKhH+ZHja4Z0rHAShTdzf3CqS99GH7RG2oAScKCKO1/8D3+dlBQjd0nw==
+
 next-tick@~1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/next-tick/-/next-tick-1.0.0.tgz#ca86d1fe8828169b0120208e3dc8424b9db8342c"

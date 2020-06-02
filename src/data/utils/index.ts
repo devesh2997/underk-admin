@@ -1,6 +1,7 @@
 import { AxiosRequestConfig } from "axios";
 import { ApiResponse } from "session/AuthUserProvider";
 import { TO, TE } from "utils";
+import { ok, err, Result } from "neverthrow";
 
 export const doApiRequestForHooks = async <T>(
   request: <T>(config: AxiosRequestConfig) => Promise<ApiResponse<T>>,
@@ -47,14 +48,14 @@ export const doApiRequestForHooks = async <T>(
 export const doApiRequest = async <T>(
   request: <T>(config: AxiosRequestConfig) => Promise<ApiResponse<T>>,
   config: AxiosRequestConfig
-) => {
-  let err: any, res: ApiResponse<T>;
+): Promise<Result<ApiResponse<T>, string>> => {
+  let error: any, response: ApiResponse<T>;
 
-  [err, res] = await TO(request(config));
+  [error, response] = await TO(request(config));
 
-  if (err) TE(err);
-  if (!res.success) TE(res.error);
-  if (typeof res.data === "undefined") TE("Some error occurred");
+  if (error) return err(error);
+  if (!response.success) return err(response.error as string);
+  if (typeof response.data === "undefined") return err("Some error occurred");
 
-  return res;
+  return ok(response);
 };
