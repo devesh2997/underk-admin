@@ -5,9 +5,9 @@ import Policy from "models/Policy";
 export default interface Admin {
   auid: string;
   alias: string;
-  employee: Employee;
+  employee?: Employee;
   roles: Role[];
   policies: Policy[];
-  created_at: string;
-  updated_at: string;
+  created_at: Date;
+  updated_at: Date;
 }

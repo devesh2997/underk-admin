@@ -19,9 +19,7 @@ export type AdminCreateFunc = (data: {
   policyNames: string;
   roleIds: string;
 }) => Promise<Result<ApiResponse<null>, string>>;
-export type AdminDeleteByIdFunc = (
-  auid: string
-) => Promise<Result<ApiResponse<null>, string>>;
+export type AdminDeleteByIdFunc = (auid: string) => Promise<void>;
 export type AdminUpdateFunc = (data: {
   auid: string;
   alias?: string;
@@ -80,15 +78,20 @@ function useAdminRepository() {
   };
 
   const deleteById: AdminDeleteByIdFunc = async (auid) => {
-    if (loading) return err("Please wait for the previous request to complete");
+    if (loading) return;
+
+    isMounted.current && setError("");
 
     const config = { ...ADMIN_DELETE_ENDPOINT, params: { auid } };
     const result = await doApiRequest<null>(authUser.doRequest, config);
-    if (result.isErr()) return err(result.error);
+    if (result.isErr()) {
+      isMounted.current && setError(result.error);
+      // console.error("Admin.deleteById", result.error);
+    } else {
+      // console.log("Admin.deleteById", result.value.message);
 
-    getAll();
-
-    return ok(result.value);
+      getAll();
+    }
   };
 
   const update: AdminUpdateFunc = async (data) => {

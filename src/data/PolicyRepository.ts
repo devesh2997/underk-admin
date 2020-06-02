@@ -2,33 +2,39 @@ import { useContext, useState, useEffect, useRef } from "react";
 import { AuthUserContext } from "session";
 import Policy from "models/Policy";
 import { POLICY_GET_ALL_ENDPOINT } from "constants/api-endpoints/policy";
-import { doApiRequestForHooks } from "data/utils";
+import { doApiRequest } from "data/utils";
+
+export type PolicyGetAllFunc = () => Promise<void>;
 
 function usePolicyRepository() {
   const isMounted = useRef(true);
 
   const authUser = useContext(AuthUserContext);
-  const _request = authUser.doRequest;
 
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-  const [message, setMessage] = useState("");
+  const [loading, toggleLoading] = useState(false);
   const [policies, setPolicies] = useState<Policy[]>([]);
+  const [error, setError] = useState("");
 
-  async function getAll() {
+  const getAll: PolicyGetAllFunc = async () => {
     if (loading || !isMounted.current) return;
-    setError("");
-    doApiRequestForHooks<Policy[]>(
-      _request,
-      POLICY_GET_ALL_ENDPOINT,
-      isMounted,
-      setPolicies,
-      setLoading,
-      setError,
-      setMessage,
-      null
+
+    isMounted.current && toggleLoading(true);
+    isMounted.current && setError("");
+
+    const result = await doApiRequest<Policy[]>(
+      authUser.doRequest,
+      POLICY_GET_ALL_ENDPOINT
     );
-  }
+    if (result.isErr()) {
+      isMounted.current && setError(result.error);
+      // console.error("Policy.getAll", result.error);
+    } else {
+      isMounted.current && setPolicies(result.value.data as Policy[]);
+      // console.log("Policy.getAll", result.value.message);
+    }
+
+    isMounted.current && toggleLoading(false);
+  };
 
   useEffect(() => {
     getAll();
@@ -42,9 +48,8 @@ function usePolicyRepository() {
 
   return {
     loading,
-    error,
-    message,
     policies,
+    error,
     getAll,
   };
 }

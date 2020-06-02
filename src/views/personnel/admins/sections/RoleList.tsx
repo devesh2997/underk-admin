@@ -1,15 +1,20 @@
 import React from "react";
-import Loading from "components/Widgets/Loading";
-import TableWithColorToggler from "components/Widgets/TableWithColorToggler";
+import {
+  Loading,
+  TableWithColorToggler,
+  ConfirmButton,
+} from "components/Widgets";
 import { Badge, Button } from "reactstrap";
 import Role from "models/Role";
+import { RoleDeleteByIdFunc } from "data/RoleRepository";
 
 type RoleListProps = {
   loading: boolean;
   roles: Role[];
+  deleteRole: RoleDeleteByIdFunc;
 };
 
-const RoleList: React.FC<RoleListProps> = ({ loading, roles }) => {
+const RoleList: React.FC<RoleListProps> = ({ loading, roles, deleteRole }) => {
   return (
     <>
       {loading ? (
@@ -42,14 +47,17 @@ const RoleList: React.FC<RoleListProps> = ({ loading, roles }) => {
                   >
                     <i className="fas fa-edit"></i>
                   </Button>
-                  <Button
+                  <ConfirmButton
                     color="danger"
                     size="sm"
                     type="button"
                     style={{ fontSize: "0.875rem" }}
+                    confirmText={`Are you sure you want to remove ${role.name} from Roles?`}
+                    onConfirm={deleteRole.bind(null, role.id)}
+                    showLoading
                   >
                     <i className="fas fa-trash-alt"></i>
-                  </Button>
+                  </ConfirmButton>
                 </td>
               </tr>
             ))}

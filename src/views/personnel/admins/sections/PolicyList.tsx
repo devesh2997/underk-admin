@@ -1,6 +1,5 @@
 import React from "react";
-import Loading from "components/Widgets/Loading";
-import TableWithColorToggler from "components/Widgets/TableWithColorToggler";
+import { Loading, TableWithColorToggler } from "components/Widgets";
 import Policy from "models/Policy";
 
 type PolicyListProps = {

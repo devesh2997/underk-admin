@@ -1,54 +1,82 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import {
-  Button,
   Form,
   FormGroup,
   Input,
-  Label,
   Col,
   Container,
+  FormText,
+  UncontrolledAlert,
 } from "reactstrap";
 import Policy from "models/Policy";
 import { useFormInput } from "hooks/Index";
 import Select from "react-select";
 import makeAnimated from "react-select/animated";
+import { RoleCreateFunc } from "data/RoleRepository";
+import { useHistory } from "react-router-dom";
+import { CustomInputLabel, LoadingButton } from "components/Widgets";
 
 const animatedComponents = makeAnimated();
 
 type RoleCreateProps = {
-  createRole: (data: {
-    name: string;
-    description: string;
-    policyNames: string;
-  }) => Promise<void>;
+  createRole: RoleCreateFunc;
   policies: Policy[];
 };
 
 const RoleCreate: React.FC<RoleCreateProps> = ({ createRole, policies }) => {
+  const isMounted = useRef(true);
+  const history = useHistory();
+
+  const [loading, toggleLoading] = useState(false);
+  const [error, setError] = useState("");
+
   const name = useFormInput("");
   const description = useFormInput("");
   const [policyNames, setPolicyNames] = useState<string[]>([]);
 
-  function onSubmit(event: React.FormEvent) {
+  useEffect(() => {
+    return () => {
+      isMounted.current = false;
+    };
+  }, []);
+
+  async function onSubmit(event: React.FormEvent) {
     event.preventDefault();
-    createRole({
-      name: name.value,
+
+    isMounted.current && toggleLoading(true);
+    isMounted.current && setError("");
+
+    const result = await createRole({
+      name: name.value.toUpperCase(),
       description: description.value,
       policyNames: JSON.stringify(policyNames),
     });
+    if (result.isErr()) {
+      isMounted.current && setError(result.error);
+    } else {
+      console.log("RoleCreate", result.value);
+      history.push("/admin/personnel/admins/roles");
+    }
+
+    isMounted.current && toggleLoading(false);
   }
 
   return (
     <Container>
       <Form className="mt-3" onSubmit={onSubmit}>
         <FormGroup row>
-          <Label sm={2}>Name</Label>
+          <CustomInputLabel sm={2} mandatory>
+            Name
+          </CustomInputLabel>
           <Col sm={5}>
             <Input type="text" placeholder="Enter name" {...name} required />
+            <FormText color="muted">
+              Name should contain only uppercase letters
+            </FormText>
           </Col>
         </FormGroup>
         <FormGroup row>
-          <Label sm={2}>Description</Label>
+          <CustomInputLabel sm={2}>Description</CustomInputLabel>
           <Col sm={10}>
             <Input
               type="text"
@@ -58,7 +86,7 @@ const RoleCreate: React.FC<RoleCreateProps> = ({ createRole, policies }) => {
           </Col>
         </FormGroup>
         <FormGroup row>
-          <Label sm={2}>Policies</Label>
+          <CustomInputLabel sm={2}>Policies</CustomInputLabel>
           <Col sm={10}>
             <Select
               isMulti
@@ -82,10 +110,13 @@ const RoleCreate: React.FC<RoleCreateProps> = ({ createRole, policies }) => {
             />
           </Col>
         </FormGroup>
+        {error ? (
+          <UncontrolledAlert color="danger">{error}</UncontrolledAlert>
+        ) : null}
         <FormGroup className="text-center">
-          <Button color="primary" type="submit">
+          <LoadingButton color="primary" type="submit" loading={loading}>
             Submit
-          </Button>
+          </LoadingButton>
         </FormGroup>
       </Form>
     </Container>

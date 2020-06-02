@@ -13,6 +13,7 @@ import Employee from "models/Employee";
 import Role from "models/Role";
 import Policy from "models/Policy";
 import { AdminCreateFunc, AdminDeleteByIdFunc } from "data/AdminRepository";
+import { RoleCreateFunc, RoleDeleteByIdFunc } from "data/RoleRepository";
 
 const adminRoutes: RouteType[] = [
   {
@@ -64,11 +65,8 @@ type AdminsProps = {
   deleteAdmin: AdminDeleteByIdFunc;
   loadingRoles: boolean;
   roles: Role[];
-  createRole: (data: {
-    name: string;
-    description: string;
-    policyNames: string;
-  }) => Promise<void>;
+  createRole: RoleCreateFunc;
+  deleteRole: RoleDeleteByIdFunc;
   loadingPolicies: boolean;
   policies: Policy[];
   employees: Employee[];
@@ -82,6 +80,7 @@ const Admins: React.FC<AdminsProps> = ({
   loadingRoles,
   roles,
   createRole,
+  deleteRole,
   loadingPolicies,
   policies,
   employees,
@@ -92,17 +91,18 @@ const Admins: React.FC<AdminsProps> = ({
         return {
           loading: loadingAdmins,
           admins,
-          deleteAdmin
+          deleteAdmin,
         };
       case "/roles":
         return {
           loading: loadingRoles,
-          roles
+          roles,
+          deleteRole,
         };
       case "/policies":
         return {
           loading: loadingPolicies,
-          policies
+          policies,
         };
       case "/create":
         return {

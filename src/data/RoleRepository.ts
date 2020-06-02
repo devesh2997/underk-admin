@@ -8,104 +8,108 @@ import {
   ROLE_ADD_POLICIES_ENDPOINT,
   ROLE_DELETE_POLICIES_ENDPOINT,
 } from "constants/api-endpoints/role";
-import { doApiRequestForHooks } from "data/utils";
+import { doApiRequest } from "data/utils";
+import { ApiResponse } from "session/AuthUserProvider";
+import { ok, err, Result } from "neverthrow";
+
+export type RoleGetAllFunc = () => Promise<void>;
+export type RoleCreateFunc = (data: {
+  name: string;
+  description: string;
+  policyNames: string;
+}) => Promise<Result<ApiResponse<null>, string>>;
+export type RoleDeleteByIdFunc = (id: number) => Promise<void>;
+export type RoleAddPolicyFunc = (data: {
+  id: number;
+  policyNames: string;
+}) => Promise<Result<ApiResponse<null>, string>>;
+export type RoleDeletePolicyFunc = (data: {
+  id: number;
+  policyNames: string;
+}) => Promise<Result<ApiResponse<null>, string>>;
 
 function useRoleRepository() {
   const isMounted = useRef(true);
 
   const authUser = useContext(AuthUserContext);
-  const _request = authUser.doRequest;
 
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-  const [message, setMessage] = useState("");
+  const [loading, toggleLoading] = useState(false);
   const [roles, setRoles] = useState<Role[]>([]);
+  const [error, setError] = useState("");
 
-  async function getAll() {
+  const getAll: RoleGetAllFunc = async () => {
     if (loading || !isMounted.current) return;
-    setError("");
-    doApiRequestForHooks<Role[]>(
-      _request,
-      ROLE_GET_ALL_ENDPOINT,
-      isMounted,
-      setRoles,
-      setLoading,
-      setError,
-      setMessage,
-      null
+
+    isMounted.current && toggleLoading(true);
+    isMounted.current && setError("");
+
+    const result = await doApiRequest<Role[]>(
+      authUser.doRequest,
+      ROLE_GET_ALL_ENDPOINT
     );
-  }
+    if (result.isErr()) {
+      isMounted.current && setError(result.error);
+      // console.error("Role.getAll", result.error);
+    } else {
+      isMounted.current && setRoles(result.value.data as Role[]);
+      // console.log("Role.getAll", result.value.message);
+    }
 
-  async function create(data: {
-    name: string;
-    description: string;
-    policyNames: string;
-  }) {
-    if (loading || !isMounted.current) return;
-    setError("");
+    isMounted.current && toggleLoading(false);
+  };
+
+  const create: RoleCreateFunc = async (data) => {
+    if (loading) return err("Please wait for the previous request to complete");
+
     const config = { ...ROLE_CREATE_ENDPOINT, data };
-    doApiRequestForHooks<null>(
-      _request,
-      config,
-      isMounted,
-      null,
-      setLoading,
-      setError,
-      setMessage,
-      getAll
-    );
-  }
+    const result = await doApiRequest<null>(authUser.doRequest, config);
+    if (result.isErr()) return err(result.error);
 
-  async function deleteById(id: number) {
-    if (loading || !isMounted.current) return;
-    setError("");
+    getAll();
+
+    return ok(result.value);
+  };
+
+  const deleteById: RoleDeleteByIdFunc = async (id) => {
+    if (loading) return;
+
+    isMounted.current && setError("");
+
     const config = { ...ROLE_DELETE_ENDPOINT, params: { id } };
-    doApiRequestForHooks<null>(
-      _request,
-      config,
-      isMounted,
-      null,
-      setLoading,
-      setError,
-      setMessage,
-      getAll
-    );
-  }
+    const result = await doApiRequest<null>(authUser.doRequest, config);
+    if (result.isErr()) {
+      isMounted.current && setError(result.error);
+      // console.error("Role.deleteById", result.error);
+    } else {
+      // console.log("Role.deleteById", result.value.message);
 
-  async function addPoliciesToRole(data: { id: number; policyNames: string }) {
-    if (loading || !isMounted.current) return;
-    setError("");
+      getAll();
+    }
+  };
+
+  const addPoliciesToRole: RoleAddPolicyFunc = async (data) => {
+    if (loading) return err("Please wait for the previous request to complete");
+
     const config = { ...ROLE_ADD_POLICIES_ENDPOINT, data };
-    doApiRequestForHooks<null>(
-      _request,
-      config,
-      isMounted,
-      null,
-      setLoading,
-      setError,
-      setMessage,
-      getAll
-    );
-  }
+    const result = await doApiRequest<null>(authUser.doRequest, config);
+    if (result.isErr()) return err(result.error);
 
-  async function deletePoliciesFromRole(data: {
-    id: number;
-    policyNames: string;
-  }) {
-    if (loading || !isMounted.current) return;
-    setError("");
+    getAll();
+
+    return ok(result.value);
+  };
+
+  const deletePoliciesFromRole: RoleDeletePolicyFunc = async (data) => {
+    if (loading) return err("Please wait for the previous request to complete");
+
     const config = { ...ROLE_DELETE_POLICIES_ENDPOINT, data };
-    doApiRequestForHooks<null>(
-      _request,
-      config,
-      isMounted,
-      null,
-      setLoading,
-      setError,
-      setMessage,
-      getAll
-    );
-  }
+    const result = await doApiRequest<null>(authUser.doRequest, config);
+    if (result.isErr()) return err(result.error);
+
+    getAll();
+
+    return ok(result.value);
+  };
 
   useEffect(() => {
     getAll();
@@ -119,9 +123,8 @@ function useRoleRepository() {
 
   return {
     loading,
-    error,
-    message,
     roles,
+    error,
     getAll,
     create,
     deleteById,

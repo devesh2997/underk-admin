@@ -114,7 +114,7 @@ const AdminCreate: React.FC<AdminCreateProps> = ({
             <Input type="select" {...euid}>
               <option value="">Select...</option>
               {employees.map((employee) => (
-                <option value={employee.euid}>{`${beautifyName(
+                <option key={employee.euid} value={employee.euid}>{`${beautifyName(
                   employee.firstName,
                   employee.lastName
                 )} <${employee.email}>`}</option>
