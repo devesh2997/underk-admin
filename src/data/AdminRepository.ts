@@ -22,9 +22,6 @@ export type AdminCreateFunc = (data: {
 export type AdminDeleteByIdFunc = (
   auid: string
 ) => Promise<Result<ApiResponse<null>, string>>;
-export type AdminDeleteByAliasFunc = (
-  alias: string
-) => Promise<Result<ApiResponse<null>, string>>;
 export type AdminUpdateFunc = (data: {
   auid: string;
   alias?: string;
@@ -94,18 +91,6 @@ function useAdminRepository() {
     return ok(result.value);
   };
 
-  const deleteByAlias: AdminDeleteByAliasFunc = async (alias) => {
-    if (loading) return err("Please wait for the previous request to complete");
-
-    const config = { ...ADMIN_DELETE_ENDPOINT, params: { alias } };
-    const result = await doApiRequest<null>(authUser.doRequest, config);
-    if (result.isErr()) return err(result.error);
-
-    getAll();
-
-    return ok(result.value);
-  };
-
   const update: AdminUpdateFunc = async (data) => {
     if (loading) return err("Please wait for the previous request to complete");
 
@@ -135,7 +120,6 @@ function useAdminRepository() {
     getAll,
     create,
     deleteById,
-    deleteByAlias,
     update,
   };
 }

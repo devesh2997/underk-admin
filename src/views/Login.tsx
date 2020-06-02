@@ -8,7 +8,6 @@ import React, {
 
 // reactstrap components
 import {
-  Button,
   Card,
   CardBody,
   FormGroup,
@@ -20,6 +19,7 @@ import {
   Col,
   Alert,
 } from "reactstrap";
+import LoadingButton from "components/Widgets/LoadingButton";
 
 import { AuthUserContext } from "session";
 
@@ -151,18 +151,14 @@ const Login: React.FC = () => {
               </div> */}
               {error ? <Alert color="danger">{error.message}</Alert> : null}
               <div className="text-center">
-                <Button
+                <LoadingButton
                   className="my-4"
                   color="primary"
                   type="submit"
-                  disabled={isLoading}
+                  loading={isLoading}
                 >
-                  {isLoading ? (
-                    <i className="fas fa-circle-notch fa-spin" />
-                  ) : (
-                    "Sign in"
-                  )}
-                </Button>
+                  Sign in
+                </LoadingButton>
               </div>
             </Form>
           </CardBody>

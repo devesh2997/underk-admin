@@ -1,17 +1,12 @@
 import React, { useState, useRef, useEffect } from "react";
 import {
-  Button,
   Form,
   FormGroup,
   Input,
-  Label,
   Col,
   Container,
   FormText,
   UncontrolledAlert,
-  InputGroup,
-  InputGroupAddon,
-  InputGroupText,
 } from "reactstrap";
 import Employee from "models/Employee";
 import Role from "models/Role";
@@ -22,6 +17,11 @@ import makeAnimated from "react-select/animated";
 import { beautifyName } from "utils";
 import { AdminCreateFunc } from "data/AdminRepository";
 import { useHistory } from "react-router-dom";
+import {
+  LoadingButton,
+  PasswordInput,
+  CustomInputLabel,
+} from "components/Widgets";
 
 const animatedComponents = makeAnimated();
 
@@ -43,7 +43,6 @@ const AdminCreate: React.FC<AdminCreateProps> = ({
 
   const [loading, toggleLoading] = useState(false);
   const [error, setError] = useState("");
-  const [isPasswordVisible, setPasswordVisibility] = useState(false);
 
   const alias = useFormInput("");
   const password = useFormInput("");
@@ -70,7 +69,7 @@ const AdminCreate: React.FC<AdminCreateProps> = ({
       roleIds: JSON.stringify(roleIds),
       policyNames: JSON.stringify(policyNames),
     });
-    if(result.isErr()) {
+    if (result.isErr()) {
       isMounted.current && setError(result.error);
     } else {
       console.log("AdminCreate", result.value);
@@ -84,9 +83,9 @@ const AdminCreate: React.FC<AdminCreateProps> = ({
     <Container>
       <Form className="mt-3" onSubmit={onSubmit}>
         <FormGroup row>
-          <Label sm={2}>
-            Alias <sup style={{ color: "red" }}>*</sup>
-          </Label>
+          <CustomInputLabel sm={2} mandatory>
+            Alias
+          </CustomInputLabel>
           <Col sm={5}>
             <Input type="text" placeholder="Enter alias" {...alias} required />
             <FormText color="muted">
@@ -95,36 +94,22 @@ const AdminCreate: React.FC<AdminCreateProps> = ({
           </Col>
         </FormGroup>
         <FormGroup row>
-          <Label sm={2}>
-            Password <sup style={{ color: "red" }}>*</sup>
-          </Label>
+          <CustomInputLabel sm={2} mandatory>
+            Password
+          </CustomInputLabel>
           <Col sm={5}>
-            <InputGroup>
-              <Input
-                type={isPasswordVisible ? "text" : "password"}
-                placeholder="Enter password"
-                {...password}
-                required
-              />
-              <InputGroupAddon addonType="append">
-                <InputGroupText
-                  onClick={() => setPasswordVisibility(!isPasswordVisible)}
-                >
-                  {isPasswordVisible ? (
-                    <i className="far fa-eye-slash"></i>
-                  ) : (
-                    <i className="far fa-eye"></i>
-                  )}
-                </InputGroupText>
-              </InputGroupAddon>
-            </InputGroup>
+            <PasswordInput
+              placeholder="Enter password"
+              {...password}
+              required
+            />
             <FormText color="muted">
               Password must be atleast 6 characters long
             </FormText>
           </Col>
         </FormGroup>
         <FormGroup row>
-          <Label sm={2}>Employee Profile</Label>
+          <CustomInputLabel sm={2}>Employee Profile</CustomInputLabel>
           <Col sm={10}>
             <Input type="select" {...euid}>
               <option value="">Select...</option>
@@ -138,7 +123,7 @@ const AdminCreate: React.FC<AdminCreateProps> = ({
           </Col>
         </FormGroup>
         <FormGroup row>
-          <Label sm={2}>Roles</Label>
+          <CustomInputLabel sm={2}>Roles</CustomInputLabel>
           <Col sm={10}>
             <Select
               isMulti
@@ -163,7 +148,7 @@ const AdminCreate: React.FC<AdminCreateProps> = ({
           </Col>
         </FormGroup>
         <FormGroup row>
-          <Label sm={2}>Policies</Label>
+          <CustomInputLabel sm={2}>Policies</CustomInputLabel>
           <Col sm={10}>
             <Select
               isMulti
@@ -191,15 +176,9 @@ const AdminCreate: React.FC<AdminCreateProps> = ({
           <UncontrolledAlert color="danger">{error}</UncontrolledAlert>
         ) : null}
         <FormGroup className="text-center">
-          <Button color="primary" type="submit" disabled={loading}>
-            {loading ? (
-              <span>
-                <i className="fas fa-cog fa-spin" /> Creating
-              </span>
-            ) : (
-              <span>Submit</span>
-            )}
-          </Button>
+          <LoadingButton color="primary" type="submit" loading={loading}>
+            Submit
+          </LoadingButton>
         </FormGroup>
       </Form>
     </Container>

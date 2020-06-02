@@ -1,16 +1,25 @@
 import React from "react";
-import Loading from "components/Widgets/Loading";
-import TableWithColorToggler from "components/Widgets/TableWithColorToggler";
+import {
+  Loading,
+  TableWithColorToggler,
+  ConfirmButton,
+} from "components/Widgets";
 import { Badge, Button } from "reactstrap";
 import { beautifyDate } from "utils";
 import Admin from "models/Admin";
+import { AdminDeleteByIdFunc } from "data/AdminRepository";
 
 type AdminListProps = {
   loading: boolean;
-  admins: Admin[]
+  admins: Admin[];
+  deleteAdmin: AdminDeleteByIdFunc;
 };
 
-const AdminList: React.FC<AdminListProps> = ({ loading, admins }) => {
+const AdminList: React.FC<AdminListProps> = ({
+  loading,
+  admins,
+  deleteAdmin,
+}) => {
   return (
     <>
       {loading ? (
@@ -66,14 +75,17 @@ const AdminList: React.FC<AdminListProps> = ({ loading, admins }) => {
                   >
                     <i className="fas fa-user-edit"></i>
                   </Button>
-                  <Button
+                  <ConfirmButton
                     color="danger"
                     size="sm"
                     type="button"
                     style={{ fontSize: "0.875rem" }}
+                    confirmText={`Are you sure you want to remove ${admin.alias} from Admins?`}
+                    onConfirm={deleteAdmin.bind(null, admin.auid)}
+                    showLoading
                   >
                     <i className="fas fa-user-minus"></i>
-                  </Button>
+                  </ConfirmButton>
                 </td>
               </tr>
             ))}
