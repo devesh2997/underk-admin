@@ -40,6 +40,7 @@ export const doApiRequestForHooks = async <T>(
     }
   } else {
     if (isMounted.current) {
+      console.log(res.error)
       if (setError !== null) setError(res.error as string);
     }
   }

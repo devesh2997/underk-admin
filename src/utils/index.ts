@@ -12,6 +12,7 @@ import POLICIES, { policy } from "underk-policies";
 import { to } from "await-to-ts";
 
 import { MONTHS } from "../constants";
+import { Address } from "models/shared/Address";
 
 //get age from dob
 export const getAge = (date: any) => {
@@ -45,6 +46,52 @@ export const beautifyName = (firstName?: string, lastName?: string) => {
   }
   return beauty;
 };
+
+export const validateAddress = (address: Address) => {
+  let error = ""
+  let valid = true
+  if (isEmptyString(address.building)) {
+    return {
+      valid: false,
+      error: "Building is empty"
+    }
+  } else if (isEmptyString(address.locality)) {
+    return {
+      valid: false,
+      error: "Locality is empty"
+    }
+  } else if (isEmptyString(address.landmark)) {
+    return {
+      valid: false,
+      error: "Landmark is empty"
+    }
+  } else if (isEmptyString(address.city)) {
+    return {
+      valid: false,
+      error: "City is empty"
+    }
+  } else if (isEmptyString(address.state)) {
+    return {
+      valid: false,
+      error: "State is empty"
+    }
+  } else {
+    return {
+      valid: true,
+    }
+  }
+}
+
+export const beautifyAddress = (address: Address): string => {
+  let add = ""
+  add += address.building + ", "
+  add += address.locality + ", "
+  add += address.landmark + ", "
+  add += address.city + ", "
+  add += address.state + " - "
+  add += address.pincode
+  return add
+}
 
 export const isEmpty = (value: any) => {
   return isNull(value) || isUndefined(value);

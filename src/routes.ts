@@ -5,6 +5,7 @@ import Personnel from "views/personnel/Index";
 import Users from "views/users/Index";
 import Catalogue from "views/catalogue/Index";
 import Login from "views/Login";
+import Inventory from "views/inventory/Index";
 
 export type RouteType = {
   path: string;
@@ -43,6 +44,13 @@ const routes: RouteType[] = [
     name: "Catalogue",
     icon: "ni ni-box-2 text-orange",
     component: Catalogue,
+    layout: "/admin",
+  },
+  {
+    path: "/inventory",
+    name: "Inventory",
+    icon: "ni ni-building text-indigo",
+    component: Inventory,
     layout: "/admin",
   },
   {

@@ -1,7 +1,5 @@
 import React from "react";
 import { Card, CardHeader, CardBody, Row, Col, Button } from "reactstrap";
-import { User } from "models/User";
-import { create } from "domain";
 
 type Props = {
   heading?: string;

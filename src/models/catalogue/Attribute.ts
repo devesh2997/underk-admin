@@ -1,4 +1,3 @@
-import { Subtype } from "./Subtype";
 import { AttributeValue } from "./AttributeValue";
 
 export type Attribute = {
