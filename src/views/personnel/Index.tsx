@@ -46,6 +46,8 @@ const Personnel: React.FC = () => {
           roles: roleRepo.roles,
           createRole: roleRepo.create,
           deleteRole: roleRepo.deleteById,
+          addPoliciesToRole: roleRepo.addPoliciesToRole,
+          deletePoliciesFromRole: roleRepo.deletePoliciesFromRole,
           loadingPolicies: policyRepo.loading,
           policies: policyRepo.policies,
           employees: employeeRepo.employees,
