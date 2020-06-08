@@ -12,7 +12,11 @@ import Admin from "models/Admin";
 import Employee from "models/Employee";
 import Role from "models/Role";
 import Policy from "models/Policy";
-import { AdminCreateFunc, AdminDeleteByIdFunc } from "data/AdminRepository";
+import {
+  AdminCreateFunc,
+  AdminDeleteByIdFunc,
+  AdminUpdateFunc,
+} from "data/AdminRepository";
 import {
   RoleCreateFunc,
   RoleDeleteByIdFunc,
@@ -68,6 +72,7 @@ type AdminsProps = {
   admins: Admin[];
   createAdmin: AdminCreateFunc;
   deleteAdmin: AdminDeleteByIdFunc;
+  updateAdmin: AdminUpdateFunc;
   loadingRoles: boolean;
   roles: Role[];
   createRole: RoleCreateFunc;
@@ -84,6 +89,7 @@ const Admins: React.FC<AdminsProps> = ({
   admins,
   createAdmin,
   deleteAdmin,
+  updateAdmin,
   loadingRoles,
   roles,
   createRole,
@@ -101,6 +107,10 @@ const Admins: React.FC<AdminsProps> = ({
           loading: loadingAdmins,
           admins,
           deleteAdmin,
+          employees,
+          roles,
+          policies,
+          updateAdmin,
         };
       case "/roles":
         return {

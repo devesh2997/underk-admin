@@ -76,21 +76,19 @@ const RoleItem: React.FC<RoleItemProps> = ({
       id: role.id,
       policyNames: JSON.stringify(policiesToBeAdded),
     });
-    if (result1.isErr()) {
-      isMounted.current && setError(result1.error);
-      return;
-    }
 
     const result2 = await deletePoliciesFromRole({
       id: role.id,
       policyNames: JSON.stringify(policiesToBeDeleted),
     });
-    if (result2.isErr()) {
-      isMounted.current && setError(result2.error);
-      return;
-    }
 
-    isMounted.current && toggleModal(false);
+    if (result1.isErr()) {
+      isMounted.current && setError(result1.error);
+    } else if (result2.isErr()) {
+      isMounted.current && setError(result2.error);
+    } else {
+      isMounted.current && toggleModal(false);
+    }
 
     isMounted.current && toggleLoading(false);
   }
