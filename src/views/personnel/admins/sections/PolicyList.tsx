@@ -11,7 +11,7 @@ const PolicyList: React.FC<PolicyListProps> = ({ loading, policies }) => {
   return (
     <>
       {loading ? (
-        <div className="text-center">
+        <div className="text-center mt-3">
           <Loading />
         </div>
       ) : (
