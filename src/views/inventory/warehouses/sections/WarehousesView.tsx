@@ -3,7 +3,6 @@ import classnames from "classnames";
 import { Warehouse } from "models/inventory/Warehouse";
 import { useTabSelect } from "hooks/Index";
 import {
-  Container,
   Row,
   Col,
   Nav,
@@ -24,7 +23,6 @@ const WarehousesView: React.FC<Props> = (props: Props) => {
   const { warehouses } = props;
   return (
     <>
-      <Container fluid></Container>
       <Row>
         <Col>
           <div className="nav-wrapper">
