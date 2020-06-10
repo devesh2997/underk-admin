@@ -13,17 +13,23 @@ import {
 } from "reactstrap";
 import { useFormInput } from "hooks/Index";
 import ReactDatetime from "react-datetime";
-import { EmployeeCreateFunc, EmployeeUpdateFunc } from "data/EmployeeRepository";
+import {
+  EmployeeCreateFunc,
+  EmployeeUpdateFunc,
+} from "data/EmployeeRepository";
 import { CustomInputLabel, LoadingButton } from "components/Widgets";
 import { useHistory, useLocation } from "react-router-dom";
 import Employee from "models/Employee";
 
 type EmployeeUpsertProps = {
   createEmployee: EmployeeCreateFunc;
-  updateEmployee: EmployeeUpdateFunc
+  updateEmployee: EmployeeUpdateFunc;
 };
 
-const EmployeeUpsert: React.FC<EmployeeUpsertProps> = ({ createEmployee, updateEmployee }) => {
+const EmployeeUpsert: React.FC<EmployeeUpsertProps> = ({
+  createEmployee,
+  updateEmployee,
+}) => {
   const isMounted = useRef(true);
   const history = useHistory();
   const location = useLocation<{ employee?: Employee } | null | undefined>();
@@ -65,7 +71,7 @@ const EmployeeUpsert: React.FC<EmployeeUpsertProps> = ({ createEmployee, updateE
     isMounted.current && toggleLoading(true);
     isMounted.current && setError("");
 
-    if(employee) {
+    if (employee) {
       const result = await updateEmployee({
         euid: employee.euid,
         firstName: firstName.value,
@@ -306,7 +312,9 @@ const EmployeeUpsert: React.FC<EmployeeUpsertProps> = ({ createEmployee, updateE
           </Col>
         </FormGroup>
         {error ? (
-          <UncontrolledAlert color="danger">{error}</UncontrolledAlert>
+          <UncontrolledAlert color="danger">
+            <pre>{error}</pre>
+          </UncontrolledAlert>
         ) : null}
         <FormGroup className="text-center">
           <LoadingButton color="primary" type="submit" loading={loading}>

@@ -6,8 +6,8 @@ import AdminList from "./sections/AdminList";
 import RoleList from "./sections/RoleList";
 import PolicyList from "./sections/PolicyList";
 import { CustomNavTabs, NavTabItem } from "components/Widgets/CustomNavTabs";
-import AdminCreate from "./sections/AdminCreate";
-import RoleCreate from "./sections/RoleCreate";
+import AdminUpsert from "./sections/AdminUpsert";
+import RoleUpsert from "./sections/RoleUpsert";
 import Admin from "models/Admin";
 import Employee from "models/Employee";
 import Role from "models/Role";
@@ -50,19 +50,19 @@ const adminRoutes: RouteType[] = [
     layout: "/admin/personnel/admins",
   },
   {
-    path: "/create",
-    name: "Create Admin",
+    path: "/upsert",
+    name: "Upsert Admin",
     exact: true,
-    icon: "fas fa-plus",
-    component: AdminCreate,
+    icon: "fas fa-pencil-alt",
+    component: AdminUpsert,
     layout: "/admin/personnel/admins",
   },
   {
-    path: "/roles/create",
-    name: "Create Role",
+    path: "/roles/upsert",
+    name: "Upsert Role",
     exact: true,
-    icon: "fas fa-plus",
-    component: RoleCreate,
+    icon: "fas fa-pencil-alt",
+    component: RoleUpsert,
     layout: "/admin/personnel/admins",
   },
 ];
@@ -107,36 +107,32 @@ const Admins: React.FC<AdminsProps> = ({
           loading: loadingAdmins,
           admins,
           deleteAdmin,
-          employees,
-          roles,
-          policies,
-          updateAdmin,
         };
       case "/roles":
         return {
           loading: loadingRoles,
           roles,
           deleteRole,
-          policies,
-          addPoliciesToRole,
-          deletePoliciesFromRole,
         };
       case "/policies":
         return {
           loading: loadingPolicies,
           policies,
         };
-      case "/create":
+      case "/upsert":
         return {
           createAdmin,
           roles,
           policies,
           employees,
+          updateAdmin,
         };
-      case "/roles/create":
+      case "/roles/upsert":
         return {
           createRole,
           policies,
+          addPoliciesToRole,
+          deletePoliciesFromRole,
         };
       default:
         return {};

@@ -15,40 +15,66 @@ import { useFormInput } from "hooks/Index";
 import Select from "react-select";
 import makeAnimated from "react-select/animated";
 import { beautifyName } from "utils";
-import { AdminCreateFunc } from "data/AdminRepository";
-import { useHistory } from "react-router-dom";
+import { AdminCreateFunc, AdminUpdateFunc } from "data/AdminRepository";
+import { useHistory, useLocation } from "react-router-dom";
 import {
   LoadingButton,
   PasswordInput,
   CustomInputLabel,
 } from "components/Widgets";
+import Admin from "models/Admin";
 
 const animatedComponents = makeAnimated();
 
-type AdminCreateProps = {
+type AdminUpsertProps = {
   createAdmin: AdminCreateFunc;
   roles: Role[];
   policies: Policy[];
   employees: Employee[];
+  updateAdmin: AdminUpdateFunc;
 };
 
-const AdminCreate: React.FC<AdminCreateProps> = ({
+type RoleOpt = {
+  value: number;
+  label: string;
+};
+
+type PolicyOpt = {
+  value: string;
+  label: string;
+};
+
+const AdminUpsert: React.FC<AdminUpsertProps> = ({
   createAdmin,
   roles,
   policies,
   employees,
+  updateAdmin,
 }) => {
   const isMounted = useRef(true);
   const history = useHistory();
+  const location = useLocation<{ admin?: Admin } | null | undefined>();
+  const admin: Admin | null | undefined = location.state?.admin;
 
   const [loading, toggleLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const alias = useFormInput("");
+  const alias = useFormInput(admin ? admin.alias : "");
   const password = useFormInput("");
-  const euid = useFormInput("");
-  const [roleIds, setRoleIds] = useState<number[]>([]);
-  const [policyNames, setPolicyNames] = useState<string[]>([]);
+  const euid = useFormInput(admin && admin.employee ? admin.employee.euid : "");
+  const [selRoleOpts, setSelRoleOpts] = useState<RoleOpt[]>(
+    admin
+      ? admin.roles.map((role) => ({ value: role.id, label: role.name }))
+      : []
+  );
+  const [selPolicyOpts, setSelPolicyOpts] = useState<PolicyOpt[]>(
+    admin
+      ? admin.policies.map((policy) => ({
+          value: policy.name,
+          label: policy.name,
+        }))
+      : []
+  );
 
   useEffect(() => {
     return () => {
@@ -62,18 +88,37 @@ const AdminCreate: React.FC<AdminCreateProps> = ({
     isMounted.current && toggleLoading(true);
     isMounted.current && setError("");
 
-    const result = await createAdmin({
-      alias: alias.value,
-      password: password.value,
-      euid: euid.value,
-      roleIds: JSON.stringify(roleIds),
-      policyNames: JSON.stringify(policyNames),
-    });
-    if (result.isErr()) {
-      isMounted.current && setError(result.error);
+    if (admin) {
+      const result = await updateAdmin({
+        auid: admin.auid,
+        alias: admin.alias === alias.value ? undefined : alias.value,
+        euid:
+          (admin.employee ? admin.employee.euid : "") === euid.value
+            ? undefined
+            : euid.value,
+        roleIds: JSON.stringify(selRoleOpts.map((opt) => opt.value)),
+        policyNames: JSON.stringify(selPolicyOpts.map((opt) => opt.value)),
+      });
+      if (result.isErr()) {
+        isMounted.current && setError(result.error);
+      } else {
+        console.log("AdminUpdate", result.value);
+        history.push("/admin/personnel/admins");
+      }
     } else {
-      console.log("AdminCreate", result.value);
-      history.push("/admin/personnel/admins");
+      const result = await createAdmin({
+        alias: alias.value,
+        password: password.value,
+        euid: euid.value,
+        roleIds: JSON.stringify(selRoleOpts.map((opt) => opt.value)),
+        policyNames: JSON.stringify(selPolicyOpts.map((opt) => opt.value)),
+      });
+      if (result.isErr()) {
+        isMounted.current && setError(result.error);
+      } else {
+        console.log("AdminInsert", result.value);
+        history.push("/admin/personnel/admins");
+      }
     }
 
     isMounted.current && toggleLoading(false);
@@ -102,6 +147,7 @@ const AdminCreate: React.FC<AdminCreateProps> = ({
               placeholder="Enter password"
               {...password}
               required
+              disabled={!!admin}
             />
             <FormText color="muted">
               Password must be atleast 6 characters long
@@ -114,10 +160,12 @@ const AdminCreate: React.FC<AdminCreateProps> = ({
             <Input type="select" {...euid}>
               <option value="">Select...</option>
               {employees.map((employee) => (
-                <option key={employee.euid} value={employee.euid}>{`${beautifyName(
-                  employee.firstName,
-                  employee.lastName
-                )} <${employee.email}>`}</option>
+                <option
+                  key={employee.euid}
+                  value={employee.euid}
+                >{`${beautifyName(employee.firstName, employee.lastName)} <${
+                  employee.email
+                }>`}</option>
               ))}
             </Input>
           </Col>
@@ -133,15 +181,12 @@ const AdminCreate: React.FC<AdminCreateProps> = ({
                 value: role.id,
                 label: role.name,
               }))}
+              value={selRoleOpts}
               onChange={(opts) => {
                 if (opts) {
-                  setRoleIds(
-                    opts.map(
-                      (opt: { value: number; label: string }) => opt.value
-                    )
-                  );
+                  setSelRoleOpts(opts as RoleOpt[]);
                 } else {
-                  setRoleIds([]);
+                  setSelRoleOpts([]);
                 }
               }}
             />
@@ -158,22 +203,21 @@ const AdminCreate: React.FC<AdminCreateProps> = ({
                 value: policy.name,
                 label: policy.name,
               }))}
+              value={selPolicyOpts}
               onChange={(opts) => {
                 if (opts) {
-                  setPolicyNames(
-                    opts.map(
-                      (opt: { value: string; label: string }) => opt.value
-                    )
-                  );
+                  setSelPolicyOpts(opts as PolicyOpt[]);
                 } else {
-                  setPolicyNames([]);
+                  setSelPolicyOpts([]);
                 }
               }}
             />
           </Col>
         </FormGroup>
         {error ? (
-          <UncontrolledAlert color="danger">{error}</UncontrolledAlert>
+          <UncontrolledAlert color="danger">
+            <pre>{error}</pre>
+          </UncontrolledAlert>
         ) : null}
         <FormGroup className="text-center">
           <LoadingButton color="primary" type="submit" loading={loading}>
@@ -185,4 +229,4 @@ const AdminCreate: React.FC<AdminCreateProps> = ({
   );
 };
 
-export default AdminCreate;
+export default AdminUpsert;

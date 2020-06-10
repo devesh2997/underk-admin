@@ -2,6 +2,7 @@ import { AxiosRequestConfig } from "axios";
 import { ApiResponse } from "session/AuthUserProvider";
 import { TO, TE } from "utils";
 import { ok, err, Result } from "neverthrow";
+import { isString } from "lodash";
 
 export const doApiRequestForHooks = async <T>(
   request: <T>(config: AxiosRequestConfig) => Promise<ApiResponse<T>>,
@@ -40,7 +41,7 @@ export const doApiRequestForHooks = async <T>(
     }
   } else {
     if (isMounted.current) {
-      console.log(res.error)
+      console.log(res.error);
       if (setError !== null) setError(res.error as string);
     }
   }
@@ -54,8 +55,21 @@ export const doApiRequest = async <T>(
 
   [error, response] = await TO(request(config));
 
-  if (error) return err(error);
-  if (!response.success) return err(response.error as string);
+  if (error) {
+    if (!isString(error)) {
+      if (error instanceof Error) {
+        return err(error.message);
+      }
+      return err(JSON.stringify(error, null, 2));
+    }
+    return err(error);
+  }
+  if (!response.success) {
+    if (!isString(response.error)) {
+      return err(JSON.stringify(response.error, null, 2));
+    }
+    return err(response.error);
+  }
   if (typeof response.data === "undefined") return err("Some error occurred");
 
   return ok(response);
