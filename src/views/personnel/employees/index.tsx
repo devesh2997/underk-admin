@@ -3,9 +3,14 @@ import classnames from "classnames";
 import { Route, Switch, Link } from "react-router-dom";
 import { CustomNavTabs, NavTabItem } from "components/Widgets/CustomNavTabs";
 import EmployeeList from "./sections/EmployeeList";
-import EmployeeCreate from "./sections/EmployeeCreate";
+import EmployeeUpsert from "./sections/EmployeeUpsert";
 import { RouteType } from "routes";
 import Employee from "models/Employee";
+import {
+  EmployeeCreateFunc,
+  EmployeeDeleteByIdFunc,
+  EmployeeUpdateFunc,
+} from "data/EmployeeRepository";
 
 const employeeRoutes: RouteType[] = [
   {
@@ -17,11 +22,11 @@ const employeeRoutes: RouteType[] = [
     layout: "/admin/personnel/employees",
   },
   {
-    path: "/create",
-    name: "Create",
+    path: "/upsert",
+    name: "Upsert",
     exact: true,
-    icon: "fas fa-plus",
-    component: EmployeeCreate,
+    icon: "fas fa-pencil-alt",
+    component: EmployeeUpsert,
     layout: "/admin/personnel/employees",
   },
 ];
@@ -29,25 +34,17 @@ const employeeRoutes: RouteType[] = [
 type EmployeesProps = {
   loading: boolean;
   employees: Employee[];
-  createEmployee: (data: {
-    firstName: string;
-    lastName: string;
-    email: string;
-    mobileCountryCode: string;
-    mobileNumber: number;
-    dob?: number;
-    gender: string;
-    picUrl?: string;
-    mobileVerified: boolean;
-    emailVerified: boolean;
-    address: string;
-  }) => Promise<void>;
+  createEmployee: EmployeeCreateFunc;
+  deleteEmployee: EmployeeDeleteByIdFunc;
+  updateEmployee: EmployeeUpdateFunc;
 };
 
 const Employees: React.FC<EmployeesProps> = ({
   loading,
   employees,
   createEmployee,
+  deleteEmployee,
+  updateEmployee,
 }) => {
   function getRouteSpecificProps(route: RouteType): Object {
     switch (route.path) {
@@ -55,10 +52,12 @@ const Employees: React.FC<EmployeesProps> = ({
         return {
           loading,
           employees,
+          deleteEmployee,
         };
-      case "/create":
+      case "/upsert":
         return {
           createEmployee,
+          updateEmployee,
         };
       default:
         return {};

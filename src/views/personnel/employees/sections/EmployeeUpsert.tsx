@@ -1,69 +1,121 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import {
-  Button,
   Form,
   FormGroup,
   InputGroup,
   Input,
-  Label,
   Col,
   Row,
   Container,
   InputGroupAddon,
   InputGroupText,
+  UncontrolledAlert,
 } from "reactstrap";
 import { useFormInput } from "hooks/Index";
 import ReactDatetime from "react-datetime";
+import { EmployeeCreateFunc, EmployeeUpdateFunc } from "data/EmployeeRepository";
+import { CustomInputLabel, LoadingButton } from "components/Widgets";
+import { useHistory, useLocation } from "react-router-dom";
+import Employee from "models/Employee";
 
-type EmployeeCreateProps = {
-  createEmployee: (data: {
-    firstName: string;
-    lastName: string;
-    email: string;
-    mobileCountryCode: string;
-    mobileNumber: number;
-    dob?: number;
-    gender: string;
-    picUrl?: string;
-    mobileVerified: boolean;
-    emailVerified: boolean;
-    address: string;
-  }) => Promise<void>;
+type EmployeeUpsertProps = {
+  createEmployee: EmployeeCreateFunc;
+  updateEmployee: EmployeeUpdateFunc
 };
 
-const EmployeeCreate: React.FC<EmployeeCreateProps> = ({ createEmployee }) => {
-  const firstName = useFormInput("");
-  const lastName = useFormInput("");
-  const email = useFormInput("");
-  const [emailVerified, setIsEmailVerified] = useState(false);
-  const mobileCountryCode = useFormInput("+91");
-  const mobileNumber = useFormInput("");
-  const [mobileVerified, setIsMobileVerified] = useState(false);
-  const [dob, setDob] = useState<Date>();
-  const gender = useFormInput("N");
-  const address = useFormInput("");
+const EmployeeUpsert: React.FC<EmployeeUpsertProps> = ({ createEmployee, updateEmployee }) => {
+  const isMounted = useRef(true);
+  const history = useHistory();
+  const location = useLocation<{ employee?: Employee } | null | undefined>();
+  const employee: Employee | null | undefined = location.state?.employee;
 
-  function onSubmit(event: React.FormEvent) {
+  const [loading, toggleLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  const firstName = useFormInput(employee ? employee.firstName : "");
+  const lastName = useFormInput(employee ? employee.lastName : "");
+  const email = useFormInput(employee ? employee.email : "");
+  const [emailVerified, setIsEmailVerified] = useState(
+    employee ? employee.emailVerified : false
+  );
+  const mobileCountryCode = useFormInput(
+    employee ? employee.mobileCountryCode : "+91"
+  );
+  const mobileNumber = useFormInput(
+    employee ? employee.mobileNumber.toString() : ""
+  );
+  const [mobileVerified, setIsMobileVerified] = useState(
+    employee ? employee.mobileVerified : false
+  );
+  const [dob, setDob] = useState<Date | undefined>(
+    employee ? new Date(Number(employee.dob)) : undefined
+  );
+  const gender = useFormInput(employee ? employee.gender : "");
+  const address = useFormInput(employee ? employee.address : "");
+
+  useEffect(() => {
+    return () => {
+      isMounted.current = false;
+    };
+  }, []);
+
+  async function onSubmit(event: React.FormEvent) {
     event.preventDefault();
-    createEmployee({
-      firstName: firstName.value,
-      lastName: lastName.value,
-      email: email.value,
-      mobileCountryCode: mobileCountryCode.value,
-      mobileNumber: Number(mobileNumber.value),
-      dob: dob?.getTime(),
-      gender: gender.value,
-      mobileVerified,
-      emailVerified,
-      address: address.value,
-    });
+
+    isMounted.current && toggleLoading(true);
+    isMounted.current && setError("");
+
+    if(employee) {
+      const result = await updateEmployee({
+        euid: employee.euid,
+        firstName: firstName.value,
+        lastName: lastName.value,
+        email: email.value,
+        mobileCountryCode: mobileCountryCode.value,
+        mobileNumber: Number(mobileNumber.value),
+        dob: dob?.getTime(),
+        gender: gender.value,
+        mobileVerified,
+        emailVerified,
+        address: address.value,
+      });
+      if (result.isErr()) {
+        isMounted.current && setError(result.error);
+      } else {
+        console.log("EmployeeUpdate", result.value);
+        history.push("/admin/personnel/employees");
+      }
+    } else {
+      const result = await createEmployee({
+        firstName: firstName.value,
+        lastName: lastName.value,
+        email: email.value,
+        mobileCountryCode: mobileCountryCode.value,
+        mobileNumber: Number(mobileNumber.value),
+        dob: dob?.getTime(),
+        gender: gender.value,
+        mobileVerified,
+        emailVerified,
+        address: address.value,
+      });
+      if (result.isErr()) {
+        isMounted.current && setError(result.error);
+      } else {
+        console.log("EmployeeInsert", result.value);
+        history.push("/admin/personnel/employees");
+      }
+    }
+
+    isMounted.current && toggleLoading(false);
   }
 
   return (
     <Container>
       <Form className="mt-3" onSubmit={onSubmit}>
         <FormGroup row>
-          <Label sm={2}>Name</Label>
+          <CustomInputLabel sm={2} mandatory>
+            Name
+          </CustomInputLabel>
           <Col sm={5}>
             <Input
               type="text"
@@ -79,7 +131,9 @@ const EmployeeCreate: React.FC<EmployeeCreateProps> = ({ createEmployee }) => {
         <Row className="align-items-center">
           <Col sm={8}>
             <FormGroup row>
-              <Label sm={3}>Email</Label>
+              <CustomInputLabel sm={3} mandatory>
+                Email
+              </CustomInputLabel>
               <Col sm={9}>
                 <Input
                   type="email"
@@ -111,7 +165,9 @@ const EmployeeCreate: React.FC<EmployeeCreateProps> = ({ createEmployee }) => {
         <Row className="align-items-center">
           <Col sm={8}>
             <FormGroup row>
-              <Label sm={3}>Mobile</Label>
+              <CustomInputLabel sm={3} mandatory>
+                Mobile
+              </CustomInputLabel>
               <Col xs={4} sm={3}>
                 <Input type="select" {...mobileCountryCode} required>
                   <option value="+91">+91</option>
@@ -146,7 +202,9 @@ const EmployeeCreate: React.FC<EmployeeCreateProps> = ({ createEmployee }) => {
           </Col>
         </Row>
         <FormGroup row>
-          <Label sm={2}>DOB</Label>
+          <CustomInputLabel sm={2} mandatory>
+            DOB
+          </CustomInputLabel>
           <Col sm={5}>
             <InputGroup className="input-group-alternative">
               <InputGroupAddon addonType="prepend">
@@ -169,7 +227,9 @@ const EmployeeCreate: React.FC<EmployeeCreateProps> = ({ createEmployee }) => {
           </Col>
         </FormGroup>
         <FormGroup row className="align-items-center">
-          <Label sm={2}>Gender</Label>
+          <CustomInputLabel sm={2} mandatory>
+            Gender
+          </CustomInputLabel>
           <Col sm={10}>
             <Row>
               <Col>
@@ -180,6 +240,7 @@ const EmployeeCreate: React.FC<EmployeeCreateProps> = ({ createEmployee }) => {
                     name="gender"
                     type="radio"
                     value="M"
+                    checked={gender.value === "M"}
                     onChange={gender.onChange}
                   />
                   <label
@@ -198,6 +259,7 @@ const EmployeeCreate: React.FC<EmployeeCreateProps> = ({ createEmployee }) => {
                     name="gender"
                     type="radio"
                     value="F"
+                    checked={gender.value === "F"}
                     onChange={gender.onChange}
                   />
                   <label
@@ -216,6 +278,7 @@ const EmployeeCreate: React.FC<EmployeeCreateProps> = ({ createEmployee }) => {
                     name="gender"
                     type="radio"
                     value="N"
+                    checked={gender.value === "N"}
                     onChange={gender.onChange}
                   />
                   <label
@@ -230,7 +293,9 @@ const EmployeeCreate: React.FC<EmployeeCreateProps> = ({ createEmployee }) => {
           </Col>
         </FormGroup>
         <FormGroup row>
-          <Label sm={2}>Address</Label>
+          <CustomInputLabel sm={2} mandatory>
+            Address
+          </CustomInputLabel>
           <Col sm={10}>
             <Input
               type="text"
@@ -240,14 +305,17 @@ const EmployeeCreate: React.FC<EmployeeCreateProps> = ({ createEmployee }) => {
             />
           </Col>
         </FormGroup>
+        {error ? (
+          <UncontrolledAlert color="danger">{error}</UncontrolledAlert>
+        ) : null}
         <FormGroup className="text-center">
-          <Button color="primary" type="submit">
+          <LoadingButton color="primary" type="submit" loading={loading}>
             Submit
-          </Button>
+          </LoadingButton>
         </FormGroup>
       </Form>
     </Container>
   );
 };
 
-export default EmployeeCreate;
+export default EmployeeUpsert;

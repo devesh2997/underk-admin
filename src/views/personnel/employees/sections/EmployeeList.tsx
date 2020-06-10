@@ -1,21 +1,33 @@
 import React from "react";
-import TableWithColorToggler from "components/Widgets/TableWithColorToggler";
-import { NavLink, Badge, Row } from "reactstrap";
-import { beautifyName, getAge } from "utils";
-import GenderIcon from "components/Widgets/GenderIcon";
-import Loading from "components/Widgets/Loading";
+import {
+  TableWithColorToggler,
+  Loading,
+  GenderIcon,
+  ConfirmButton,
+} from "components/Widgets";
 import Employee from "models/Employee";
+import { EmployeeDeleteByIdFunc } from "data/EmployeeRepository";
+import { beautifyName, getAge } from "utils";
+import { Row, NavLink, Badge, Button } from "reactstrap";
+import { useHistory } from "react-router-dom";
 
 type EmployeeListProps = {
   loading: boolean;
-  employees: Employee[]
+  employees: Employee[];
+  deleteEmployee: EmployeeDeleteByIdFunc;
 };
 
-const EmployeeList: React.FC<EmployeeListProps> = ({ loading, employees }) => {
+const EmployeeList: React.FC<EmployeeListProps> = ({
+  loading,
+  employees,
+  deleteEmployee,
+}) => {
+  const history = useHistory();
+
   return (
     <>
       {loading ? (
-        <div className="text-center">
+        <div className="text-center mt-3">
           <Loading />
         </div>
       ) : (
@@ -72,7 +84,38 @@ const EmployeeList: React.FC<EmployeeListProps> = ({ loading, employees }) => {
                 </td>
                 <td>{getAge(Number(employee.dob))?.toString()}</td>
                 <td>{employee.address}</td>
-                <td></td>
+                <td>
+                  <Button
+                    color="secondary"
+                    size="sm"
+                    type="button"
+                    style={{ fontSize: "0.875rem" }}
+                    onClick={() =>
+                      history.push({
+                        pathname: "/admin/personnel/employees/upsert",
+                        state: {
+                          employee,
+                        },
+                      })
+                    }
+                  >
+                    <i className="fas fa-user-edit"></i>
+                  </Button>
+                  <ConfirmButton
+                    color="danger"
+                    size="sm"
+                    type="button"
+                    style={{ fontSize: "0.875rem" }}
+                    confirmText={`Are you sure you want to remove ${beautifyName(
+                      employee.firstName,
+                      employee.lastName
+                    )} from Employees?`}
+                    onConfirm={deleteEmployee.bind(null, employee.euid)}
+                    showLoading
+                  >
+                    <i className="fas fa-user-minus"></i>
+                  </ConfirmButton>
+                </td>
               </tr>
             ))}
           </tbody>

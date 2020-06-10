@@ -7,106 +7,110 @@ import {
   EMPLOYEE_DELETE_ENDPOINT,
   EMPLOYEE_UPDATE_ENDPOINT,
 } from "constants/api-endpoints/employee";
-import { doApiRequestForHooks } from "data/utils";
+import { doApiRequest } from "data/utils";
+import { ApiResponse } from "session/AuthUserProvider";
+import { ok, err, Result } from "neverthrow";
+
+export type EmployeeGetAllFunc = () => Promise<void>;
+export type EmployeeCreateFunc = (data: {
+  firstName: string;
+  lastName: string;
+  email: string;
+  mobileCountryCode: string;
+  mobileNumber: number;
+  dob?: number;
+  gender: string;
+  picUrl?: string;
+  mobileVerified: boolean;
+  emailVerified: boolean;
+  address: string;
+}) => Promise<Result<ApiResponse<null>, string>>;
+export type EmployeeDeleteByIdFunc = (euid: string) => Promise<void>;
+export type EmployeeUpdateFunc = (data: {
+  euid: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  mobileCountryCode: string;
+  mobileNumber: number;
+  dob?: number;
+  gender: string;
+  mobileVerified: boolean;
+  emailVerified: boolean;
+  picUrl?: string;
+  address: string;
+}) => Promise<Result<ApiResponse<null>, string>>;
 
 function useEmployeeRepository() {
   const isMounted = useRef(true);
 
   const authUser = useContext(AuthUserContext);
-  const _request = authUser.doRequest;
 
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-  const [message, setMessage] = useState("");
+  const [loading, toggleLoading] = useState(false);
   const [employees, setEmployees] = useState<Employee[]>([]);
+  const [error, setError] = useState("");
 
-  async function getAll() {
+  const getAll: EmployeeGetAllFunc = async () => {
     if (loading || !isMounted.current) return;
-    setError("");
-    doApiRequestForHooks<Employee[]>(
-      _request,
-      EMPLOYEE_GET_ALL_ENDPOINT,
-      isMounted,
-      setEmployees,
-      setLoading,
-      setError,
-      setMessage,
-      null
+
+    isMounted.current && toggleLoading(true);
+    isMounted.current && setError("");
+
+    const result = await doApiRequest<Employee[]>(
+      authUser.doRequest,
+      EMPLOYEE_GET_ALL_ENDPOINT
     );
-  }
+    if (result.isErr()) {
+      isMounted.current && setError(result.error);
+      // console.error("Employee.getAll", result.error);
+    } else {
+      isMounted.current && setEmployees(result.value.data as Employee[]);
+      // console.log("Employee.getAll", result.value.message);
+    }
 
-  async function create(data: {
-    firstName: string;
-    lastName: string;
-    email: string;
-    mobileCountryCode: string;
-    mobileNumber: number;
-    dob?: number;
-    gender: string;
-    picUrl?: string;
-    mobileVerified: boolean;
-    emailVerified: boolean;
-    address: string;
-  }) {
-    if (loading || !isMounted.current) return;
-    setError("");
+    isMounted.current && toggleLoading(false);
+  };
+
+  const create: EmployeeCreateFunc = async (data) => {
+    if (loading) return err("Please wait for the previous request to complete");
+
     const config = { ...EMPLOYEE_CREATE_ENDPOINT, data };
-    doApiRequestForHooks<null>(
-      _request,
-      config,
-      isMounted,
-      null,
-      setLoading,
-      setError,
-      setMessage,
-      getAll
-    );
-  }
+    const result = await doApiRequest<null>(authUser.doRequest, config);
+    if (result.isErr()) return err(result.error);
 
-  async function deleteById(euid: string) {
-    if (loading || !isMounted.current) return;
-    setError("");
+    getAll();
+
+    return ok(result.value);
+  };
+
+  const deleteById: EmployeeDeleteByIdFunc = async (euid: string) => {
+    if (loading) return;
+
+    isMounted.current && setError("");
+
     const config = { ...EMPLOYEE_DELETE_ENDPOINT, params: { euid } };
-    doApiRequestForHooks<null>(
-      _request,
-      config,
-      isMounted,
-      null,
-      setLoading,
-      setError,
-      setMessage,
-      getAll
-    );
-  }
+    const result = await doApiRequest<null>(authUser.doRequest, config);
+    if (result.isErr()) {
+      isMounted.current && setError(result.error);
+      // console.error("Employee.deleteById", result.error);
+    } else {
+      // console.log("Employee.deleteById", result.value.message);
 
-  async function update(data: {
-    euid: string;
-    firstName: string;
-    lastName: string;
-    email: string;
-    mobileCountryCode: string;
-    mobileNumber: number;
-    dob: number;
-    gender: string;
-    mobileVerified: boolean;
-    emailVerified: boolean;
-    picUrl: string;
-    address: string;
-  }) {
-    if (loading || !isMounted.current) return;
-    setError("");
+      getAll();
+    }
+  };
+
+  const update: EmployeeUpdateFunc = async (data) => {
+    if (loading) return err("Please wait for the previous request to complete");
+
     const config = { ...EMPLOYEE_UPDATE_ENDPOINT, data };
-    doApiRequestForHooks<null>(
-      _request,
-      config,
-      isMounted,
-      null,
-      setLoading,
-      setError,
-      setMessage,
-      getAll
-    );
-  }
+    const result = await doApiRequest<null>(authUser.doRequest, config);
+    if (result.isErr()) return err(result.error);
+
+    getAll();
+
+    return ok(result.value);
+  };
 
   useEffect(() => {
     getAll();
@@ -120,9 +124,8 @@ function useEmployeeRepository() {
 
   return {
     loading,
-    error,
-    message,
     employees,
+    error,
     getAll,
     create,
     deleteById,

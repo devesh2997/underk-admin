@@ -5,7 +5,7 @@ export default interface Employee {
   email: string;
   mobileCountryCode: string;
   mobileNumber: number;
-  dob: number;
+  dob: Date;
   gender: string;
   picUrl: string;
   mobileVerified: boolean;
