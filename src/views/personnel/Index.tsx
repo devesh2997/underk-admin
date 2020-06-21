@@ -58,6 +58,8 @@ const Personnel: React.FC = () => {
           loading: employeeRepo.loading,
           employees: employeeRepo.employees,
           createEmployee: employeeRepo.create,
+          deleteEmployee: employeeRepo.deleteById,
+          updateEmployee: employeeRepo.update,
         };
       default:
         return {};
