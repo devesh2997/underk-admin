@@ -1,9 +1,10 @@
 import { AttributeValue } from "./AttributeValue";
 
 export type Attribute = {
-    id: number,
+    id?: number,
     name: string,
-    skuOrdering: number,
-    variantsBasis: boolean,
+    isMultiValued: boolean,
+    isCompulsory: boolean,
+    isFilterable: boolean,
     values: AttributeValue[]
 }

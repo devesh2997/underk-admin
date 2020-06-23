@@ -14,7 +14,7 @@ import {
   CardBody,
 } from "reactstrap";
 import TypesAttributesView from "./sections/view";
-import TypesAttributesAdd from "./sections/create";
+import TypesAttributesAdd from "./sections/create/Index";
 import { useTabSelect } from "hooks/Index";
 import useTypeRepository from "data/catalogue/TypeAndAttributesRepository";
 import Loading from "components/Widgets/Loading";
@@ -23,7 +23,7 @@ import { CustomNavTabs, NavTabItem } from "components/Widgets/CustomNavTabs";
 import AttributeValueBulk from "./sections/AttributeValueBulk";
 
 const TypesAttributesTab = () => {
-  const { activeTab, toggleActiveTab } = useTabSelect(1);
+  const { activeTab, toggleActiveTab } = useTabSelect(2);
   const {
     loading,
     error,
@@ -34,8 +34,6 @@ const TypesAttributesTab = () => {
     getAllTypes,
     createType,
     createSubtype,
-    createAttribute,
-    createAttributeValue,
   } = useTypeRepository();
   return (
     <>
@@ -89,7 +87,7 @@ const TypesAttributesTab = () => {
                   Add Types, Subtypes or Attributes
                 </NavLink>
               </NavTabItem>
-              <NavTabItem>
+              {/* <NavTabItem>
                 <NavLink
                   aria-selected={activeTab === 3}
                   className={classnames("mb-sm-3 mb-md-0", {
@@ -102,7 +100,7 @@ const TypesAttributesTab = () => {
                   <i className="fas fa-table mr-2"></i>
                   Bulk upload AttributeValues
                 </NavLink>
-              </NavTabItem>
+              </NavTabItem> */}
             </CustomNavTabs>
           </div>
         </Col>
@@ -132,20 +130,18 @@ const TypesAttributesTab = () => {
                   </TabPane>
                   <TabPane tabId="tabs2">
                     <TypesAttributesAdd
-                      createAttributeValue={createAttributeValue}
                       types={types}
-                      createAttribute={createAttribute}
                       createType={createType}
                       createSubtype={createSubtype}
                     />
                   </TabPane>
-                  <TabPane tabId="tabs3">
+                  {/* <TabPane tabId="tabs3">
                     <AttributeValueBulk
                       bulkCreateAttributeValue={bulkCreateAttributeValue}
                       bulkCreateResult={bulkCreateAttributeValueResult}
                       types={types}
                     />
-                  </TabPane>
+                  </TabPane> */}
                 </TabContent>
               </CardBody>
             </Card>

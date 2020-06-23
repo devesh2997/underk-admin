@@ -5,6 +5,9 @@ import { TYPE_GET_ALL_ENDPOINT, TYPE_CREATE_ENDPOINT, SUBTYPE_CREATE_ENDPOINT, A
 import { doApiRequestForHooks } from "data/utils";
 import { AttributeValue } from "models/catalogue/AttributeValue";
 import { BulkCreateResult } from "models/shared/BulkCreateResult";
+import { Attribute } from "models/catalogue/Attribute";
+import { SKUAttribute } from "models/catalogue/SKUAttribute";
+import { OptionAttribute } from "models/catalogue/OptionAttribute";
 
 export type AttributeValueCreateInfo = {
     sku: string,
@@ -43,29 +46,13 @@ const useTypeAndAttributesRepository = () => {
     }
 
 
-    async function createSubtype(sku: string, name: string, typeSku: string) {
+    async function createSubtype(sku: string, name: string, typeSku: string, attributes: Attribute[], skuAttributes: SKUAttribute[], optionAttributes: OptionAttribute[]) {
         if (loading || !isMounted.current) return
         setError("")
         setMessage("")
-        const config = { ...SUBTYPE_CREATE_ENDPOINT, data: { sku, name, typeSku } }
+        const config = { ...SUBTYPE_CREATE_ENDPOINT, data: { sku, name, typeSku, attributes, skuAttributes, optionAttributes } }
         doApiRequestForHooks<null>(_request, config, isMounted, null, setLoading, setError, setMessage, getAllTypes)
 
-    }
-
-    async function createAttribute(name: string, subtypeSku: string) {
-        if (loading || !isMounted.current) return
-        setError("")
-        setMessage("")
-        const config = { ...ATTRIBUTE_CREATE_ENDPOINT, data: { name, subtypeSku } }
-        doApiRequestForHooks<null>(_request, config, isMounted, null, setLoading, setError, setMessage, getAllTypes)
-    }
-
-    async function createAttributeValue(name: string, sku: string, attributeId: string, valueType: string, value: string) {
-        if (loading || !isMounted.current) return
-        setError("")
-        setMessage("")
-        const config = { ...ATTRIBUTE_VALUE_CREATE_ENDPOINT, data: { name, sku, attributeId, value, valueType } }
-        doApiRequestForHooks<null>(_request, config, isMounted, null, setLoading, setError, setMessage, getAllTypes)
     }
 
     async function bulkCreateAttributeValue(attributeValuesInfo: AttributeValueCreateInfo[]) {
@@ -97,8 +84,6 @@ const useTypeAndAttributesRepository = () => {
         getAllTypes,
         createType,
         createSubtype,
-        createAttribute,
-        createAttributeValue
     }
 }
 

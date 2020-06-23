@@ -75,17 +75,6 @@ const AttributeValueBulk: React.FC<Props> = (props: Props) => {
           rowStr + "Attribute ID does not match with any present attribute."
         );
       } else {
-        if (attribute?.skuOrdering !== -1) {
-          if (isEmptyString(sku)) {
-            valid = false;
-            errors.push(
-              rowStr +
-                `Attribute ${attribute?.name} has skuOrdering other than -1, so all its values must have SKU.`
-            );
-          }else{
-            sku = String(sku).toUpperCase()
-          }
-        }
       }
       if (isNotEmptyString(valueType)) {
         if (valueType !== "hexcode") {
