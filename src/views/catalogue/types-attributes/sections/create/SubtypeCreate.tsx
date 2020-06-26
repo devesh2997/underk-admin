@@ -6,16 +6,10 @@ import { Row, Col, FormGroup, Input, Button } from "reactstrap";
 import { Attribute } from "models/catalogue/Attribute";
 import { SKUAttribute } from "models/catalogue/SKUAttribute";
 import { OptionAttribute } from "models/catalogue/OptionAttribute";
+import { SubtypeCreateFunc } from "data/catalogue/TypeAndAttributesRepository";
 
 const SubtypeCreate = (props: {
-  createSubtype: (
-    sku: string,
-    name: string,
-    typeSku: string,
-    attributes: Attribute[],
-    skuAttributes: SKUAttribute[],
-    optionAttributes: OptionAttribute[]
-  ) => Promise<void>;
+  createSubtype: SubtypeCreateFunc;
   types: Type[];
 }) => {
   const { createSubtype, types } = props;
@@ -24,9 +18,7 @@ const SubtypeCreate = (props: {
   const typeSku = useFormInput("-");
   const [attributes, setAttributes] = useState<Attribute[]>([]);
   const [skuAttributes, setSKUAttributes] = useState<SKUAttribute[]>([]);
-  const [optionAttributes, setOptionAttributes] = useState<OptionAttribute[]>(
-    []
-  );
+  const [optionAttribute, setOptionAttribute] = useState<OptionAttribute>();
 
   //addSKUAttribute
   const addSKUAttribute = () => {
@@ -354,69 +346,56 @@ const SubtypeCreate = (props: {
 
   //addOptionAttribute
   const addOptionAttribute = () => {
-    setOptionAttributes((optionAttributes) => {
-      return [
-        ...optionAttributes,
-        {
-          name: "",
-          values: [{ name: "", valueType: "none", value: "", sku: "" }],
-        },
-      ];
+    if (typeof optionAttribute !== "undefined") return;
+    setOptionAttribute({
+      name: "",
+      values: [{ name: "", valueType: "none", value: "", sku: "" }],
     });
   };
 
   //add option attribute value
   //add sku attribute value
-  const addOptionAttributeValue = (index: number) => {
-    setOptionAttributes((optionAttributes) => {
-      return optionAttributes.map((a, i) =>
-        i !== index
-          ? a
-          : {
-              ...a,
-              values: [
-                ...a.values,
-                { name: "", sku: "", valueType: "none", value: "" },
-              ],
-            }
-      );
+  const addOptionAttributeValue = () => {
+    setOptionAttribute((optionAttribute) => {
+      if (typeof optionAttribute !== "undefined") {
+        return {
+          ...optionAttribute,
+          values: [
+            ...optionAttribute.values,
+            { name: "", sku: "", valueType: "none", value: "" },
+          ],
+        };
+      }
+      return undefined;
     });
   };
 
   //removeOptionAttribute
-  const removeOptionAttribute = (index: number) => {
-    setOptionAttributes((optionAttributes) => {
-      return optionAttributes.filter((_, i) => i !== index);
-    });
+  const removeOptionAttribute = () => {
+    setOptionAttribute(undefined);
   };
 
   //remove option attribute value
-  const removeOptionAttributeValue = (
-    attributeIndex: number,
-    valueIndex: number
-  ) => {
-    setOptionAttributes((optionAttributes) => {
-      return optionAttributes.map((a, i) =>
-        i !== attributeIndex
-          ? a
-          : { ...a, values: a.values.filter((_, j) => j !== valueIndex) }
-      );
+  const removeOptionAttributeValue = (valueIndex: number) => {
+    setOptionAttribute((optionAttribute) => {
+      if (typeof optionAttribute !== "undefined") {
+        return {
+          ...optionAttribute,
+          values: optionAttribute.values.filter((_, i) => i !== valueIndex),
+        };
+      } else return undefined;
     });
   };
 
   //optionAttributeChangeHandler
-  const optionAttributeChange = (
-    e: React.FormEvent<HTMLInputElement>,
-    index: number
-  ) => {
-    if (index < 0 || index >= optionAttributes.length) return;
+  const optionAttributeChange = (e: React.FormEvent<HTMLInputElement>) => {
     switch (e.currentTarget.name) {
       case "optionAttributeName":
-        setOptionAttributes(
-          optionAttributes.map((a, i) =>
-            i !== index ? a : { ...a, name: e.currentTarget.value }
-          )
-        );
+        setOptionAttribute((optionAttribute) => {
+          if (typeof optionAttribute !== "undefined")
+            return { ...optionAttribute, name: e.currentTarget.value };
+          else return undefined;
+        });
         break;
       default:
         break;
@@ -426,75 +405,42 @@ const SubtypeCreate = (props: {
   //option attribute value change handler
   const optionAttributeValueChangeHandler = (
     e: React.FormEvent<HTMLInputElement>,
-    attributeIndex: number,
     valueIndex: number
   ) => {
-    if (attributeIndex < 0 || attributeIndex >= optionAttributes.length) return;
-    if (
-      valueIndex < 0 ||
-      valueIndex >= optionAttributes[attributeIndex].values.length
-    )
-      return;
+    if (typeof optionAttribute === "undefined") return;
+    if (valueIndex < 0 || valueIndex >= optionAttribute.values.length) return;
     switch (e.currentTarget.name) {
-      case "optionAttributeValueName" + attributeIndex + "" + valueIndex:
-        setOptionAttributes(
-          optionAttributes.map((a, i) =>
-            i !== attributeIndex
-              ? a
-              : {
-                  ...a,
-                  values: a.values.map((v, j) =>
-                    j !== valueIndex ? v : { ...v, name: e.currentTarget.value }
-                  ),
-                }
-          )
-        );
+      case "optionAttributeValueName" + valueIndex:
+        setOptionAttribute({
+          ...optionAttribute,
+          values: optionAttribute.values.map((v, j) =>
+            j !== valueIndex ? v : { ...v, name: e.currentTarget.value }
+          ),
+        });
         break;
-      case "optionAttributeValueSKU" + attributeIndex + "" + valueIndex:
-        setOptionAttributes(
-          optionAttributes.map((a, i) =>
-            i !== attributeIndex
-              ? a
-              : {
-                  ...a,
-                  values: a.values.map((v, j) =>
-                    j !== valueIndex ? v : { ...v, sku: e.currentTarget.value }
-                  ),
-                }
-          )
-        );
+      case "optionAttributeValueSKU" + valueIndex:
+        setOptionAttribute({
+          ...optionAttribute,
+          values: optionAttribute.values.map((v, j) =>
+            j !== valueIndex ? v : { ...v, sku: e.currentTarget.value }
+          ),
+        });
         break;
-      case "optionAttributeValueValueType" + attributeIndex + "" + valueIndex:
-        setOptionAttributes(
-          optionAttributes.map((a, i) =>
-            i !== attributeIndex
-              ? a
-              : {
-                  ...a,
-                  values: a.values.map((v, j) =>
-                    j !== valueIndex
-                      ? v
-                      : { ...v, valueType: e.currentTarget.value }
-                  ),
-                }
-          )
-        );
+      case "optionAttributeValueValueType" + valueIndex:
+        setOptionAttribute({
+          ...optionAttribute,
+          values: optionAttribute.values.map((v, j) =>
+            j !== valueIndex ? v : { ...v, valueType: e.currentTarget.value }
+          ),
+        });
         break;
-      case "optionAttributeValueValue" + attributeIndex + "" + valueIndex:
-        setOptionAttributes(
-          optionAttributes.map((a, i) =>
-            i !== attributeIndex
-              ? a
-              : {
-                  ...a,
-                  values: a.values.map((v, j) =>
-                    j !== valueIndex
-                      ? v
-                      : { ...v, value: e.currentTarget.value }
-                  ),
-                }
-          )
-        );
+      case "optionAttributeValueValue" + valueIndex:
+        setOptionAttribute({
+          ...optionAttribute,
+          values: optionAttribute.values.map((v, j) =>
+            j !== valueIndex ? v : { ...v, value: e.currentTarget.value }
+          ),
+        });
         break;
 
       default:
@@ -587,41 +533,29 @@ const SubtypeCreate = (props: {
     });
   });
 
-  optionAttributes.forEach((optionAttribute, i) => {
+  if (typeof optionAttribute !== "undefined") {
     if (optionAttribute.name.length === 0) {
       valid = false;
-      errors.push(`${i + 1} Option attribute has empty name.`);
+      errors.push(`Option attribute has empty name.`);
     }
     optionAttribute.values.forEach((optionAttributeValue, j) => {
       if (optionAttributeValue.name.length === 0) {
         valid = false;
-        errors.push(
-          `${j + 1} Option attribute value of ${
-            i + 1
-          } Option attribute has empty name.`
-        );
+        errors.push(`${j + 1} Option attribute value has empty name.`);
       }
       if (optionAttributeValue.sku.length === 0) {
         valid = false;
-        errors.push(
-          `${j + 1} Option attribute value of ${
-            i + 1
-          } Option attribute has empty sku.`
-        );
+        errors.push(`${j + 1} Option attribute value  has empty sku.`);
       }
       if (
         optionAttributeValue.valueType !== "none" &&
         optionAttributeValue.value.length === 0
       ) {
         valid = false;
-        errors.push(
-          `${j + 1} Option attribute value of ${
-            i + 1
-          } Option attribute has empty value`
-        );
+        errors.push(`${j + 1} Option attribute value has empty value`);
       }
     });
-  });
+  }
 
   return (
     <>
@@ -644,7 +578,7 @@ const SubtypeCreate = (props: {
             typeSku.value,
             attributes,
             skuAttributes,
-            optionAttributes
+            optionAttribute
           )
         }
       >
@@ -976,19 +910,21 @@ const SubtypeCreate = (props: {
         <hr className="my-3 mt-5" />
         <Row className="mt-4">
           <Col>Option Attributes:</Col>
-          <Col
-            onClick={addOptionAttribute}
-            style={{ cursor: "pointer" }}
-            className="text-blue"
-          >
-            <i className="ni ni-fat-add mr-3" />
-            Add Option Attribute
-          </Col>
+          {typeof optionAttribute === "undefined" && (
+            <Col
+              onClick={addOptionAttribute}
+              style={{ cursor: "pointer" }}
+              className="text-blue"
+            >
+              <i className="ni ni-fat-add mr-3" />
+              Add Option Attribute
+            </Col>
+          )}
         </Row>
-        {optionAttributes.map((a, i) => (
-          <Row key={i} className="mt-4">
+        {typeof optionAttribute !== "undefined" && (
+          <Row className="mt-4">
             <Col sm="1">
-              <Button onClick={() => removeOptionAttribute(i)}>
+              <Button onClick={() => removeOptionAttribute()}>
                 <i className="ni ni-fat-remove text-red" />
               </Button>
             </Col>
@@ -998,9 +934,9 @@ const SubtypeCreate = (props: {
                   <Input
                     name="optionAttributeName"
                     type="text"
-                    value={a.name}
+                    value={optionAttribute.name}
                     onChange={(e) => {
-                      optionAttributeChange(e, i);
+                      optionAttributeChange(e);
                     }}
                     placeholder="Name"
                   />
@@ -1009,7 +945,7 @@ const SubtypeCreate = (props: {
               <Row className="mt-4">
                 <Col sm="1">Values:</Col>
                 <Col
-                  onClick={() => addOptionAttributeValue(i)}
+                  onClick={() => addOptionAttributeValue()}
                   style={{ cursor: "pointer" }}
                   className="text-blue"
                 >
@@ -1017,42 +953,42 @@ const SubtypeCreate = (props: {
                   Add Option Attribute Value
                 </Col>
               </Row>
-              {a.values.map((v, j) => (
+              {optionAttribute.values.map((v, j) => (
                 <Row className="mt-4">
                   <Col sm="1">
-                    <Button onClick={() => removeOptionAttributeValue(i, j)}>
+                    <Button onClick={() => removeOptionAttributeValue(j)}>
                       <i className="ni ni-fat-remove text-red" />
                     </Button>
                   </Col>
                   <Col className="mr-4">
                     <Input
-                      name={"optionAttributeValueName" + i + "" + j}
+                      name={"optionAttributeValueName" + j}
                       type="text"
                       value={v.name}
                       onChange={(e) => {
-                        optionAttributeValueChangeHandler(e, i, j);
+                        optionAttributeValueChangeHandler(e, j);
                       }}
                       placeholder="Name"
                     />
                   </Col>
                   <Col className="mr-4">
                     <Input
-                      name={"optionAttributeValueSKU" + i + "" + j}
+                      name={"optionAttributeValueSKU" + j}
                       type="text"
                       value={v.sku}
                       onChange={(e) => {
-                        optionAttributeValueChangeHandler(e, i, j);
+                        optionAttributeValueChangeHandler(e, j);
                       }}
                       placeholder="SKU"
                     />
                   </Col>
                   <Col className="mr-4">
                     <Input
-                      name={"optionAttributeValueValueType" + i + "" + j}
+                      name={"optionAttributeValueValueType" + j}
                       type="select"
                       value={v.valueType}
                       onChange={(e) => {
-                        optionAttributeValueChangeHandler(e, i, j);
+                        optionAttributeValueChangeHandler(e, j);
                       }}
                       placeholder="Name"
                     >
@@ -1062,11 +998,11 @@ const SubtypeCreate = (props: {
                   </Col>
                   <Col className="mr-4">
                     <Input
-                      name={"optionAttributeValueValue" + i + "" + j}
+                      name={"optionAttributeValueValue" + j}
                       type="text"
                       value={v.value}
                       onChange={(e) => {
-                        optionAttributeValueChangeHandler(e, i, j);
+                        optionAttributeValueChangeHandler(e, j);
                       }}
                       placeholder="Value"
                       disabled={v.valueType === "none"}
@@ -1076,7 +1012,8 @@ const SubtypeCreate = (props: {
               ))}
             </Col>
           </Row>
-        ))}
+        )}
+
         <hr className="my-3 mt-5" />
       </FormWithGuidesAndErrors>
     </>

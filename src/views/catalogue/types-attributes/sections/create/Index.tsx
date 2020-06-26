@@ -2,24 +2,14 @@ import React from "react";
 import { Form, Row, Col, FormGroup, Input, Container } from "reactstrap";
 import { useFormInput } from "hooks/Index";
 import Type from "models/catalogue/Type";
-import FormWithGuidesAndErrors from "components/Widgets/FormWithGuidesAndErrors";
 import SubtypeCreate from "./SubtypeCreate";
 import TypeCreate from "./TypeCreate";
-import { Attribute } from "models/catalogue/Attribute";
-import { SKUAttribute } from "models/catalogue/SKUAttribute";
-import { OptionAttribute } from "models/catalogue/OptionAttribute";
+import { SubtypeCreateFunc } from "data/catalogue/TypeAndAttributesRepository";
 
 type Props = {
   types: Type[];
   createType: (sku: string, name: string) => Promise<void>;
-  createSubtype: (
-    sku: string,
-    name: string,
-    typeSku: string,
-    attributes: Attribute[],
-    skuAttributes: SKUAttribute[],
-    optionAttributes: OptionAttribute[]
-  ) => Promise<void>;
+  createSubtype: SubtypeCreateFunc;
 };
 
 export const TypesAttributesCreate = (props: Props) => {

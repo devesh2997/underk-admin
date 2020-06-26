@@ -17,6 +17,8 @@ export type AttributeValueCreateInfo = {
     value: string
 }
 
+export type SubtypeCreateFunc = (sku: string, name: string, typeSku: string, attributes: Attribute[], skuAttributes: SKUAttribute[], optionAttribute?: OptionAttribute) => Promise<void>
+
 const useTypeAndAttributesRepository = () => {
     const isMounted = useRef(true)
 
@@ -46,11 +48,11 @@ const useTypeAndAttributesRepository = () => {
     }
 
 
-    async function createSubtype(sku: string, name: string, typeSku: string, attributes: Attribute[], skuAttributes: SKUAttribute[], optionAttributes: OptionAttribute[]) {
+    const createSubtype: SubtypeCreateFunc = async (sku, name, typeSku, attributes, skuAttributes, optionAttribute) => {
         if (loading || !isMounted.current) return
         setError("")
         setMessage("")
-        const config = { ...SUBTYPE_CREATE_ENDPOINT, data: { sku, name, typeSku, attributes, skuAttributes, optionAttributes } }
+        const config = { ...SUBTYPE_CREATE_ENDPOINT, data: { sku, name, typeSku, attributes, skuAttributes, optionAttribute } }
         doApiRequestForHooks<null>(_request, config, isMounted, null, setLoading, setError, setMessage, getAllTypes)
 
     }
