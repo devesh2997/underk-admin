@@ -2,7 +2,7 @@
   "name": "underk-admin",
   "version": "1.1.0",
   "description": "React version of Argon Dashboard by Creative Tim",
-  "main": "index.js",
+  "main": "public/electron.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/creativetimofficial/argon-dashboard-react.git"
@@ -17,12 +17,12 @@
     "argon-dashboard",
     "argon-dashboard-react"
   ],
-  "author": "Creative Tim",
+  "author": "underK",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/creativetimofficial/argon-dashboard-react/issues"
   },
-  "homepage": "https://demos.creative-tim.com/argon-dashboard-react/",
+  "homepage": "./",
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
@@ -31,17 +31,25 @@
     "install:clean": "rm -rf node_modules/ && rm -rf package-lock.json && npm install && npm start",
     "compile-sass": "node-sass src/assets/scss/argon-dashboard-react.scss src/assets/css/argon-dashboard-react.css",
     "minify-sass": "node-sass src/assets/scss/argon-dashboard-react.scss src/assets/css/argon-dashboard-react.min.css --output-style compressed",
-    "map-sass": "node-sass src/assets/scss/argon-dashboard-react.scss src/assets/css/argon-dashboard-react.css --source-map true"
+    "map-sass": "node-sass src/assets/scss/argon-dashboard-react.scss src/assets/css/argon-dashboard-react.css --source-map true",
+    "electron-dev": "concurrently \"yarn start\" \"wait-on http://localhost:3000 && electron .\"",
+    "electron-pack": "build --em.main=build/electron.js",
+    "preelectron-pack": "yarn build"
+  },
+  "build": {
+    "appId": "in.underk.admin",
+    "files": [
+      "build/**/*",
+      "node_modules/**/*"
+    ],
+    "directories":{
+      "buildResources": "assets"
+    }
   },
   "eslintConfig": {
     "extends": "react-app"
   },
-  "browserslist": [
-    ">0.2%",
-    "not dead",
-    "not ie <= 11",
-    "not op_mini all"
-  ],
+  "browserslist": [">0.2%", "not dead", "not ie <= 11", "not op_mini all"],
   "dependencies": {
     "@fortawesome/fontawesome-free": "5.12.1",
     "@types/chart.js": "^2.9.21",
@@ -56,6 +64,7 @@
     "axios": "^0.19.2",
     "chart.js": "2.9.3",
     "classnames": "2.2.6",
+    "electron-is-dev": "^1.2.0",
     "lodash": "^4.17.15",
     "moment": "2.24.0",
     "neverthrow": "^2.3.4",
@@ -79,9 +88,13 @@
     "@types/googlemaps": "3.39.2",
     "@types/markerclustererplus": "2.1.33",
     "@types/react": "16.9.19",
+    "concurrently": "^5.2.0",
+    "electron": "^9.0.5",
+    "electron-builder": "^22.7.0",
     "eslint-plugin-flowtype": "3.13.0",
     "gulp": "4.0.2",
     "gulp-append-prepend": "1.0.8",
-    "typescript": "3.7.5"
+    "typescript": "3.7.5",
+    "wait-on": "^5.0.1"
   }
 }
