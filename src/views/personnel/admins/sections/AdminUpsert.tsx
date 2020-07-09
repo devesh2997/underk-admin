@@ -14,7 +14,6 @@ import Policy from "models/Policy";
 import { useFormInput } from "hooks/Index";
 import Select from "react-select";
 import makeAnimated from "react-select/animated";
-import { beautifyName } from "utils";
 import { AdminCreateFunc, AdminUpdateFunc } from "data/AdminRepository";
 import { useHistory, useLocation } from "react-router-dom";
 import {
@@ -23,6 +22,7 @@ import {
   CustomInputLabel,
 } from "components/Widgets";
 import Admin from "models/Admin";
+import { beautifyName } from "underk-utils";
 
 const animatedComponents = makeAnimated();
 

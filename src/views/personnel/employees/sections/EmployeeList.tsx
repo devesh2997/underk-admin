@@ -7,9 +7,9 @@ import {
 } from "components/Widgets";
 import Employee from "models/Employee";
 import { EmployeeDeleteByIdFunc } from "data/EmployeeRepository";
-import { beautifyName, getAge } from "utils";
 import { Row, NavLink, Badge, Button } from "reactstrap";
 import { useHistory } from "react-router-dom";
+import { beautifyName, getAge } from "underk-utils";
 
 type EmployeeListProps = {
   loading: boolean;

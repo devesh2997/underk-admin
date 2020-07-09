@@ -18,7 +18,7 @@ import {
   TableWithColorToggler,
   GenderIcon,
 } from "components/Widgets";
-import { beautifyAddress, beautifyName, getAge, beautifyDate } from "utils";
+import { beautifyName, getAge, beautifyDate } from "underk-utils";
 
 type Props = {
   suppliers: Supplier[];

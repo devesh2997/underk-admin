@@ -7,9 +7,9 @@ import {
   DropdownItem,
   Badge,
 } from "reactstrap";
-import { beautifyName, beautifyDate, getAge } from "utils";
 import TableWithColorToggler from "components/Widgets/TableWithColorToggler";
 import GenderIcon from "components/Widgets/GenderIcon";
+import { beautifyName, getAge, beautifyDate } from "underk-utils";
 
 type Props = {
   users: User[];

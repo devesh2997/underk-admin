@@ -1,6 +1,6 @@
 import React from "react";
 import CustomHeader from "components/Headers/CustomHeader";
-import { beautifyNumber } from "utils";
+import { beautifyNumber } from "underk-utils";
 
 type PersonnelHeaderProps = {
   totalAdmins: number;

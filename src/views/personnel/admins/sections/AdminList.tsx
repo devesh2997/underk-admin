@@ -7,8 +7,8 @@ import {
 import Admin from "models/Admin";
 import { AdminDeleteByIdFunc } from "data/AdminRepository";
 import { Badge, Button } from "reactstrap";
-import { beautifyDate } from "utils";
 import { useHistory } from "react-router-dom";
+import { beautifyDate } from "underk-utils";
 
 type AdminListProps = {
   loading: boolean;

@@ -2,12 +2,13 @@ import React, { useState } from "react";
 import { BulkCreateResult } from "models/shared/BulkCreateResult";
 import Type from "models/catalogue/Type";
 import { AttributeValueCreateInfo } from "data/catalogue/TypeAndAttributesRepository";
-import { isEmpty, isEmptyString, isNotEmptyString } from "utils";
 import { Attribute } from "models/catalogue/Attribute";
 import FormWithGuidesAndErrors from "components/Widgets/FormWithGuidesAndErrors";
 import { Container, Form, FormGroup, Label, Col, Row, Table } from "reactstrap";
 import CSVReader from "react-csv-reader";
 import { AttributeValue } from "models/catalogue/AttributeValue";
+import { isEmpty } from "lodash";
+import { isEmptyString, isNotEmptyString } from "underk-utils";
 
 type Props = {
   types: Type[];

@@ -2,10 +2,11 @@ import React, { useState } from "react";
 import FormWithGuidesAndErrors from "components/Widgets/FormWithGuidesAndErrors";
 import { Row, Col, Table } from "reactstrap";
 import CSVReader from "react-csv-reader";
-import { isEmpty, isEmptyString, isNotEmptyString } from "utils";
 import { Category } from "models/catalogue/Category";
 import { BulkCreateResult } from "models/shared/BulkCreateResult";
 import { CategoryCreateInfo } from "data/catalogue/CategoriesRepository";
+import { isEmpty } from "lodash";
+import { isEmptyString, isNotEmptyString } from "underk-utils";
 
 type Props = {
   categories: Category[] | undefined;

@@ -15,11 +15,11 @@ import CSVReader from "react-csv-reader";
 import {
   convertCSVDataArrayToProductNumberBasedMap,
   parseProductNumberBasedMap,
-  validateProductCreateInfo,
 } from "./BulkUploadUtils";
 import useCategoriesRepository from "data/catalogue/CategoriesRepository";
 import useCollectionsRepository from "data/catalogue/CollectionsRepository";
 import useWarehousesRepository from "data/inventory/WarehouseRepository";
+import { validateProductCreateInfo } from "underk-utils";
 
 //TODO manage errors from types, categories, collections and warehouses repositories
 const BulkUploadProducts: React.FC = () => {

@@ -12,7 +12,7 @@ import {
   TabPane,
 } from "reactstrap";
 import { JsonTreeView, TableWithColorToggler } from "components/Widgets";
-import { beautifyAddress, beautifyDate } from "utils";
+import { beautifyAddress, beautifyDate } from "underk-utils";
 
 type Props = {
   warehouses: Warehouse[];
