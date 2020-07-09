@@ -5,7 +5,7 @@ import { WAREHOUSE_GET_ALL_ENDPOINT, WAREHOUSE_CREATE_ENDPOINT } from "../../con
 import { doApiRequestForHooks } from "../../data/utils"
 import { Address } from "../../models/shared/Address"
 
-const useWarehouseRepository = () => {
+const useWarehousesRepository = () => {
     const isMounted = useRef(true)
 
     const authUser = useContext(AuthUserContext)
@@ -51,4 +51,4 @@ const useWarehouseRepository = () => {
 
 }
 
-export default useWarehouseRepository
+export default useWarehousesRepository

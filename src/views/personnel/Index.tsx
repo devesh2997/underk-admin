@@ -10,6 +10,7 @@ import useEmployeeRepository from "data/EmployeeRepository";
 import Admins from "views/personnel/admins";
 import Employees from "views/personnel/employees";
 import { RouteType } from "routes";
+import { NavFromRoutes } from "components/Widgets/NavElementsFromRoutes";
 
 const personnelRoutes: RouteType[] = [
   {
@@ -80,31 +81,6 @@ const Personnel: React.FC = () => {
     });
   }
 
-  function getNavLinks(routes: RouteType[]) {
-    return routes.map((prop, key) => {
-      return (
-        <Route
-          path={prop.layout + prop.path}
-          exact={prop.exact || false}
-          children={({ match }) => (
-            <NavItem>
-              <Link
-                className={classnames("mb-sm-3 mb-md-0 nav-link", {
-                  active: !!match,
-                })}
-                to={prop.layout + prop.path}
-              >
-                <i className={classnames(prop.icon, "mr-2")}></i>
-                {prop.name}
-              </Link>
-            </NavItem>
-          )}
-          key={key}
-        />
-      );
-    });
-  }
-
   return (
     <>
       <PersonnelHeader
@@ -115,14 +91,7 @@ const Personnel: React.FC = () => {
         <Row className="align-items-center">
           <Col>
             <div className="nav-wrapper">
-              <Nav
-                className="nav-fill flex-column flex-md-row"
-                id="tabs-icons-text"
-                pills
-                role="tablist"
-              >
-                {getNavLinks(personnelRoutes)}
-              </Nav>
+              <NavFromRoutes routes={personnelRoutes} />
             </div>
           </Col>
         </Row>

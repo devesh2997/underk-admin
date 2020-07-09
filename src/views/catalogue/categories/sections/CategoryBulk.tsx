@@ -231,7 +231,6 @@ const CategoryBulk: React.FC<Props> = (props: Props) => {
           <CSVReader
             cssClass="csv-reader-input"
             label=""
-            inputId="ObiWan"
             inputStyle={{}}
             onFileLoaded={handleFileSelection}
           />

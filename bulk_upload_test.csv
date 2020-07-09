@@ -1,0 +1,7 @@
+﻿Product Number,Product Title,Product Slug,Category slug,Collection Slugs,color,sleeve length,season,material,size,listPrice,salePrice,taxPercent,isInclusiveTax,length,breadth,height,weight,warehouseCode,stock
+1,Test Title,test-slug,men-half-sleeve-graphic-tshirts,"clearance,   graphic-tshirts",Black,Half Sleeve,"Summer, Winter    ",Cotton,XXL,65000,35000,5,TRUE,60,75,50,100,test-wh,23
+1,,,,,,,,,XXL,,,,,,,,,test-wh-1,24
+1,,,,,,,,,XL,65000,35000,5,TRUE,,,,,test-wh,24
+1,,,,,,,,,L,65000,35000,5,TRUE,,,,,test-wh,25
+1,,,,,,,,,L,,,,,,,,,,26
+1,,,,,,,,,M,65000,35000,5,TRUE,,,,,test-wh,26

@@ -23,6 +23,7 @@ import {
   RoleAddPolicyFunc,
   RoleDeletePolicyFunc,
 } from "data/RoleRepository";
+import { CustomNavTabsFromRoutes } from "components/Widgets/NavElementsFromRoutes";
 
 const adminRoutes: RouteType[] = [
   {
@@ -154,35 +155,10 @@ const Admins: React.FC<AdminsProps> = ({
     });
   }
 
-  function getNavLinks(routes: RouteType[]) {
-    return routes.map((prop, key) => {
-      return (
-        <Route
-          path={prop.layout + prop.path}
-          exact={prop.exact || false}
-          children={({ match }) => (
-            <NavTabItem>
-              <Link
-                className={classnames("mb-sm-3 mb-md-0 nav-link", {
-                  active: !!match,
-                })}
-                to={prop.layout + prop.path}
-              >
-                <i className={classnames(prop.icon, "mr-2")}></i>
-                {prop.name}
-              </Link>
-            </NavTabItem>
-          )}
-          key={key}
-        />
-      );
-    });
-  }
-
   return (
     <>
       <>
-        <CustomNavTabs>{getNavLinks(adminRoutes)}</CustomNavTabs>
+        <CustomNavTabsFromRoutes routes={adminRoutes} />
         <Switch>{getRoutes(adminRoutes)}</Switch>
       </>
     </>

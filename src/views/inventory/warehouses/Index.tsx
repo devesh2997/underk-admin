@@ -1,6 +1,6 @@
 import React from "react";
 import classnames from "classnames";
-import useWarehouseRepository from "data/inventory/WarehouseRepository";
+import useWarehousesRepository from "data/inventory/WarehouseRepository";
 import { useTabSelect } from "hooks/Index";
 import {
   Row,
@@ -32,7 +32,7 @@ const WareshousesTab: React.FC = () => {
     error,
     message,
     loading,
-  } = useWarehouseRepository();
+  } = useWarehousesRepository();
 
   return (
     <>
