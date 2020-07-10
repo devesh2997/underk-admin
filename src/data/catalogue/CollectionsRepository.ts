@@ -1,3 +1,4 @@
+import { ApiError } from './../../core/errors';
 import { Collection } from "models/catalogue/Collection"
 import { useRef, useContext, useState, useEffect } from "react"
 import { AuthUserContext } from "session"
@@ -14,7 +15,7 @@ const useCollectionsRepository = () => {
     const _request = authUser.doRequest
 
     const [loading, setLoading] = useState(false)
-    const [error, setError] = useState("")
+    const [error, setError] = useState<ApiError>()
     const [message, setMessage] = useState("")
     const [collections, setCollections] = useState<Collection[]>([])
     const [bulkCreateResult, setBulkCreateResult] = useState<BulkCreateResult<Collection>>()
@@ -27,7 +28,7 @@ const useCollectionsRepository = () => {
 
     async function create(name: string, slug: string) {
         if (loading || !isMounted.current) return
-        setError("")
+        setError(undefined)
         setMessage("")
         const config = { ...COLLECTION_CREATE_ENDPOINT, data: { name, slug } }
         doApiRequestForHooks<null>(_request, config, isMounted, null, setLoading, setError, setMessage, getAll)
@@ -36,7 +37,7 @@ const useCollectionsRepository = () => {
 
     async function bulkCreate(categoriesInfo: CollectionCreateInfo[]) {
         if (loading || !isMounted.current) return
-        setError("")
+        setError(undefined)
         setMessage("")
         const config = { ...COLLECTION_BULK_CREATE_ENDPOINT, data: categoriesInfo }
         doApiRequestForHooks<BulkCreateResult<Collection> | undefined>(_request, config, isMounted, setBulkCreateResult, setLoading, setError, setMessage, getAll)

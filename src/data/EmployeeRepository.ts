@@ -10,6 +10,7 @@ import {
 import { doApiRequest } from "data/utils";
 import { ApiResponse } from "session/AuthUserProvider";
 import { ok, err, Result } from "neverthrow";
+import { ApiError } from "../core/errors";
 
 export type EmployeeGetAllFunc = () => Promise<void>;
 export type EmployeeCreateFunc = (data: {
@@ -48,20 +49,20 @@ function useEmployeeRepository() {
 
   const [loading, toggleLoading] = useState(false);
   const [employees, setEmployees] = useState<Employee[]>([]);
-  const [error, setError] = useState("");
+  const [error, setError] = useState<ApiError>();
 
   const getAll: EmployeeGetAllFunc = async () => {
     if (loading || !isMounted.current) return;
 
     isMounted.current && toggleLoading(true);
-    isMounted.current && setError("");
+    isMounted.current && setError(undefined);
 
     const result = await doApiRequest<Employee[]>(
       authUser.doRequest,
       EMPLOYEE_GET_ALL_ENDPOINT
     );
     if (result.isErr()) {
-      isMounted.current && setError(result.error);
+      isMounted.current && setError(new ApiError(result.error));
       // console.error("Employee.getAll", result.error);
     } else {
       isMounted.current && setEmployees(result.value.data as Employee[]);
@@ -86,12 +87,12 @@ function useEmployeeRepository() {
   const deleteById: EmployeeDeleteByIdFunc = async (euid: string) => {
     if (loading) return;
 
-    isMounted.current && setError("");
+    isMounted.current && setError(undefined);
 
     const config = { ...EMPLOYEE_DELETE_ENDPOINT, params: { euid } };
     const result = await doApiRequest<null>(authUser.doRequest, config);
     if (result.isErr()) {
-      isMounted.current && setError(result.error);
+      isMounted.current && setError(new ApiError(result.error));
       // console.error("Employee.deleteById", result.error);
     } else {
       // console.log("Employee.deleteById", result.value.message);

@@ -1,3 +1,4 @@
+import { ApiError } from './../../core/errors';
 import { useContext, useState, useEffect, useRef } from "react";
 import { AuthUserContext } from "session";
 import Type from "models/catalogue/Type";
@@ -26,7 +27,7 @@ const useTypeAndAttributesRepository = () => {
     const _request = authUser.doRequest
 
     const [loading, setLoading] = useState(false)
-    const [error, setError] = useState("")
+    const [error, setError] = useState<ApiError>()
     const [message, setMessage] = useState("")
     const [types, setTypes] = useState<Type[]>([])
 
@@ -40,7 +41,7 @@ const useTypeAndAttributesRepository = () => {
 
     async function createType(sku: string, name: string) {
         if (loading || !isMounted.current) return
-        setError("")
+        setError(undefined)
         setMessage("")
         const config = { ...TYPE_CREATE_ENDPOINT, data: { sku, name } }
         doApiRequestForHooks<null>(_request, config, isMounted, null, setLoading, setError, setMessage, getAllTypes)
@@ -50,7 +51,7 @@ const useTypeAndAttributesRepository = () => {
 
     const createSubtype: SubtypeCreateFunc = async (sku, name, typeSku, attributes, skuAttributes, optionAttribute) => {
         if (loading || !isMounted.current) return
-        setError("")
+        setError(undefined)
         setMessage("")
         const config = { ...SUBTYPE_CREATE_ENDPOINT, data: { sku, name, typeSku, attributes, skuAttributes, optionAttribute } }
         doApiRequestForHooks<null>(_request, config, isMounted, null, setLoading, setError, setMessage, getAllTypes)
@@ -59,7 +60,7 @@ const useTypeAndAttributesRepository = () => {
 
     async function bulkCreateAttributeValue(attributeValuesInfo: AttributeValueCreateInfo[]) {
         if (loading || !isMounted.current) return
-        setError("")
+        setError(undefined)
         setMessage("")
         const config = { ...ATTRIBUTE_VALUE_BULK_CREATE_ENDPOINT, data: attributeValuesInfo }
         doApiRequestForHooks<BulkCreateResult<AttributeValue> | undefined>(_request, config, isMounted, setBulkCreateAttributeValueResult, setLoading, setError, setMessage, getAllTypes)

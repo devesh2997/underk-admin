@@ -20,6 +20,7 @@ import {
 import { CustomInputLabel, LoadingButton } from "components/Widgets";
 import { useHistory, useLocation } from "react-router-dom";
 import Employee from "models/Employee";
+import { ApiError } from "../../../../core/errors";
 
 type EmployeeUpsertProps = {
   createEmployee: EmployeeCreateFunc;
@@ -36,7 +37,7 @@ const EmployeeUpsert: React.FC<EmployeeUpsertProps> = ({
   const employee: Employee | null | undefined = location.state?.employee;
 
   const [loading, toggleLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [error, setError] = useState<ApiError>();
 
   const firstName = useFormInput(employee ? employee.firstName : "");
   const lastName = useFormInput(employee ? employee.lastName : "");
@@ -69,7 +70,7 @@ const EmployeeUpsert: React.FC<EmployeeUpsertProps> = ({
     event.preventDefault();
 
     isMounted.current && toggleLoading(true);
-    isMounted.current && setError("");
+    isMounted.current && setError(undefined);
 
     if (employee) {
       const result = await updateEmployee({
@@ -86,7 +87,7 @@ const EmployeeUpsert: React.FC<EmployeeUpsertProps> = ({
         address: address.value,
       });
       if (result.isErr()) {
-        isMounted.current && setError(result.error);
+        isMounted.current && setError(new ApiError(result.error));
       } else {
         console.log("EmployeeUpdate", result.value);
         history.push("/admin/personnel/employees");
@@ -105,7 +106,7 @@ const EmployeeUpsert: React.FC<EmployeeUpsertProps> = ({
         address: address.value,
       });
       if (result.isErr()) {
-        isMounted.current && setError(result.error);
+        isMounted.current && setError(new ApiError(result.error));
       } else {
         console.log("EmployeeInsert", result.value);
         history.push("/admin/personnel/employees");

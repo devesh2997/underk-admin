@@ -20,6 +20,7 @@ import {
 import { useHistory, useLocation } from "react-router-dom";
 import { CustomInputLabel, LoadingButton } from "components/Widgets";
 import Role from "models/Role";
+import { ApiError } from "../../../../core/errors";
 
 const animatedComponents = makeAnimated();
 
@@ -47,7 +48,7 @@ const RoleUpsert: React.FC<RoleUpsertProps> = ({
   const role: Role | null | undefined = location.state?.role;
 
   const [loading, toggleLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [error, setError] = useState<ApiError>();
 
   const name = useFormInput(role ? role.name : "");
   const description = useFormInput(role ? role.description : "");
@@ -70,7 +71,7 @@ const RoleUpsert: React.FC<RoleUpsertProps> = ({
     event.preventDefault();
 
     isMounted.current && toggleLoading(true);
-    isMounted.current && setError("");
+    isMounted.current && setError(undefined);
 
     if (role) {
       const finalPolicies = selPolicyOpts.map((opt) => opt.value);
@@ -94,9 +95,9 @@ const RoleUpsert: React.FC<RoleUpsertProps> = ({
       });
 
       if (result1.isErr()) {
-        isMounted.current && setError(result1.error);
+        isMounted.current && setError(new ApiError(result1.error));
       } else if (result2.isErr()) {
-        isMounted.current && setError(result2.error);
+        isMounted.current && setError(new ApiError(result2.error));
       } else {
         console.log("RoleUpdate", result1.value, result2.value);
         history.push("/admin/personnel/admins/roles");
@@ -108,7 +109,7 @@ const RoleUpsert: React.FC<RoleUpsertProps> = ({
         policyNames: JSON.stringify(selPolicyOpts.map((opt) => opt.value)),
       });
       if (result.isErr()) {
-        isMounted.current && setError(result.error);
+        isMounted.current && setError(new ApiError(result.error));
       } else {
         console.log("RoleInsert", result.value);
         history.push("/admin/personnel/admins/roles");

@@ -2,13 +2,7 @@
 
 import { ProductCreateInfo, BulkUploadProductCreateInfo } from "data/catalogue/ProductsRepository"
 import Type from "models/catalogue/Type"
-import { Category } from "models/catalogue/Category"
 import { isEmpty } from "lodash"
-import { Warehouse } from "models/inventory/Warehouse"
-import { AttributeValue } from "models/catalogue/AttributeValue"
-import { OptionAttributeValue } from "models/catalogue/OptionAttributeValue"
-import { SKUAttributeValue } from "models/catalogue/SKUAttributeValue"
-import { Collection } from "models/catalogue/Collection";
 import { Price } from "models/catalogue/Price"
 import { Dimensions } from "models/catalogue/Dimensions"
 import { Subtype } from "models/catalogue/Subtype"
@@ -188,7 +182,7 @@ export const convertCSVDataArrayToProductNumberBasedMap = (csvData: any[]) => {
         const row = csvData[i];
         for (let j = i + 1; j < csvData.length; j++) {
             const otherRow = csvData[j]
-            if (row[2] === otherRow[2]) {
+            if (row[2] !== "" && row[2] === otherRow[2]) {
                 throw `Duplicate slugs found at row ${i + 1} and ${j + 1}`
             }
         }
@@ -210,56 +204,4 @@ export const convertCSVDataArrayToProductNumberBasedMap = (csvData: any[]) => {
         csvDataMapByProductNumber.set(productNumber, currentProducts);
     }
     return csvDataMapByProductNumber;
-}
-
-//this function validates the price field
-export const validatePriceInfo = (price: Price): ProductCreateInfoValidationResult => {
-    if (isEmpty(price.currency)) {
-        return createValidationErrorObject("Currency not provided")
-    }
-    if (isEmpty(price.listPrice) || isNaN(Number(price.listPrice))) {
-        return createValidationErrorObject("Invalid list price provided")
-    }
-    if (isEmpty(price.salePrice) || isNaN(Number(price.salePrice))) {
-        return createValidationErrorObject("Invalid sale price provided")
-    }
-    if (isEmpty(price.taxPercent) || isNaN(Number(price.taxPercent))) {
-        return createValidationErrorObject("Invalid tax percent provided")
-    }
-    if (isEmpty(price.isInclusiveTax)) {
-        return createValidationErrorObject("Please provide if the price is inclusive tax or not.")
-    }
-
-    return { isValid: true }
-}
-
-//this function validates the dimension info
-const validateDimensionsInfo = (dimensions: Dimensions): ProductCreateInfoValidationResult => {
-    if (isEmpty(dimensions)) {
-        return createValidationErrorObject('Dimension must be provided')
-    }
-    if (!isEmpty(dimensions.length)) {
-        if (isNaN(Number(dimensions.length))) {
-            return createValidationErrorObject("Invalid length dimension provided")
-        }
-    }
-    if (!isEmpty(dimensions.breadth)) {
-        if (isNaN(Number(dimensions.length))) {
-            return createValidationErrorObject("Invalid length dimension provided")
-        }
-    }
-    if (!isEmpty(dimensions.height)) {
-        if (isNaN(Number(dimensions.length))) {
-            return createValidationErrorObject("Invalid length dimension provided")
-        }
-    }
-    if (isEmpty(dimensions.weight)) {
-        return createValidationErrorObject("Product weight(in gm) should be compulsorily provided.")
-    } else {
-        if (isNaN(dimensions.weight)) {
-            return createValidationErrorObject("Invalid product weight is given.")
-        }
-    }
-
-    return { isValid: true }
 }

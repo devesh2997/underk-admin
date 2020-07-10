@@ -10,6 +10,7 @@ import {
 import { doApiRequest } from "data/utils";
 import { ApiResponse } from "session/AuthUserProvider";
 import { ok, err, Result } from "neverthrow";
+import { ApiError } from "../core/errors";
 
 export type AdminGetAllFunc = () => Promise<void>;
 export type AdminCreateFunc = (data: {
@@ -35,20 +36,20 @@ function useAdminRepository() {
 
   const [loading, toggleLoading] = useState(false);
   const [admins, setAdmins] = useState<Admin[]>([]);
-  const [error, setError] = useState("");
+  const [error, setError] = useState<ApiError>();
 
   const getAll: AdminGetAllFunc = async () => {
     if (loading || !isMounted.current) return;
 
     isMounted.current && toggleLoading(true);
-    isMounted.current && setError("");
+    isMounted.current && setError(undefined);
 
     const result = await doApiRequest<Admin[]>(
       authUser.doRequest,
       ADMIN_GET_ALL_ENDPOINT
     );
     if (result.isErr()) {
-      isMounted.current && setError(result.error);
+      isMounted.current && setError(new ApiError(result.error));
       // console.error("Admin.getAll", result.error);
     } else {
       isMounted.current && setAdmins(result.value.data as Admin[]);
@@ -80,12 +81,12 @@ function useAdminRepository() {
   const deleteById: AdminDeleteByIdFunc = async (auid) => {
     if (loading) return;
 
-    isMounted.current && setError("");
+    isMounted.current && setError(undefined);
 
     const config = { ...ADMIN_DELETE_ENDPOINT, params: { auid } };
     const result = await doApiRequest<null>(authUser.doRequest, config);
     if (result.isErr()) {
-      isMounted.current && setError(result.error);
+      isMounted.current && setError(new ApiError(result.error));
       // console.error("Admin.deleteById", result.error);
     } else {
       // console.log("Admin.deleteById", result.value.message);

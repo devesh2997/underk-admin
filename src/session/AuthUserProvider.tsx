@@ -2,13 +2,10 @@ import React, { useState, useRef, useEffect } from "react";
 import { AxiosRequestConfig } from "axios";
 
 import { ADMIN_LOGIN_ENDPOINT } from "constants/api-endpoints";
-import {
-  axios,
-  TO,
-  TE,
-} from "utils";
+import { axios, TO, TE } from "utils";
 import { getResponseStatus, isPlainObjectWithKeys } from "underk-utils";
 import { stringify } from "querystring";
+import { ApiError } from "../core/errors";
 
 type AuthUser = {
   auid: string;
@@ -20,7 +17,7 @@ type AuthUser = {
 export type ApiResponse<T> = {
   success: boolean;
   data: T | undefined;
-  error: string | undefined;
+  error: ApiError | undefined;
   message: string | undefined;
 };
 
@@ -146,7 +143,7 @@ const AuthUserProvider: React.FC = (props) => {
     return {
       success: response.data.success as boolean,
       data: response.data.result as T | undefined,
-      error: response.data.error as string | undefined,
+      error: response.data.error as ApiError | undefined,
       message: response.data.message as string | undefined,
     };
   }

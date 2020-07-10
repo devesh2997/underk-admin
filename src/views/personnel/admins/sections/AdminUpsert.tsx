@@ -23,6 +23,7 @@ import {
 } from "components/Widgets";
 import Admin from "models/Admin";
 import { beautifyName } from "underk-utils";
+import { ApiError } from "../../../../core/errors";
 
 const animatedComponents = makeAnimated();
 
@@ -57,7 +58,7 @@ const AdminUpsert: React.FC<AdminUpsertProps> = ({
   const admin: Admin | null | undefined = location.state?.admin;
 
   const [loading, toggleLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [error, setError] = useState<ApiError>();
 
   const alias = useFormInput(admin ? admin.alias : "");
   const password = useFormInput("");
@@ -86,7 +87,7 @@ const AdminUpsert: React.FC<AdminUpsertProps> = ({
     event.preventDefault();
 
     isMounted.current && toggleLoading(true);
-    isMounted.current && setError("");
+    isMounted.current && setError(undefined);
 
     if (admin) {
       const result = await updateAdmin({
@@ -100,7 +101,7 @@ const AdminUpsert: React.FC<AdminUpsertProps> = ({
         policyNames: JSON.stringify(selPolicyOpts.map((opt) => opt.value)),
       });
       if (result.isErr()) {
-        isMounted.current && setError(result.error);
+        isMounted.current && setError(new ApiError(result.error));
       } else {
         console.log("AdminUpdate", result.value);
         history.push("/admin/personnel/admins");
@@ -114,7 +115,7 @@ const AdminUpsert: React.FC<AdminUpsertProps> = ({
         policyNames: JSON.stringify(selPolicyOpts.map((opt) => opt.value)),
       });
       if (result.isErr()) {
-        isMounted.current && setError(result.error);
+        isMounted.current && setError(new ApiError(result.error));
       } else {
         console.log("AdminInsert", result.value);
         history.push("/admin/personnel/admins");

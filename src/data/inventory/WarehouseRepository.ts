@@ -1,3 +1,4 @@
+import { ApiError } from './../../core/errors';
 import { useRef, useContext, useState, useEffect } from "react"
 import { AuthUserContext } from "../../session"
 import { Warehouse } from "../../models/inventory/Warehouse"
@@ -12,7 +13,7 @@ const useWarehousesRepository = () => {
     const _request = authUser.doRequest
 
     const [loading, setLoading] = useState(false)
-    const [error, setError] = useState("")
+    const [error, setError] = useState<ApiError>()
     const [message, setMessage] = useState("")
     const [warehouses, setWarehouses] = useState<Warehouse[]>([])
 
@@ -23,7 +24,7 @@ const useWarehousesRepository = () => {
 
     async function create(name: string, code: string, address: Address) {
         if (loading || !isMounted.current) return
-        setError("")
+        setError(undefined)
         setMessage("")
         const config = { ...WAREHOUSE_CREATE_ENDPOINT, data: { name, code, address } }
         doApiRequestForHooks<null>(_request, config, isMounted, null, setLoading, setError, setMessage, getAll)

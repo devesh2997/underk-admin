@@ -11,6 +11,7 @@ import {
 import { doApiRequest } from "data/utils";
 import { ApiResponse } from "session/AuthUserProvider";
 import { ok, err, Result } from "neverthrow";
+import { ApiError } from "../core/errors";
 
 export type RoleGetAllFunc = () => Promise<void>;
 export type RoleCreateFunc = (data: {
@@ -35,20 +36,20 @@ function useRoleRepository() {
 
   const [loading, toggleLoading] = useState(false);
   const [roles, setRoles] = useState<Role[]>([]);
-  const [error, setError] = useState("");
+  const [error, setError] = useState<ApiError>();
 
   const getAll: RoleGetAllFunc = async () => {
     if (loading || !isMounted.current) return;
 
     isMounted.current && toggleLoading(true);
-    isMounted.current && setError("");
+    isMounted.current && setError(undefined);
 
     const result = await doApiRequest<Role[]>(
       authUser.doRequest,
       ROLE_GET_ALL_ENDPOINT
     );
     if (result.isErr()) {
-      isMounted.current && setError(result.error);
+      isMounted.current && setError(new ApiError(result.error));
       // console.error("Role.getAll", result.error);
     } else {
       isMounted.current && setRoles(result.value.data as Role[]);
@@ -73,12 +74,12 @@ function useRoleRepository() {
   const deleteById: RoleDeleteByIdFunc = async (id) => {
     if (loading) return;
 
-    isMounted.current && setError("");
+    isMounted.current && setError(undefined);
 
     const config = { ...ROLE_DELETE_ENDPOINT, params: { id } };
     const result = await doApiRequest<null>(authUser.doRequest, config);
     if (result.isErr()) {
-      isMounted.current && setError(result.error);
+      isMounted.current && setError(new ApiError(result.error));
       // console.error("Role.deleteById", result.error);
     } else {
       // console.log("Role.deleteById", result.value.message);

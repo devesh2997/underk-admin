@@ -1,3 +1,4 @@
+import { ApiError } from './../../core/errors';
 import { Category } from "models/catalogue/Category"
 import { useRef, useContext, useState, useEffect } from "react"
 import { AuthUserContext } from "session"
@@ -11,7 +12,7 @@ export type CategoryCreateInfo = {
     slug: string;
     sku: string;
     parentSlug: string;
-  };
+};
 const useCategoriesRepository = () => {
     const isMounted = useRef(true)
 
@@ -19,7 +20,7 @@ const useCategoriesRepository = () => {
     const _request = authUser.doRequest
 
     const [loading, setLoading] = useState(false)
-    const [error, setError] = useState("")
+    const [error, setError] = useState<ApiError>()
     const [message, setMessage] = useState("")
     const [categories, setCategories] = useState<Category[]>([])
 
@@ -51,7 +52,7 @@ const useCategoriesRepository = () => {
 
     async function create(name: string, slug: string, sku: string, parentSlug: string) {
         if (loading || !isMounted.current) return
-        setError("")
+        setError(undefined)
         setMessage("")
         const config = { ...CATEGORY_CREATE_ENDPOINT, data: { sku, name, slug, parentSlug } }
         doApiRequestForHooks<null>(_request, config, isMounted, null, setLoading, setError, setMessage, getAll)
@@ -60,7 +61,7 @@ const useCategoriesRepository = () => {
 
     async function bulkCreate(categoriesInfo: CategoryCreateInfo[]) {
         if (loading || !isMounted.current) return
-        setError("")
+        setError(undefined)
         setMessage("")
         const config = { ...CATEGORY_BULK_CREATE_ENDPOINT, data: categoriesInfo }
         doApiRequestForHooks<BulkCreateResult<Category> | undefined>(_request, config, isMounted, setBulkCreateResult, setLoading, setError, setMessage, getAll)

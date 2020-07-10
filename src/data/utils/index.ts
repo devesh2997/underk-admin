@@ -1,3 +1,4 @@
+import { ApiError } from './../../core/errors';
 import { AxiosRequestConfig } from "axios";
 import { ApiResponse } from "session/AuthUserProvider";
 import { TO, TE } from "utils";
@@ -10,7 +11,7 @@ export const doApiRequestForHooks = async <T>(
   isMounted: React.MutableRefObject<boolean>,
   setValue: React.Dispatch<React.SetStateAction<T>> | null,
   setLoading: React.Dispatch<React.SetStateAction<boolean>> | null,
-  setError: React.Dispatch<React.SetStateAction<string>> | null,
+  setError: React.Dispatch<React.SetStateAction<ApiError | undefined>> | null,
   setMessage: React.Dispatch<React.SetStateAction<string>> | null,
   callback: Function | null
 ) => {
@@ -33,7 +34,7 @@ export const doApiRequestForHooks = async <T>(
       }
     } else {
       if (isMounted.current) {
-        if (setError !== null) setError("Some error occurred");
+        if (setError !== null) setError(new ApiError("Some error occurred"));
       }
     }
     if (callback !== null) {
@@ -42,7 +43,7 @@ export const doApiRequestForHooks = async <T>(
   } else {
     if (isMounted.current) {
       console.log(res.error);
-      if (setError !== null) setError(res.error as string);
+      if (setError !== null) setError(res.error as ApiError);
     }
   }
 };

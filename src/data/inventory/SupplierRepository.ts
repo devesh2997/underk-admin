@@ -1,3 +1,4 @@
+import { ApiError } from './../../core/errors';
 import { useRef, useContext, useState, useEffect } from "react"
 import { AuthUserContext } from "session"
 import { Supplier } from "models/inventory/Supplier"
@@ -24,7 +25,7 @@ const useSupplierRepository = () => {
     const _request = authUser.doRequest
 
     const [loading, setLoading] = useState(false)
-    const [error, setError] = useState("")
+    const [error, setError] = useState<ApiError>()
     const [message, setMessage] = useState("")
     const [suppliers, setSuppliers] = useState<Supplier[]>([])
 
@@ -35,7 +36,7 @@ const useSupplierRepository = () => {
 
     async function create(supplierCreateInfo: SupplierCreateInfo ) {
         if (loading || !isMounted.current) return
-        setError("")
+        setError(undefined)
         setMessage("")
         const config = { ...SUPPLIER_CREATE_ENDPOINT, data: supplierCreateInfo }
         doApiRequestForHooks<null>(_request, config, isMounted, null, setLoading, setError, setMessage, getAll)
