@@ -10,7 +10,6 @@ import { BulkCreateResult } from "models/shared/BulkCreateResult"
 export type CategoryCreateInfo = {
     name: string;
     slug: string;
-    sku: string;
     parentSlug: string;
 };
 const useCategoriesRepository = () => {
@@ -50,11 +49,11 @@ const useCategoriesRepository = () => {
         doApiRequestForHooks<Category[]>(_request, CATEGORY_GET_ALL_ENDPOINT, isMounted, setCategories, setLoading, setError, null, null)
     }
 
-    async function create(name: string, slug: string, sku: string, parentSlug: string) {
+    async function create(name: string, slug: string, parentSlug: string) {
         if (loading || !isMounted.current) return
         setError(undefined)
         setMessage("")
-        const config = { ...CATEGORY_CREATE_ENDPOINT, data: { sku, name, slug, parentSlug } }
+        const config = { ...CATEGORY_CREATE_ENDPOINT, data: { name, slug, parentSlug } }
         doApiRequestForHooks<null>(_request, config, isMounted, null, setLoading, setError, setMessage, getAll)
 
     }

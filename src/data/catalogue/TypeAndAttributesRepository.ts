@@ -9,6 +9,7 @@ import { BulkCreateResult } from "models/shared/BulkCreateResult";
 import { Attribute } from "models/catalogue/Attribute";
 import { SKUAttribute } from "models/catalogue/SKUAttribute";
 import { OptionAttribute } from "models/catalogue/OptionAttribute";
+import { Description } from '../../models/catalogue/Description';
 
 export type AttributeValueCreateInfo = {
     sku: string,
@@ -18,7 +19,7 @@ export type AttributeValueCreateInfo = {
     value: string
 }
 
-export type SubtypeCreateFunc = (sku: string, name: string, typeSku: string, attributes: Attribute[], skuAttributes: SKUAttribute[], optionAttribute?: OptionAttribute) => Promise<void>
+export type SubtypeCreateFunc = (sku: string, name: string, typeSku: string, attributes: Attribute[], skuAttributes: SKUAttribute[], optionAttribute?: OptionAttribute, descriptions?: Description[]) => Promise<void>
 
 const useTypeAndAttributesRepository = () => {
     const isMounted = useRef(true)
@@ -49,11 +50,12 @@ const useTypeAndAttributesRepository = () => {
     }
 
 
-    const createSubtype: SubtypeCreateFunc = async (sku, name, typeSku, attributes, skuAttributes, optionAttribute) => {
+    const createSubtype: SubtypeCreateFunc = async (sku, name, typeSku, attributes, skuAttributes, optionAttribute, descriptions) => {
         if (loading || !isMounted.current) return
         setError(undefined)
         setMessage("")
-        const config = { ...SUBTYPE_CREATE_ENDPOINT, data: { sku, name, typeSku, attributes, skuAttributes, optionAttribute } }
+        const config = { ...SUBTYPE_CREATE_ENDPOINT, data: { sku, name, typeSku, attributes, skuAttributes, optionAttribute, descriptions } }
+        console.log(config)
         doApiRequestForHooks<null>(_request, config, isMounted, null, setLoading, setError, setMessage, getAllTypes)
 
     }

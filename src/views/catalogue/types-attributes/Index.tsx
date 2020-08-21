@@ -50,7 +50,7 @@ const TypesAttributesTab = () => {
         <Row>
           <Col>
             <UncontrolledAlert color="danger" fade={false}>
-              <span className="alert-inner--text">{error}</span>
+              <span className="alert-inner--text">{JSON.stringify(error)}</span>
             </UncontrolledAlert>
           </Col>
         </Row>

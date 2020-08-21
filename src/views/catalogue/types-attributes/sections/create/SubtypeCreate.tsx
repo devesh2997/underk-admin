@@ -7,6 +7,8 @@ import { Attribute } from "models/catalogue/Attribute";
 import { SKUAttribute } from "models/catalogue/SKUAttribute";
 import { OptionAttribute } from "models/catalogue/OptionAttribute";
 import { SubtypeCreateFunc } from "data/catalogue/TypeAndAttributesRepository";
+import { Description } from "../../../../../models/catalogue/Description";
+import DescriptionCreate from "../../../shared/DescriptionCreate";
 
 const SubtypeCreate = (props: {
   createSubtype: SubtypeCreateFunc;
@@ -19,6 +21,7 @@ const SubtypeCreate = (props: {
   const [attributes, setAttributes] = useState<Attribute[]>([]);
   const [skuAttributes, setSKUAttributes] = useState<SKUAttribute[]>([]);
   const [optionAttribute, setOptionAttribute] = useState<OptionAttribute>();
+  const [descriptions, setDescriptions] = useState<Description[]>([]);
 
   //addSKUAttribute
   const addSKUAttribute = () => {
@@ -30,6 +33,7 @@ const SubtypeCreate = (props: {
           skuOrdering: skuAttributes.length,
           variantsBasis: false,
           isFilterable: false,
+          isVisible: false,
           values: [{ name: "", sku: "", valueType: "none", value: "" }],
         },
       ];
@@ -56,7 +60,7 @@ const SubtypeCreate = (props: {
   //remove sku attribute
   const removeSKUAttribute = (index: number) => {
     setSKUAttributes((skuAttributes) => {
-      return skuAttributes.filter((_, i) => i != index);
+      return skuAttributes.filter((_, i) => i !== index);
     });
   };
 
@@ -99,6 +103,13 @@ const SubtypeCreate = (props: {
         setSKUAttributes(
           skuAttributes.map((a, i) =>
             i !== index ? a : { ...a, variantsBasis: e.currentTarget.checked }
+          )
+        );
+        break;
+      case "skuAttributeVisible" + index:
+        setSKUAttributes(
+          skuAttributes.map((a, i) =>
+            i !== index ? a : { ...a, isVisible: e.currentTarget.checked }
           )
         );
         break;
@@ -199,6 +210,7 @@ const SubtypeCreate = (props: {
           isMultiValued: false,
           isCompulsory: false,
           isFilterable: false,
+          isVisible: false,
           values: [{ name: "", valueType: "none", value: "" }],
         },
       ];
@@ -269,6 +281,13 @@ const SubtypeCreate = (props: {
         setAttributes(
           attributes.map((a, i) =>
             i !== index ? a : { ...a, isFilterable: e.currentTarget.checked }
+          )
+        );
+        break;
+      case "attributeVisible" + index:
+        setAttributes(
+          attributes.map((a, i) =>
+            i !== index ? a : { ...a, isVisible: e.currentTarget.checked }
           )
         );
         break;
@@ -349,7 +368,7 @@ const SubtypeCreate = (props: {
     if (typeof optionAttribute !== "undefined") return;
     setOptionAttribute({
       name: "",
-      values: [{ name: "", valueType: "none", value: "", sku: "" }],
+      values: [{ name: "", valueType: "none", value: "", order: 0, sku: "" }],
     });
   };
 
@@ -362,7 +381,13 @@ const SubtypeCreate = (props: {
           ...optionAttribute,
           values: [
             ...optionAttribute.values,
-            { name: "", sku: "", valueType: "none", value: "" },
+            {
+              name: "",
+              sku: "",
+              valueType: "none",
+              order: optionAttribute.values.length,
+              value: "",
+            },
           ],
         };
       }
@@ -383,18 +408,32 @@ const SubtypeCreate = (props: {
           ...optionAttribute,
           values: optionAttribute.values.filter((_, i) => i !== valueIndex),
         };
-      } else return undefined;
+      } else
+        return {
+          name: "",
+          values: [
+            { name: "", valueType: "none", order: 0, value: "", sku: "" },
+          ],
+        };
     });
   };
 
   //optionAttributeChangeHandler
   const optionAttributeChange = (e: React.FormEvent<HTMLInputElement>) => {
-    switch (e.currentTarget.name) {
+    const name = e.currentTarget.name;
+    const value = e.currentTarget.value;
+    switch (name) {
       case "optionAttributeName":
         setOptionAttribute((optionAttribute) => {
-          if (typeof optionAttribute !== "undefined")
-            return { ...optionAttribute, name: e.currentTarget.value };
-          else return undefined;
+          if (typeof optionAttribute !== "undefined") {
+            return { ...optionAttribute, name: value };
+          } else
+            return {
+              name: value,
+              values: [
+                { name: "", valueType: "none", order: 0, value: "", sku: "" },
+              ],
+            };
         });
         break;
       default:
@@ -534,7 +573,10 @@ const SubtypeCreate = (props: {
   });
 
   if (typeof optionAttribute !== "undefined") {
-    if (optionAttribute.name.length === 0) {
+    if (
+      typeof optionAttribute.name === "undefined" ||
+      optionAttribute.name.length === 0
+    ) {
       valid = false;
       errors.push(`Option attribute has empty name.`);
     }
@@ -578,7 +620,8 @@ const SubtypeCreate = (props: {
             typeSku.value,
             attributes,
             skuAttributes,
-            optionAttribute
+            optionAttribute,
+            descriptions
           )
         }
       >
@@ -684,6 +727,24 @@ const SubtypeCreate = (props: {
                     htmlFor={"skuAttributeVariantsBasis" + i}
                   >
                     Variants Basis
+                  </label>
+                </Col>
+                <Col>
+                  <input
+                    className="custom-control-input"
+                    id={"skuAttributeVisible" + i}
+                    name={"skuAttributeVisible" + i}
+                    type="checkbox"
+                    checked={a.isVisible}
+                    onChange={(e) => {
+                      skuAttributeChangeHandler(e, i);
+                    }}
+                  />
+                  <label
+                    className="custom-control-label"
+                    htmlFor={"skuAttributeVisible" + i}
+                  >
+                    Is Visible
                   </label>
                 </Col>
               </Row>
@@ -845,6 +906,24 @@ const SubtypeCreate = (props: {
                     Is Multi Valued
                   </label>
                 </Col>
+                <Col>
+                  <input
+                    className="custom-control-input"
+                    id={"attributeVisible" + i}
+                    name={"attributeVisible" + i}
+                    type="checkbox"
+                    checked={a.isVisible}
+                    onChange={(e) => {
+                      attributeChange(e, i);
+                    }}
+                  />
+                  <label
+                    className="custom-control-label"
+                    htmlFor={"attributeVisible" + i}
+                  >
+                    Is Visible
+                  </label>
+                </Col>
               </Row>
               <Row className="mt-4">
                 <Col sm="1">Values:</Col>
@@ -909,7 +988,7 @@ const SubtypeCreate = (props: {
 
         <hr className="my-3 mt-5" />
         <Row className="mt-4">
-          <Col>Option Attributes:</Col>
+          <Col>Option Attribute:</Col>
           {typeof optionAttribute === "undefined" && (
             <Col
               onClick={addOptionAttribute}
@@ -943,7 +1022,10 @@ const SubtypeCreate = (props: {
                 </Col>
               </Row>
               <Row className="mt-4">
-                <Col sm="1">Values:</Col>
+                <Col>
+                  Values: (Add in the same order that you want to see in the
+                  website)
+                </Col>
                 <Col
                   onClick={() => addOptionAttributeValue()}
                   style={{ cursor: "pointer" }}
@@ -954,12 +1036,13 @@ const SubtypeCreate = (props: {
                 </Col>
               </Row>
               {optionAttribute.values.map((v, j) => (
-                <Row className="mt-4">
+                <Row className="mt-4 align-items-center">
                   <Col sm="1">
                     <Button onClick={() => removeOptionAttributeValue(j)}>
                       <i className="ni ni-fat-remove text-red" />
                     </Button>
                   </Col>
+                  <Col sm="1">{v.order}</Col>
                   <Col className="mr-4">
                     <Input
                       name={"optionAttributeValueName" + j}
@@ -1015,6 +1098,10 @@ const SubtypeCreate = (props: {
         )}
 
         <hr className="my-3 mt-5" />
+        <DescriptionCreate
+          descriptions={descriptions}
+          setDescriptions={setDescriptions}
+        />
       </FormWithGuidesAndErrors>
     </>
   );

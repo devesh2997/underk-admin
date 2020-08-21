@@ -6,5 +6,6 @@ export type Attribute = {
     isMultiValued: boolean,
     isCompulsory: boolean,
     isFilterable: boolean,
+    isVisible: boolean,
     values: AttributeValue[]
 }

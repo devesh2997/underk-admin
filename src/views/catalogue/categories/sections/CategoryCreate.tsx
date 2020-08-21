@@ -8,7 +8,6 @@ type Props = {
   create: (
     name: string,
     slug: string,
-    sku: string,
     parentSlug: string
   ) => Promise<void>;
   categories: Category[] | undefined;
@@ -19,7 +18,6 @@ const CategoryCreate: React.FC<Props> = (props: Props) => {
 
   const name = useFormInput("");
   const slug = useFormInput("");
-  const sku = useFormInput("");
   const parentSlug = useFormInput("");
 
   let errors: string[] = [];
@@ -28,16 +26,6 @@ const CategoryCreate: React.FC<Props> = (props: Props) => {
   if (name.value.length === 0) {
     valid = false;
     errors.push("Name is empty");
-  }
-  if (sku.value.length === 0) {
-    valid = false;
-    errors.push("SKU is empty");
-  } else {
-    sku.value = sku.value.toUpperCase();
-    if (categories?.some((c) => c.sku === sku.value)) {
-      valid = false;
-      errors.push("SKU is already in use.");
-    }
   }
   if (slug.value.length === 0) {
     valid = false;
@@ -57,8 +45,7 @@ const CategoryCreate: React.FC<Props> = (props: Props) => {
       guides={[
         <span>Name, SKU and slug are all compulsory.</span>,
         <span>
-          SKU and slug are unique. No two category should have the same SKU or
-          slug.
+          Slug is unique. No two category should have the same slug.
         </span>,
         <span>
           If the category has a parent, please select it from the dropdown
@@ -68,7 +55,6 @@ const CategoryCreate: React.FC<Props> = (props: Props) => {
         create(
           name.value,
           slug.value,
-          sku.value.toUpperCase(),
           parentSlug.value
         )
       }
@@ -90,12 +76,6 @@ const CategoryCreate: React.FC<Props> = (props: Props) => {
         <Col sm="1">Name : </Col>
         <Col>
           <Input {...name} />
-        </Col>
-      </Row>
-      <Row className="mt-3">
-        <Col sm="1">SKU : </Col>
-        <Col>
-          <Input {...sku} />
         </Col>
       </Row>
       <Row className="mt-3">

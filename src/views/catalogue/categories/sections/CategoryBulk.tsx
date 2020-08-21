@@ -14,7 +14,6 @@ type Props = {
     categoriesInfo: {
       name: string;
       slug: string;
-      sku: string;
       parentSlug: string;
     }[]
   ) => Promise<void>;
@@ -38,8 +37,7 @@ const CategoryBulk: React.FC<Props> = (props: Props) => {
       if (isEmpty(row)) continue;
       if (
         isEmptyString(row[0]) &&
-        isEmptyString(row[1]) &&
-        isEmptyString(row[2])
+        isEmptyString(row[1])
       )
         continue;
       const rowStr = "Row " + (i + 1) + " : ";
@@ -48,10 +46,6 @@ const CategoryBulk: React.FC<Props> = (props: Props) => {
         errors.push(rowStr + "Name should not be empty.");
       }
       if (isEmptyString(row[1])) {
-        isValid = false;
-        errors.push(rowStr + "SKU should not be empty.");
-      }
-      if (isEmptyString(row[2])) {
         isValid = false;
         errors.push(rowStr + "Slug should not be empty.");
       }
@@ -73,14 +67,6 @@ const CategoryBulk: React.FC<Props> = (props: Props) => {
           row[1] === rowj[1]
         ) {
           isValid = false;
-          errors.push(rowStr + "Duplicate SKU exists at row " + j);
-        }
-        if (
-          isNotEmptyString(row[2]) &&
-          isNotEmptyString(rowj[2]) &&
-          row[2] === rowj[2]
-        ) {
-          isValid = false;
           errors.push(rowStr + "Duplicate slug exists at row " + j);
         }
       }
@@ -92,22 +78,16 @@ const CategoryBulk: React.FC<Props> = (props: Props) => {
           }
         }
         if (isNotEmptyString(row[1])) {
-          if (categories.some((c) => c.sku === row[1])) {
-            isValid = false;
-            errors.push(rowStr + "SKU is already in use.");
-          }
-        }
-        if (isNotEmptyString(row[2])) {
-          if (categories.some((c) => c.slug === row[2])) {
+          if (categories.some((c) => c.slug === row[1])) {
             isValid = false;
             errors.push(rowStr + "Slug is already in use.");
           }
         }
       }
 
-      if (isNotEmptyString(row[3])) {
-        if (!categories?.some((c) => c.slug === row[3])) {
-          if (!csvData.some((s) => s[1] === row[3] && s[1] !== row[1])) {
+      if (isNotEmptyString(row[2])) {
+        if (!categories?.some((c) => c.slug === row[2])) {
+          if (!csvData.some((s) => s[1] === row[2] && s[1] !== row[1])) {
             isValid = false;
             errors.push(
               rowStr + "Parent slug does not match with any existing category"
@@ -119,8 +99,7 @@ const CategoryBulk: React.FC<Props> = (props: Props) => {
         categoriesInfo.push({
           name: row[0],
           slug: row[1],
-          sku: row[2],
-          parentSlug: isNotEmptyString(row[3]) ? row[3] : undefined,
+          parentSlug: isNotEmptyString(row[2]) ? row[2] : undefined,
         });
       }
     }
@@ -160,7 +139,6 @@ const CategoryBulk: React.FC<Props> = (props: Props) => {
             <thead className="thead-light">
               <tr>
                 <th scope="col">Name *</th>
-                <th scope="col">SKU *</th>
                 <th scope="col">Slug *</th>
                 <th scope="col">parentSlug (Optional)</th>
               </tr>
@@ -168,13 +146,11 @@ const CategoryBulk: React.FC<Props> = (props: Props) => {
             <tbody>
               <tr>
                 <td>Men's Wear</td>
-                <td>MNW</td>
                 <td>men-wear</td>
                 <td></td>
               </tr>
               <tr>
                 <td>Men's Top Wear</td>
-                <td>MTW</td>
                 <td>men-top-wear</td>
                 <td>men-wear</td>
               </tr>

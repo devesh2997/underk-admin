@@ -6,5 +6,6 @@ export type SKUAttribute = {
     skuOrdering: number,
     variantsBasis: boolean,
     isFilterable: boolean,
+    isVisible: boolean,
     values: SKUAttributeValue[]
 }

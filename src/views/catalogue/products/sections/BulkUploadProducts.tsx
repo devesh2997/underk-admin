@@ -1,15 +1,25 @@
 import React, { useState } from "react";
 import useTypeAndAttributesRepository from "data/catalogue/TypeAndAttributesRepository";
-import { Dimensions } from "models/catalogue/Dimensions";
-import { Price } from "models/catalogue/Price";
-import { ProductCreateInfo } from "data/catalogue/ProductsRepository";
+import useProductsBulkUploadRepository, {
+  ProductCreateInfo,
+} from "data/catalogue/products/BulkUploadRepository";
 import { FormWithGuidesAndErrors, Loading } from "components/Widgets";
-import Type from "models/catalogue/Type";
 import { Subtype } from "models/catalogue/Subtype";
 import { isEmpty } from "lodash";
 import { useFormInput } from "hooks/Index";
-import { Container, Row, Col, Form, FormGroup, Input, Card } from "reactstrap";
-import Divider from "components/Widgets/Divider";
+import {
+  Container,
+  Row,
+  Col,
+  Form,
+  FormGroup,
+  Input,
+  Card,
+  InputGroup,
+  InputGroupAddon,
+  InputGroupText,
+  Label,
+} from "reactstrap";
 import { CSVLink } from "react-csv";
 import CSVReader from "react-csv-reader";
 import {
@@ -23,8 +33,18 @@ import { validateProductCreateInfo } from "underk-utils";
 
 //TODO manage errors from types, categories, collections and warehouses repositories
 const BulkUploadProducts: React.FC = () => {
+  const productsBulkUploadRepo = useProductsBulkUploadRepository();
+  const {
+    loading,
+    error,
+    result,
+    bulkUpload,
+    message,
+  } = productsBulkUploadRepo;
+
   const typesRepo = useTypeAndAttributesRepository();
-  const { types, error } = typesRepo;
+  const { types } = typesRepo;
+  const typesError = typesRepo.error;
   const loadingTypes = typesRepo.loading;
 
   const categoriesRepo = useCategoriesRepository();
@@ -44,8 +64,6 @@ const BulkUploadProducts: React.FC = () => {
 
   const [errors, setErrors] = useState<string[]>([]);
 
-  const [valid, setValid] = useState(false);
-
   const [productsCreateInfo, setProductsCreateInfo] = useState<
     ProductCreateInfo[]
   >([]);
@@ -61,6 +79,15 @@ const BulkUploadProducts: React.FC = () => {
     selectedSubtype = selectedType?.subtypes.find(
       (subtype) => subtype.id.toString() === subtypeSelect.value
     );
+  }
+
+  function onAssetsFolderChanged(event: React.FormEvent<HTMLInputElement>) {
+    let assetFiles = event.currentTarget.files;
+    if (assetFiles !== null) {
+      for (let i = 0; i < assetFiles.length; i++) {
+        console.log(assetFiles[i]);
+      }
+    }
   }
 
   function handleFileSelection(csvData: any[], _: any) {
@@ -116,6 +143,21 @@ const BulkUploadProducts: React.FC = () => {
         {!loadingData && (
           <>
             <Row>
+              <InputGroup>
+                <InputGroupAddon addonType="prepend">
+                  <InputGroupText>Choose Assets Folder</InputGroupText>
+                </InputGroupAddon>
+                <Label></Label>
+                <Input
+                  label="Choose Assets Folder"
+                  directory=""
+                  webkitdirectory=""
+                  type="file"
+                  onChange={onAssetsFolderChanged}
+                />
+              </InputGroup>
+            </Row>
+            <Row>
               <Col sm="2">
                 <h3>Select Type : </h3>
               </Col>
@@ -164,13 +206,40 @@ const BulkUploadProducts: React.FC = () => {
               </Row>
             )}
 
+            {result && (
+              <>
+                {" "}
+                <Row className="mt-5">
+                  <Col>Total Products Created : {result.products.length}</Col>
+                </Row>
+                {result.errors && result.errors.length > 0 && (
+                  <Row className="mt-5">
+                    <Col>
+                      <ul className="list-unstyled">
+                        <li>
+                          <h4 style={{ color: "info" }}>Errors :</h4>
+                          <ul>
+                            {result.errors.map((err, i) => (
+                              <li key={i}>{JSON.stringify(err)}</li>
+                            ))}
+                          </ul>
+                        </li>
+                      </ul>
+                    </Col>
+                  </Row>
+                )}
+              </>
+            )}
+
             {!isEmpty(selectedSubtype) && (
               <>
                 <FormWithGuidesAndErrors
                   heading="Upload CSV data"
                   errors={errors}
                   valid={errors.length === 0 && productsCreateInfo.length > 0}
-                  onSubmit={() => {}}
+                  onSubmit={() => {
+                    bulkUpload(productsCreateInfo);
+                  }}
                   guides={[
                     <span>
                       Start entering the data from the 3rd row. Leave the first
@@ -180,6 +249,11 @@ const BulkUploadProducts: React.FC = () => {
                       In case any product has multiple options, enter them in
                       separate rows and fill all the common details only in the
                       first row of that product.{" "}
+                    </span>,
+                    <span>
+                      All the multi values columns (for eg. collections,
+                      attributes where multiple values are allowed) should have
+                      the separated by ;;{" "}
                     </span>,
                     <span>
                       <img

@@ -11,6 +11,9 @@ import {
   NavLink,
   TabContent,
   TabPane,
+  ListGroup,
+  ListGroupItem,
+  ListGroupItemHeading,
 } from "reactstrap";
 import Type from "models/catalogue/Type";
 import TableWithColorToggler from "components/Widgets/TableWithColorToggler";
@@ -87,59 +90,84 @@ const TypesAttributesView = (props: Props) => {
 
 const TypesAttributesTableView = (props: Props) => {
   const { types } = props;
-  let rows = [];
-  for (let i = 0; i < types.length; i++) {
-    const type = types[i];
-    if (typeof type.subtypes !== "undefined" && type.subtypes?.length > 0) {
-      for (let j = 0; j < type.subtypes.length; j++) {
-        const subtype = type.subtypes[j];
-        if (
-          typeof subtype.attributes !== "undefined" &&
-          subtype.attributes.length > 0
-        ) {
-          for (let k = 0; k < subtype.attributes.length; k++) {
-            const attribute = subtype.attributes[k];
-            rows.push(
-              <tr key={type.name + subtype.name + attribute.name}>
-                <td>{type.name}</td>
-                <td>{subtype.name}</td>
-                <td>{attribute.name}</td>
-                <td>{attribute.id}</td>
-              </tr>
-            );
-          }
-        } else {
-          rows.push(
-            <tr key={type.name + subtype.name}>
-              <td>{type.name}</td>
-              <td>{subtype.name}</td>
-            </tr>
-          );
-        }
-      }
-    } else {
-      rows.push(
-        <tr key={type.name}>
-          <td>{type.name}</td>
-        </tr>
-      );
-    }
-  }
-  return (
-    <>
-      <TableWithColorToggler
-        columns={[
-          "Type",
-          "Subtype",
-          "Attribute",
-          "Attribute ID",
-          "AttributeValue",
-        ]}
-      >
-        <tbody>{rows}</tbody>
-      </TableWithColorToggler>
-    </>
-  );
+  const listTiles: any[] = [];
+  types.forEach((type, i) => {
+    listTiles.push(
+      <ListGroup key={type.name + i}>
+        <ListGroupItem>
+          <ListGroupItemHeading>{`${i + 1}) ${type.name} (${
+            type.sku
+          })`}</ListGroupItemHeading>
+        </ListGroupItem>
+
+        {type.subtypes.map((subtype, j) => (
+          <ListGroupItem className="ml-4" key={subtype.name + j}>
+            <ListGroupItemHeading>{`${i + 1}.${j + 1}) ${subtype.name} (${
+              subtype.sku
+            })`}</ListGroupItemHeading>
+          </ListGroupItem>
+        ))}
+      </ListGroup>
+    );
+  });
+  return <>{listTiles}</>;
 };
+
+// const TypesAttributesTableView = (props: Props) => {
+//   const { types } = props;
+//   let rows = [];
+//   for (let i = 0; i < types.length; i++) {
+//     const type = types[i];
+//     if (typeof type.subtypes !== "undefined" && type.subtypes?.length > 0) {
+//       for (let j = 0; j < type.subtypes.length; j++) {
+//         const subtype = type.subtypes[j];
+//         if (
+//           typeof subtype.attributes !== "undefined" &&
+//           subtype.attributes.length > 0
+//         ) {
+//           for (let k = 0; k < subtype.attributes.length; k++) {
+//             const attribute = subtype.attributes[k];
+//             rows.push(
+//               <tr key={type.name + subtype.name + attribute.name}>
+//                 <td>{type.name}</td>
+//                 <td>{subtype.name}</td>
+//                 <td>{attribute.name}</td>
+//                 <td>{attribute.id}</td>
+//               </tr>
+//             );
+//           }
+//         } else {
+//           rows.push(
+//             <tr key={type.name + subtype.name}>
+//               <td>{type.name}</td>
+//               <td>{subtype.name}</td>
+//             </tr>
+//           );
+//         }
+//       }
+//     } else {
+//       rows.push(
+//         <tr key={type.name}>
+//           <td>{type.name}</td>
+//         </tr>
+//       );
+//     }
+//   }
+//   return (
+//     <>
+//       <TableWithColorToggler
+//         columns={[
+//           "Type",
+//           "Subtype",
+//           "Attribute",
+//           "Attribute ID",
+//           "AttributeValue",
+//         ]}
+//       >
+//         <tbody>{rows}</tbody>
+//       </TableWithColorToggler>
+//     </>
+//   );
+// };
 
 export default TypesAttributesView;

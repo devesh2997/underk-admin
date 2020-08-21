@@ -1,11 +1,9 @@
 //This function checks for valid product fields which are provided during creation of a new product..
 
-import { ProductCreateInfo, BulkUploadProductCreateInfo } from "data/catalogue/ProductsRepository"
 import Type from "models/catalogue/Type"
-import { isEmpty } from "lodash"
-import { Price } from "models/catalogue/Price"
-import { Dimensions } from "models/catalogue/Dimensions"
 import { Subtype } from "models/catalogue/Subtype"
+import { BulkUploadProductCreateInfo } from "../../../../data/catalogue/products/BulkUploadRepository"
+import { ProductCreateInfo } from "underk-utils/dist/types"
 
 
 type ProductCreateInfoValidationResult = {
@@ -34,7 +32,7 @@ export const parseProductNumberBasedMap = (csvDataMap: Map<any, any>, selectedTy
                 const categorySlug = productData[3];
                 const collectionsSlugsString = productData[4];
                 const collectionsSlugs = collectionsSlugsString
-                    .split(",")
+                    .split(";;")
                     .map((coll: string) => coll.trim());
                 //currenCol will define the next column that is to be read and parsed
                 let currentCol = 5;
@@ -65,7 +63,7 @@ export const parseProductNumberBasedMap = (csvDataMap: Map<any, any>, selectedTy
                         if (attr.isMultiValued) {
                             const attributeValueNamesString = productData[currentCol];
                             const attributeValueNames = attributeValueNamesString
-                                .split(",")
+                                .split(";;")
                                 .map((name: string) => name.trim());
                             attributeValue["attributeValueNames"] = attributeValueNames;
                         } else {
