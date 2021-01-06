@@ -68,7 +68,7 @@
     "@types/reactstrap": "^8.4.2",
     "await-to-ts": "^1.0.6",
     "aws-sdk": "^2.713.0",
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "chart.js": "2.9.3",
     "classnames": "2.2.6",
     "electron-is-dev": "^1.2.0",
