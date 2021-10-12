@@ -100,7 +100,7 @@
     "@types/markerclustererplus": "2.1.33",
     "@types/react": "16.9.19",
     "concurrently": "^5.2.0",
-    "electron": "^9.0.5",
+    "electron": "^11.5.0",
     "electron-builder": "^22.7.0",
     "eslint-plugin-flowtype": "3.13.0",
     "gulp": "4.0.2",
