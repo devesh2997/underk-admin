@@ -74,7 +74,7 @@
     "electron-is-dev": "^1.2.0",
     "file-type": "^14.6.2",
     "lodash": "^4.17.15",
-    "moment": "2.24.0",
+    "moment": "2.29.4",
     "neverthrow": "^2.3.4",
     "node-sass": "4.13.1",
     "nouislider": "14.1.1",
